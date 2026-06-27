@@ -52,6 +52,9 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .ne{display:flex;align-items:center;gap:6px}
 .ne input{width:92px}
 .pm{flex:none;width:40px;height:40px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--acc);font-size:19px;font-family:inherit;cursor:pointer;padding:0;line-height:1}
+.uw{display:flex;align-items:center;gap:6px}
+.uw input{width:62px;flex:none}
+.uw select{width:140px;font-size:14.5px;text-align:left;padding:8px 6px;flex:none}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .m{background:var(--s1);border-radius:11px;padding:10px 12px}
 .m .l{font-size:12px;color:var(--tm)}
@@ -215,20 +218,18 @@ svg{display:block}
   </div>
   <div class="grp">Eingaben</div>
   <div class="card tight">
-    <div class="row"><label>c gemessen (mg/m³)</label><input id="nm_conc" type="number" step="any" inputmode="decimal" value="50"></div>
+    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="nm_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
+    <div class="row"><label>c gemessen</label><span class="uw"><input id="nm_conc" type="number" step="any" inputmode="decimal" value="50"><select id="nm_cbasis"><option>mg/m³ trocken</option><option>mg/m³ feucht</option></select></span></div>
+    <div class="row"><label>O₂ gemessen</label><span class="uw"><input id="nm_o2" type="number" step="any" inputmode="decimal" value="18.76"><select id="nm_o2basis"><option>Vol.-% trocken</option><option>Vol.-% feucht</option></select></span></div>
+    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nm_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
     <div class="row"><label>Kanaltemp. ϑ (°C)</label><input id="nm_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
     <div class="row"><label>Kanaldruck p (hPa)</label><input id="nm_p" type="number" step="any" inputmode="decimal" value="995.09"></div>
-    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="nm_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
-    <div class="row"><label>O₂ gemessen (Vol-%)</label><input id="nm_o2" type="number" step="any" inputmode="decimal" value="18.76"></div>
-    <div class="row"><label>O₂-Basis</label><select id="nm_o2basis"><option>trocken</option><option>feucht</option></select></div>
-    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nm_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
   </div>
-  <div class="note">Bei „feucht" wird der gemessene O₂ intern auf trocken gerechnet (mit φ oben). Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
+  <div class="note">Einheit/Basis je Komponente rechts wählen: „feucht" rechnet mit dem φ oben auf trocken, „trocken" lässt unverändert. Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
   <div class="grp">Schalter (Häkchen = anwenden)</div>
   <div class="card tight">
     <div class="row"><label>Norm. Temperatur</label><input id="nm_swT" type="checkbox"></div>
     <div class="row"><label>Norm. Druck</label><input id="nm_swp" type="checkbox"></div>
-    <div class="row"><label>Norm. Feuchte (→ trocken)</label><input id="nm_swF" type="checkbox"></div>
     <div class="row"><label>O₂-Bezug</label><input id="nm_swO2" type="checkbox"></div>
     <div class="row"><label>AGR-Deckelung</label><input id="nm_swAGR" type="checkbox"></div>
   </div>
@@ -313,10 +314,10 @@ function computeUm(){
 }
 function computeNorm(){
   var conc=num("nm_conc"),t=num("nm_t"),p=num("nm_p"),phi=num("nm_phi"),o2=num("nm_o2"),o2b=num("nm_o2b");
-  var o2eff=(val("nm_o2basis")==="feucht")?o2*100/(100-phi):o2;
+  var o2eff=(/feucht/.test(val("nm_o2basis")))?o2*100/(100-phi):o2;
   var fT=chk("nm_swT")?(t+273.15)/(Tn+273.15):1;
   var fp=chk("nm_swp")?pn/p:1;
-  var fF=chk("nm_swF")?100/(100-phi):1;
+  var fF=(/feucht/.test(val("nm_cbasis")))?100/(100-phi):1;
   var fO2=chk("nm_swO2")?(chk("nm_swAGR")?Math.max(1,(21-o2b)/(21-o2eff)):(21-o2b)/(21-o2eff)):1;
   var cn=conc*fT*fp*fF,cb=cn*fO2;
   setT("o_ft",fmt(fT,3));setT("o_fp",fmt(fp,3));setT("o_ff",fmt(fF,3));setT("o_fo2",fmt(fO2,3));setT("o_o2eff",fmt(o2eff,2));
