@@ -169,12 +169,10 @@ svg{display:block}
   <div class="grp">mA → Messwert</div>
   <div class="card"><div class="row" style="border:none"><label>mA-Wert</label><input id="s_ma" type="number" step="any" inputmode="decimal" value="12"></div>
     <div class="m" style="margin-top:8px"><div class="l">Messwert</div><div class="v sm"><span id="o_swert">–</span></div></div></div>
-  <div class="grp">Messwert → mA</div>
+  <div class="grp">Messwert → mA (auch Prüfgas-Sollwert)</div>
   <div class="card"><div class="row" style="border:none"><label>Messwert</label><input id="s_wert" type="number" step="any" inputmode="decimal" value="100"></div>
-    <div class="m" style="margin-top:8px"><div class="l">mA-Wert</div><div class="v sm"><span id="o_sma">–</span></div></div></div>
-  <div class="grp">Prüfgas → mA-Sollwert</div>
-  <div class="card"><div class="row" style="border:none"><label>Prüfgas-Wert</label><input id="s_pruef" type="number" step="any" inputmode="decimal" value="129"></div>
-    <div class="m" style="margin-top:8px"><div class="l">mA-Sollwert</div><div class="v sm"><span id="o_spruef">–</span></div></div></div>
+    <div class="m" style="margin-top:8px"><div class="l">mA-Wert</div><div class="v sm"><span id="o_sma">–</span></div></div>
+    <div class="note" style="margin-top:8px">Für Prüfgas: Zertifikatswert eintragen → mA-Sollwert.</div></div>
 </section>
 
 <section class="scr" id="um">
@@ -305,7 +303,6 @@ function computeSig(){
   var von=num("s_von"),bis=num("s_bis"),mba=num("s_mba"),mbe=num("s_mbe");
   setT("o_swert",fmt(mba+(mbe-mba)*(num("s_ma")-von)/(bis-von),3));
   setT("o_sma",fmt(von+(num("s_wert")-mba)/(mbe-mba)*(bis-von),3));
-  setT("o_spruef",fmt(von+(num("s_pruef")-mba)/(mbe-mba)*(bis-von),3));
 }
 function computeUm(){
   var vol=num("u_vol");setT("o_uwf",fmt(vol*kH2O,3));setT("o_uwt",fmt(vol*kH2O*100/(100-vol),3));
