@@ -49,12 +49,16 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .row label{font-size:14.5px;color:var(--ts);flex:1}
 .row input,.row select{width:120px;font-size:16px;text-align:right;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);font-family:inherit}
 .row input[type=checkbox]{width:24px;height:24px}
-.ne{display:flex;align-items:center;gap:6px}
-.ne input{width:92px}
-.pm{flex:none;width:40px;height:40px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--acc);font-size:19px;font-family:inherit;cursor:pointer;padding:0;line-height:1}
+.ne{display:flex;align-items:center;gap:6px;width:120px;flex:none}
+.ne input{flex:1;width:auto;min-width:0}
+.pm{flex:none;width:38px;height:40px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--acc);font-size:19px;font-family:inherit;cursor:pointer;padding:0;line-height:1}
 .uw{display:flex;align-items:center;gap:6px}
 .uw input{width:62px;flex:none}
 .uw select{width:140px;font-size:14.5px;text-align:left;padding:8px 6px;flex:none}
+.sdgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sdcell{display:flex;align-items:center;gap:6px}
+.sdcell span{font-size:12px;color:var(--tm);width:18px;text-align:right;flex:none}
+.sdcell input{flex:1;width:auto;min-width:0;font-size:16px;text-align:right;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);font-family:inherit}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .m{background:var(--s1);border-radius:11px;padding:10px 12px}
 .m .l{font-size:12px;color:var(--tm)}
@@ -86,12 +90,13 @@ svg{display:block}
 
 <section class="scr" id="home">
   <div class="h1">Werkzeugkasten</div>
-  <div class="sub">Emissionsmessung · 29b-Messstelle · Feld-Tools</div>
+  <div class="sub">Feld-Tools</div>
   <div class="grid2">
     <button class="tool" data-go="iso"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16l4.5-4"/><circle cx="12" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg></span><b>Isokinetik &amp; Volumenstrom</b><span>Düse, Soll-Saugstrom, Volumenfenster, Isokinetie</span></button>
     <button class="tool" data-go="sig"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 4 14 2.5-7H21"/></svg></span><b>Signal &amp; Prüfgas</b><span>mA ↔ Messwert, Prüfgas-Sollwert</span></button>
-    <button class="tool" data-go="um"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span><b>Umrechner</b><span>Feuchte, Kanaldruck, O₂/CO₂ feucht→trocken</span></button>
+    <button class="tool" data-go="um"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span><b>Normierungsschritte</b><span>f_T, f_p, f_F, f_O₂ + feucht→trocken</span></button>
     <button class="tool" data-go="norm"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><b>Normierung &amp; Bezug</b><span>T / p / Feuchte / O₂-Bezug, AGR</span></button>
+    <button class="tool" data-go="staudruck"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="6" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="6" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="6" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="18" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg></span><b>Staudruck-Netz</b><span>bis 20 Δp, Wurzelmittel an Messung</span></button>
     <button class="tool" data-go="mess"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10 5v14"/></svg></span><b>Messreihen</b><span>Messung speichern &amp; wechseln</span></button>
   </div>
   <div class="note">Tipp: In Safari öffnen, dann „Teilen → Zum Home-Bildschirm" — danach App-Icon, Vollbild, offline. Messungen werden lokal auf dem Gerät gespeichert.</div>
@@ -99,6 +104,11 @@ svg{display:block}
 
 <section class="scr" id="iso">
   <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Isokinetik</span></div>
+  <div class="grp">Vorgabe</div>
+  <div class="card tight">
+    <div class="row"><label>gewählte Düse (mm)</label><input id="iso_duese" type="number" step="any" inputmode="decimal" value="12"></div>
+    <div class="row"><label>Zielabsaugvolumen (m³/h)</label><input id="iso_ziel" type="number" step="any" inputmode="decimal" value="2.5"></div>
+  </div>
   <div class="card">
     <div class="grid2" style="margin-bottom:10px">
       <div class="m"><div class="l">Düse (Vorschlag)</div><div class="v"><span id="o_duese">–</span> <span class="u">mm</span></div></div>
@@ -130,6 +140,7 @@ svg{display:block}
     <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="iso_dpstat" aria-label="Vorzeichen wechseln">±</button><input id="iso_dpstat" type="number" step="any" inputmode="decimal" value="9"></span></div>
     <div class="row"><label>Kanaltemp. (°C)</label><input id="iso_tkanal" type="number" step="any" inputmode="decimal" value="166.5"></div>
     <div class="row"><label>Staudruck Δp (Pa)</label><input id="iso_dpstau" type="number" step="any" inputmode="decimal" value="26"></div>
+    <div id="iso_dpnote" style="font-size:11px;color:var(--acc);padding:0 0 4px"></div>
     <div class="row"><label>Staurohrfaktor</label><input id="iso_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
   </div>
   <div class="grp">Kanalquerschnitt</div>
@@ -141,7 +152,7 @@ svg{display:block}
   </div>
   <div class="grp">Abgaszusammensetzung</div>
   <div class="card tight">
-    <div class="row"><label>Basis</label><select id="iso_basis"><option>trocken</option><option>feucht</option></select></div>
+    <div class="row"><label>Zustand</label><select id="iso_basis"><option>trocken</option><option>feucht</option></select></div>
     <div class="row"><label>O₂ (Vol-%)</label><input id="iso_o2" type="number" step="any" inputmode="decimal" value="18.76"></div>
     <div class="row"><label>CO₂ (Vol-%)</label><input id="iso_co2" type="number" step="any" inputmode="decimal" value="1.28"></div>
   </div>
@@ -152,8 +163,6 @@ svg{display:block}
     <div class="row"><label>Gasuhrtemp. (°C)</label><input id="iso_tgas" type="number" step="any" inputmode="decimal" value="16"></div>
     <div class="row"><label>Unterdruck (mbar)</label><input id="iso_dpgas" type="number" step="any" inputmode="decimal" value="120"></div>
     <div class="row"><label>Zählerstand (m³)</label><input id="iso_zaehler" type="number" step="any" inputmode="decimal" value="1.265"></div>
-    <div class="row"><label>gewählte Düse (mm)</label><input id="iso_duese" type="number" step="any" inputmode="decimal" value="12"></div>
-    <div class="row"><label>Ziel-Absaug (m³/h)</label><input id="iso_ziel" type="number" step="any" inputmode="decimal" value="2.5"></div>
   </div>
 </section>
 
@@ -164,7 +173,7 @@ svg{display:block}
     <div class="row"><label>Signal von (mA)</label><input id="s_von" type="number" step="any" inputmode="decimal" value="4"></div>
     <div class="row"><label>Signal bis (mA)</label><input id="s_bis" type="number" step="any" inputmode="decimal" value="20"></div>
     <div class="row"><label>Messb. Anfang</label><input id="s_mba" type="number" step="any" inputmode="decimal" value="0"></div>
-    <div class="row"><label>Messb. Endwert</label><input id="s_mbe" type="number" step="any" inputmode="decimal" value="200"></div>
+    <div class="row"><label>Messb. Endwert</label><input id="s_mbe" type="number" step="any" inputmode="decimal" value="160.7"></div>
   </div>
   <div class="grp">mA → Messwert</div>
   <div class="card"><div class="row" style="border:none"><label>mA-Wert</label><input id="s_ma" type="number" step="any" inputmode="decimal" value="12"></div>
@@ -176,23 +185,47 @@ svg{display:block}
 </section>
 
 <section class="scr" id="um">
-  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Umrechner</span></div>
-  <div class="grp">Feuchte</div>
+  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Normierungsschritte</span></div>
+
+  <div class="grp">Temperatur → f_T</div>
   <div class="card">
-    <div class="row" style="border:none"><label>Feuchte (Vol-%)</label><input id="u_vol" type="number" step="any" inputmode="decimal" value="3.175"></div>
-    <div class="grid2" style="margin-top:8px">
-      <div class="m"><div class="l">g/m³ feucht</div><div class="v sm"><span id="o_uwf">–</span></div></div>
-      <div class="m"><div class="l">g/m³ trocken</div><div class="v sm"><span id="o_uwt">–</span></div></div>
-    </div>
-    <div class="row" style="margin-top:6px"><label>g/m³ (feucht)</label><input id="u_gm" type="number" step="any" inputmode="decimal" value="25.52"></div>
-    <div class="m" style="margin-top:8px"><div class="l">→ Feuchte (Vol-%)</div><div class="v sm"><span id="o_uvol">–</span></div></div>
+    <div class="row" style="border:none"><label>Kanaltemp. ϑ (°C)</label><input id="u_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
+    <div class="m" style="margin-top:8px"><div class="l">f_T</div><div class="v sm"><span id="o_uft">–</span></div></div>
+    <div class="note" style="margin-top:8px">f_T = (ϑ + 273,15) / 273,15</div>
   </div>
-  <div class="grp">Kanaldruck</div>
+
+  <div class="grp">Druck → f_p</div>
   <div class="card">
     <div class="row"><label>Barometer (hPa)</label><input id="u_baro" type="number" step="any" inputmode="decimal" value="995"></div>
     <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="u_stat" aria-label="Vorzeichen wechseln">±</button><input id="u_stat" type="number" step="any" inputmode="decimal" value="9"></span></div>
-    <div class="m" style="margin-top:8px"><div class="l">Kanaldruck p (hPa abs.)</div><div class="v sm"><span id="o_up">–</span></div></div>
+    <div class="grid2" style="margin-top:8px">
+      <div class="m"><div class="l">Kanaldruck p (hPa abs.)</div><div class="v sm"><span id="o_up">–</span></div></div>
+      <div class="m"><div class="l">f_p</div><div class="v sm"><span id="o_ufp">–</span></div></div>
+    </div>
+    <div class="note" style="margin-top:8px">p = Barometer + stat. Druck/100  ·  f_p = 1013,25 / p</div>
   </div>
+
+  <div class="grp">Feuchte → f_F</div>
+  <div class="card">
+    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="u_vol" type="number" step="any" inputmode="decimal" value="3.175"></div>
+    <div class="grid2" style="margin-top:8px">
+      <div class="m"><div class="l">f_F</div><div class="v sm"><span id="o_uff">–</span></div></div>
+      <div class="m"><div class="l">g/m³ feucht</div><div class="v sm"><span id="o_uwf">–</span></div></div>
+    </div>
+    <div class="m" style="margin-top:8px"><div class="l">g/m³ trocken</div><div class="v sm"><span id="o_uwt">–</span></div></div>
+    <div class="note" style="margin-top:8px">f_F = 100 / (100 − φ)  ·  g/m³ = φ · 8,038</div>
+    <div class="row" style="margin-top:6px"><label>g/m³ (feucht) →</label><input id="u_gm" type="number" step="any" inputmode="decimal" value="25.52"></div>
+    <div class="m" style="margin-top:8px"><div class="l">→ Feuchte (Vol-%)</div><div class="v sm"><span id="o_uvol">–</span></div></div>
+  </div>
+
+  <div class="grp">O₂-Bezug → f_O₂</div>
+  <div class="card">
+    <div class="row"><label>O₂ gemessen (Vol-%)</label><input id="u_o2m" type="number" step="any" inputmode="decimal" value="18.76"></div>
+    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="u_o2bez" type="number" step="any" inputmode="decimal" value="11"></div>
+    <div class="m" style="margin-top:8px"><div class="l">f_O₂</div><div class="v sm"><span id="o_ufo2">–</span></div></div>
+    <div class="note" style="margin-top:8px">f_O₂ = (21 − O₂-Bezug) / (21 − O₂)</div>
+  </div>
+
   <div class="grp">O₂ / CO₂ feucht → trocken</div>
   <div class="card">
     <div class="row"><label>Feuchte φ (Vol-%)</label><input id="u_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
@@ -202,6 +235,7 @@ svg{display:block}
       <div class="m"><div class="l">O₂ trocken</div><div class="v sm"><span id="o_uo2">–</span></div></div>
       <div class="m"><div class="l">CO₂ trocken</div><div class="v sm"><span id="o_uco2">–</span></div></div>
     </div>
+    <div class="note" style="margin-top:8px">X_trocken = X_feucht · 100/(100 − φ)</div>
   </div>
 </section>
 
@@ -213,6 +247,7 @@ svg{display:block}
       <div class="m"><div class="l">c normiert</div><div class="v sm"><span id="o_cnorm">–</span> <span class="u">mg/m³</span></div></div>
     </div>
     <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_ft">–</span> · f_p <span id="o_fp">–</span> · f_F <span id="o_ff">–</span> · f_O₂ <span id="o_fo2">–</span> · O₂ tr. <span id="o_o2eff">–</span></div>
+    <div style="font-size:11.5px;color:var(--tm);margin-top:4px">c bezogen = c · f_T · f_p · f_F · f_O₂</div>
   </div>
   <div class="grp">Eingaben</div>
   <div class="card tight">
@@ -223,7 +258,7 @@ svg{display:block}
     <div class="row"><label>Kanaltemp. ϑ (°C)</label><input id="nm_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
     <div class="row"><label>Kanaldruck p (hPa)</label><input id="nm_p" type="number" step="any" inputmode="decimal" value="995.09"></div>
   </div>
-  <div class="note">Einheit/Basis je Komponente rechts wählen: „feucht" rechnet mit dem φ oben auf trocken, „trocken" lässt unverändert. Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
+  <div class="note">Einheit/Zustand je Komponente rechts wählen: „feucht" rechnet mit dem φ oben auf trocken, „trocken" lässt unverändert. Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
   <div class="grp">Schalter (Häkchen = anwenden)</div>
   <div class="card tight">
     <div class="row"><label>Norm. Temperatur</label><input id="nm_swT" type="checkbox"></div>
@@ -236,6 +271,23 @@ svg{display:block}
     <div class="row" style="border:none"><label>Zielwert bezogen (mg/m³)</label><input id="nm_ziel" type="number" step="any" inputmode="decimal" value="50"></div>
     <div class="m" style="margin-top:8px"><div class="l">→ erforderl. Rohwert (mg/m³)</div><div class="v sm"><span id="o_cmess">–</span></div></div>
   </div>
+</section>
+
+<section class="scr" id="staudruck">
+  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Staudruck-Netz</span></div>
+  <div class="card">
+    <div class="grid2">
+      <div class="m"><div class="l">Δp Wurzelmittel</div><div class="v"><span id="o_sdeq">–</span> <span class="u">Pa</span></div></div>
+      <div class="m"><div class="l">Punkte</div><div class="v"><span id="o_sdn">–</span></div></div>
+    </div>
+    <div class="row" style="margin-top:8px;border:none"><label>an aktive Messung übergeben</label><input id="sd_use" type="checkbox"></div>
+    <div class="note" id="sd_hint" style="margin-top:4px"></div>
+  </div>
+  <div class="grp">Staudrücke Δp (Pa) — bis 20 Punkte</div>
+  <div class="card">
+    <div class="sdgrid"><div class="sdcell"><span>1</span><input id="sd_1" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>2</span><input id="sd_2" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>3</span><input id="sd_3" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>4</span><input id="sd_4" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>5</span><input id="sd_5" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>6</span><input id="sd_6" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>7</span><input id="sd_7" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>8</span><input id="sd_8" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>9</span><input id="sd_9" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>10</span><input id="sd_10" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>11</span><input id="sd_11" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>12</span><input id="sd_12" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>13</span><input id="sd_13" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>14</span><input id="sd_14" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>15</span><input id="sd_15" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>16</span><input id="sd_16" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>17</span><input id="sd_17" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>18</span><input id="sd_18" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>19</span><input id="sd_19" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>20</span><input id="sd_20" type="number" step="any" inputmode="decimal"></div></div>
+  </div>
+  <div class="note">Nur ausgefüllte Felder zählen. Übergeben wird das Wurzelmittel Δp = ((1/n)·Σ√Δpᵢ)². Das Netz wird mit der jeweiligen Messung gespeichert.</div>
 </section>
 
 <section class="scr" id="mess">
@@ -259,6 +311,7 @@ function badge(id,ok,okT,badT){var e=gid(id);if(!e)return;e.textContent=ok?okT:b
 var Tn=0,pn=1013.25,kH2O=18.015*(pn*100)/(8.314*(Tn+273.15))/100;
 var rO2=1.429,rCO2=1.977,rN2=1.2566,rH2O=0.804,NOZ=[6,8,10,12,14,16,18,20];
 var ISO=["iso_datum","iso_start","iso_ende","iso_modus","iso_fw","iso_pbaro","iso_dpstat","iso_tkanal","iso_dpstau","iso_spitot","iso_form","iso_drund","iso_aeckig","iso_beckig","iso_basis","iso_o2","iso_co2","iso_tmess","iso_fgas","iso_tgas","iso_dpgas","iso_zaehler","iso_duese","iso_ziel"];
+var SD=["sd_use"];for(var sk=1;sk<=20;sk++)SD.push("sd_"+sk);
 
 function isoCalc(o){
   var fw=parseFloat(o.iso_fw),modus=o.iso_modus,phi;
@@ -286,8 +339,8 @@ function isoCalc(o){
   var o2t=basis==="feucht"?o2*100/(100-phi):o2, co2t=basis==="feucht"?co2*100/(100-phi):co2;
   return {vor:vor,Qlmin:Qlmin,vsoll:vsoll,vmin:vmin,vmax:vmax,v:v,Vdot:Vdot,tvt:tvt,o2t:o2t,co2t:co2t,iso:iso,zaehler:zaehler};
 }
-function snapshot(){var o={};for(var i=0;i<ISO.length;i++)o[ISO[i]]=gid(ISO[i]).value;return o;}
-function applySnap(o){for(var i=0;i<ISO.length;i++)if(o[ISO[i]]!==undefined)gid(ISO[i]).value=o[ISO[i]];recompute();}
+function snapshot(){var o={},a=ISO.concat(SD);for(var i=0;i<a.length;i++){var e=gid(a[i]);if(!e)continue;o[a[i]]=e.type==="checkbox"?e.checked:e.value;}return o;}
+function applySnap(o){var a=ISO.concat(SD);for(var i=0;i<a.length;i++){if(o[a[i]]!==undefined){var e=gid(a[i]);if(!e)continue;if(e.type==="checkbox")e.checked=o[a[i]];else e.value=o[a[i]];}}recompute();}
 
 function computeIso(){
   var R=isoCalc(snapshot());
@@ -297,7 +350,7 @@ function computeIso(){
   var okIso=isFinite(R.iso)&&R.iso>=95&&R.iso<=115;
   badge("o_amp",okIso,"OK isokinetisch",isFinite(R.iso)?"außerhalb 95–115 %":"–");
   var okF=isFinite(R.zaehler)&&isFinite(R.vmin)&&R.zaehler>=R.vmin&&R.zaehler<=R.vmax;
-  badge("o_fen",okF,"Zähler im Fenster",isFinite(R.zaehler)?"außerhalb Fenster":"–");
+  badge("o_fen",okF,"Volumen im Sollbereich",isFinite(R.zaehler)?"Volumen außerhalb":"–");
 }
 function computeSig(){
   var von=num("s_von"),bis=num("s_bis"),mba=num("s_mba"),mbe=num("s_mbe");
@@ -305,8 +358,14 @@ function computeSig(){
   setT("o_sma",fmt(von+(num("s_wert")-mba)/(mbe-mba)*(bis-von),3));
 }
 function computeUm(){
-  var vol=num("u_vol");setT("o_uwf",fmt(vol*kH2O,3));setT("o_uwt",fmt(vol*kH2O*100/(100-vol),3));
-  setT("o_uvol",fmt(num("u_gm")/kH2O,3));setT("o_up",fmt(num("u_baro")+num("u_stat")/100,3));
+  var vol=num("u_vol");
+  setT("o_uwf",fmt(vol*kH2O,3));setT("o_uwt",fmt(vol*kH2O*100/(100-vol),3));
+  setT("o_uvol",fmt(num("u_gm")/kH2O,3));
+  setT("o_uff",fmt(100/(100-vol),4));
+  setT("o_uft",fmt((num("u_t")+273.15)/(Tn+273.15),4));
+  var pabs=num("u_baro")+num("u_stat")/100;
+  setT("o_up",fmt(pabs,3));setT("o_ufp",fmt(pn/pabs,4));
+  setT("o_ufo2",fmt((21-num("u_o2bez"))/(21-num("u_o2m")),4));
   var ph=num("u_phi");setT("o_uo2",fmt(num("u_o2f")*100/(100-ph),2));setT("o_uco2",fmt(num("u_co2f")*100/(100-ph),2));
 }
 function computeNorm(){
@@ -321,7 +380,18 @@ function computeNorm(){
   setT("o_cnorm",fmt(cn,3));setT("o_cbez",fmt(cb,3));
   setT("o_cmess",fmt(num("nm_ziel")/fO2/(fT*fp*fF),3));
 }
-function recompute(){try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}saveCur();}
+function computeSD(){
+  var sum=0,n=0;
+  for(var i=1;i<=20;i++){var x=parseFloat(gid("sd_"+i).value);if(isFinite(x)&&x>0){sum+=Math.sqrt(x);n++;}}
+  var dpeq=n>0?Math.pow(sum/n,2):NaN;
+  setT("o_sdeq",fmt(dpeq,3));setT("o_sdn",n?String(n):"–");
+  var use=chk("sd_use"),dz=gid("iso_dpstau");
+  if(use&&n>0){dz.value=dpeq.toFixed(3);dz.disabled=true;dz.style.opacity="0.55";
+    setT("sd_hint","Δp der aktiven Messung wird aus dem Netz gespeist.");setT("iso_dpnote","Δp aus Staudruck-Netz");}
+  else{dz.disabled=false;dz.style.opacity="";
+    setT("sd_hint",use?"Netz leer — Δp bleibt manuell.":"");setT("iso_dpnote","");}
+}
+function recompute(){try{computeSD();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}saveCur();}
 
 var KEY="wkz_mess_v1",CUR="wkz_cur_v1",MESS=[];
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -360,6 +430,7 @@ var pms=document.querySelectorAll("[data-pm]");
 for(var p=0;p<pms.length;p++)(function(b){b.addEventListener("click",function(){var e=gid(b.getAttribute("data-pm"));var v=String(e.value).trim();if(v==="")return;e.value=v.charAt(0)==="-"?v.slice(1):"-"+v;e.dispatchEvent(new Event("input",{bubbles:true}));});})(pms[p]);
 document.querySelector(".app").addEventListener("input",recompute);
 document.querySelector(".app").addEventListener("change",recompute);
+document.querySelector(".app").addEventListener("focus",function(e){var t=e.target;if(t&&t.matches&&t.matches('input[inputmode="decimal"]')){setTimeout(function(){try{t.select();}catch(_){}},0);}},true);
 
 loadStore();
 var cur=lsGet(CUR);if(cur){try{applySnap(JSON.parse(cur));}catch(e){}}
