@@ -211,7 +211,7 @@ svg{display:block}
       <div class="m"><div class="l">c bezogen</div><div class="v"><span id="o_cbez">–</span> <span class="u">mg/m³</span></div></div>
       <div class="m"><div class="l">c normiert</div><div class="v sm"><span id="o_cnorm">–</span> <span class="u">mg/m³</span></div></div>
     </div>
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_ft">–</span> · f_p <span id="o_fp">–</span> · f_F <span id="o_ff">–</span> · f_O₂ <span id="o_fo2">–</span></div>
+    <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_ft">–</span> · f_p <span id="o_fp">–</span> · f_F <span id="o_ff">–</span> · f_O₂ <span id="o_fo2">–</span> · O₂ tr. <span id="o_o2eff">–</span></div>
   </div>
   <div class="grp">Eingaben</div>
   <div class="card tight">
@@ -220,8 +220,10 @@ svg{display:block}
     <div class="row"><label>Kanaldruck p (hPa)</label><input id="nm_p" type="number" step="any" inputmode="decimal" value="995.09"></div>
     <div class="row"><label>Feuchte φ (Vol-%)</label><input id="nm_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
     <div class="row"><label>O₂ gemessen (Vol-%)</label><input id="nm_o2" type="number" step="any" inputmode="decimal" value="18.76"></div>
+    <div class="row"><label>O₂-Basis</label><select id="nm_o2basis"><option>trocken</option><option>feucht</option></select></div>
     <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nm_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
   </div>
+  <div class="note">Bei „feucht" wird der gemessene O₂ intern auf trocken gerechnet (mit φ oben). Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
   <div class="grp">Schalter (Häkchen = anwenden)</div>
   <div class="card tight">
     <div class="row"><label>Norm. Temperatur</label><input id="nm_swT" type="checkbox"></div>
@@ -311,12 +313,13 @@ function computeUm(){
 }
 function computeNorm(){
   var conc=num("nm_conc"),t=num("nm_t"),p=num("nm_p"),phi=num("nm_phi"),o2=num("nm_o2"),o2b=num("nm_o2b");
+  var o2eff=(val("nm_o2basis")==="feucht")?o2*100/(100-phi):o2;
   var fT=chk("nm_swT")?(t+273.15)/(Tn+273.15):1;
   var fp=chk("nm_swp")?pn/p:1;
   var fF=chk("nm_swF")?100/(100-phi):1;
-  var fO2=chk("nm_swO2")?(chk("nm_swAGR")?Math.max(1,(21-o2b)/(21-o2)):(21-o2b)/(21-o2)):1;
+  var fO2=chk("nm_swO2")?(chk("nm_swAGR")?Math.max(1,(21-o2b)/(21-o2eff)):(21-o2b)/(21-o2eff)):1;
   var cn=conc*fT*fp*fF,cb=cn*fO2;
-  setT("o_ft",fmt(fT,3));setT("o_fp",fmt(fp,3));setT("o_ff",fmt(fF,3));setT("o_fo2",fmt(fO2,3));
+  setT("o_ft",fmt(fT,3));setT("o_fp",fmt(fp,3));setT("o_ff",fmt(fF,3));setT("o_fo2",fmt(fO2,3));setT("o_o2eff",fmt(o2eff,2));
   setT("o_cnorm",fmt(cn,3));setT("o_cbez",fmt(cb,3));
   setT("o_cmess",fmt(num("nm_ziel")/fO2/(fT*fp*fF),3));
 }
