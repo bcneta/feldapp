@@ -56,9 +56,9 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .uw input{width:62px;flex:none}
 .uw select{width:140px;font-size:14.5px;text-align:left;padding:8px 6px;flex:none}
 .sdgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sdcell{display:flex;align-items:center;gap:6px}
-.sdcell span{font-size:12px;color:var(--tm);width:18px;text-align:right;flex:none}
-.sdcell input{flex:1;width:auto;min-width:0;font-size:16px;text-align:right;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);font-family:inherit}
+.sdcell{display:flex;flex-direction:column;gap:3px}
+.sdcell span{font-size:11px;color:var(--tm);text-align:left;line-height:1.25}
+.sdcell input{width:100%;font-size:16px;text-align:right;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);font-family:inherit}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .m{background:var(--s1);border-radius:11px;padding:10px 12px}
 .m .l{font-size:12px;color:var(--tm)}
@@ -315,7 +315,7 @@ svg{display:block}
   <div class="card tight"><div id="o_sdchk" class="chklist"></div></div>
   <div class="grp">Staudrücke Δp (Pa) — bis 20 Punkte</div>
   <div class="card">
-    <div class="sdgrid"><div class="sdcell"><span>1</span><input id="sd_1" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>2</span><input id="sd_2" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>3</span><input id="sd_3" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>4</span><input id="sd_4" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>5</span><input id="sd_5" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>6</span><input id="sd_6" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>7</span><input id="sd_7" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>8</span><input id="sd_8" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>9</span><input id="sd_9" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>10</span><input id="sd_10" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>11</span><input id="sd_11" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>12</span><input id="sd_12" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>13</span><input id="sd_13" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>14</span><input id="sd_14" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>15</span><input id="sd_15" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>16</span><input id="sd_16" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>17</span><input id="sd_17" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>18</span><input id="sd_18" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>19</span><input id="sd_19" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span>20</span><input id="sd_20" type="number" step="any" inputmode="decimal"></div></div>
+    <div class="sdgrid"><div class="sdcell"><span id="sdlab_1">1</span><input id="sd_1" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_2">2</span><input id="sd_2" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_3">3</span><input id="sd_3" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_4">4</span><input id="sd_4" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_5">5</span><input id="sd_5" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_6">6</span><input id="sd_6" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_7">7</span><input id="sd_7" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_8">8</span><input id="sd_8" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_9">9</span><input id="sd_9" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_10">10</span><input id="sd_10" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_11">11</span><input id="sd_11" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_12">12</span><input id="sd_12" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_13">13</span><input id="sd_13" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_14">14</span><input id="sd_14" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_15">15</span><input id="sd_15" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_16">16</span><input id="sd_16" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_17">17</span><input id="sd_17" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_18">18</span><input id="sd_18" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_19">19</span><input id="sd_19" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_20">20</span><input id="sd_20" type="number" step="any" inputmode="decimal"></div></div>
   </div>
   <div class="note">Volumenstrom rechnet aus Gaszustand, Δp-Wurzelmittel und der Geometrie der Messplatz-Beurteilung — auch ohne Staubmessung. „An Staubauswertung übergeben" reicht Gaszustand und Δp ans Iso-Blatt durch (dort gesperrt, Wert angezeigt); abgewählt werden sie im Iso-Blatt selbst eingegeben. Übergeben wird das Wurzelmittel Δp = ((1/n)·Σ√Δpᵢ)².</div>
 </section>
@@ -493,7 +493,32 @@ function applyHandover(use,dpeq,n){
   setT("sd_hint",use?(n>0?"Gaszustand & Δp werden ans Iso-Blatt übergeben.":"Gaszustand wird übergeben; Δp-Netz noch leer."):"");
   setT("iso_handnote",use?"Gaszustand & Δp aus Volumenstrom übernommen — Felder gesperrt.":"");
 }
-function dpMean(){var sum=0,nn=0;for(var i=1;i<=20;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)&&x>0){sum+=Math.sqrt(x);nn++;}}return {dp:nn>0?Math.pow(sum/nn,2):NaN,n:nn};}
+var netCount=0,netLabels=[],netShort=[];
+function computeNet(){
+  var form=val("iso_form"),rnd=form==="rund";
+  var Kmap={2:[14.6,85.4],4:[6.7,25,75,93.3],6:[4.4,14.6,29.6,70.4,85.4,95.6],8:[3.3,10.5,19.4,32.3,67.7,80.6,89.5,96.7]};
+  function clx(ks,L){var minA=Math.max(0.05,0.03*L),xs=[];for(var q=0;q<ks.length;q++){var x=ks[q]/100*L,dw=Math.min(x,L-x);if(dw<minA)x=(x<=L/2)?minA:(L-minA);xs.push(x);}return xs;}
+  function ctr(n){var a=[];for(var q=1;q<=n;q++)a.push((q-0.5)/n*100);return a;}
+  var labels=[],sh=[],plan=NaN,valid=false;
+  if(rnd){
+    var d=parseFloat(val("iso_drund"))/1000,A=(isFinite(d)&&d>0)?Math.PI/4*d*d:NaN;
+    var naxis=Math.max(1,Math.round(parseFloat(val("mp_naxis"))||2)),nd=Math.max(2,Math.round(parseFloat(val("mp_nd"))||2));
+    if(isFinite(A)&&A<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];}
+    else if(isFinite(A)&&Kmap[nd]){var xs=clx(Kmap[nd],d);plan=naxis*nd;valid=true;
+      for(var k=0;k<naxis;k++)for(var q=0;q<nd;q++){var nm=String.fromCharCode(65+k)+(q+1);sh.push(nm);labels.push(nm+" · "+fmt(xs[q]*100,1)+" cm");}}
+  }else{
+    var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000,A2=(isFinite(a)&&isFinite(b)&&a>0&&b>0)?a*b:NaN;
+    var nx=Math.max(1,Math.round(parseFloat(val("mp_nx"))||2)),ny=Math.max(1,Math.round(parseFloat(val("mp_ny"))||2));
+    if(isFinite(A2)&&A2<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];}
+    else if(isFinite(A2)){var xa=clx(ctr(nx),a),xb=clx(ctr(ny),b);plan=nx*ny;valid=true;
+      for(var j=0;j<ny;j++)for(var ii=0;ii<nx;ii++){var nm2=String.fromCharCode(65+j)+(ii+1);sh.push(nm2);labels.push(nm2+" · a "+fmt(xa[ii]*100,1)+"/b "+fmt(xb[j]*100,1)+" cm");}}
+  }
+  netCount=valid?Math.min(plan,20):0;netLabels=labels;netShort=sh;
+  var shown=valid?Math.min(plan,20):20;
+  for(var i=1;i<=20;i++){var inp=gid("sd_"+i),lab=gid("sdlab_"+i);if(!inp||!lab)continue;var cell=inp.parentNode;
+    if(i<=shown){cell.style.display="";lab.textContent=valid?(labels[i-1]||String(i)):String(i);}else cell.style.display="none";}
+}
+function dpMean(){var sum=0,nn=0,ac=netCount||20;for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)&&x>0){sum+=Math.sqrt(x);nn++;}}return {dp:nn>0?Math.pow(sum/nn,2):NaN,n:nn};}
 function gasDensity(pre){
   var fw=parseFloat(pre.fw),modus=pre.modus,phi;
   if(modus==="Vol.-%")phi=fw;else if(modus==="g/m³ (feucht)")phi=fw/kH2O;else phi=100*(fw/kH2O)/(100+(fw/kH2O));
@@ -512,21 +537,22 @@ function computeVol(){
   setT("o_volv",fmt(v,2));setT("o_volbetrieb",fmt(Vb,0));setT("o_volnorm",fmt(Vn,0));setT("o_taupunkt",fmt(td,1));
 }
 function computeSD(){
-  var sum=0,n=0,all=[],pos=[];
-  for(var i=1;i<=20;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)){all.push({i:i,v:x});if(x>0){sum+=Math.sqrt(x);n++;pos.push(x);}}}
+  var sum=0,n=0,all=[],pos=[],ac=netCount||20;
+  for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)){all.push({i:i,v:x});if(x>0){sum+=Math.sqrt(x);n++;pos.push(x);}}}
   var dpeq=n>0?Math.pow(sum/n,2):NaN;
   setT("o_sdeq",fmt(dpeq,3));setT("o_sdn",n?String(n):"–");
   applyHandover(chk("sd_use"),dpeq,n);
+  function lbl(ix){return netShort[ix-1]||("Pkt "+ix);}
   var cc=gid("o_sdchk");
   if(cc){
     function row(st,t){var col=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":"var(--tm)");return '<div class="chk"><span class="dot" style="background:'+col+'"></span><span>'+t+'</span></div>';}
     if(all.length===0){cc.innerHTML=row("na","Noch keine Δp-Werte eingetragen.");}
     else{
       var back=[],low=[];
-      for(var k=0;k<all.length;k++){if(all[k].v<=0)back.push(all[k].i);else if(all[k].v<5)low.push(all[k].i);}
+      for(var k=0;k<all.length;k++){if(all[k].v<=0)back.push(lbl(all[k].i));else if(all[k].v<5)low.push(lbl(all[k].i));}
       var H="";
-      H+=back.length?row("bad","Rückströmung an Punkt "+back.join(", ")+" — negative Geschwindigkeit unzulässig."):row("ok","Keine Rückströmung (alle Δp > 0).");
-      H+=low.length?row("bad","Δp < 5 Pa an Punkt "+low.join(", ")+" — Staurohr unzulässig (Flügelrad / erhöhte Unsicherheit)."):row("ok","Alle Δp ≥ 5 Pa — Staurohr zulässig.");
+      H+=back.length?row("bad","Rückströmung an "+back.join(", ")+" — negative Geschwindigkeit unzulässig."):row("ok","Keine Rückströmung (alle Δp > 0).");
+      H+=low.length?row("bad","Δp < 5 Pa an "+low.join(", ")+" — Staurohr unzulässig (Flügelrad / erhöhte Unsicherheit)."):row("ok","Alle Δp ≥ 5 Pa — Staurohr zulässig.");
       if(pos.length<2){H+=row("na","v_max/v_min: mindestens 2 gültige Werte nötig.");}
       else{var mx=Math.max.apply(null,pos),mn=Math.min.apply(null,pos),rt=Math.sqrt(mx/mn);
         H+=rt<3?row("ok","v_max/v_min = "+fmt(rt,2)+" ( < 3:1 )."):row("bad","v_max/v_min = "+fmt(rt,2)+" ( ≥ 3:1 ) — Strömung zu ungleichmäßig.");}
@@ -585,7 +611,7 @@ function computeMP(){
   setT("o_mpdh",fmt(dh,3));
   setT("o_mpsoll",isFinite(sollMin)?String(sollMin):"–");
   setT("o_mpplan",isFinite(plan)?String(plan):"–");
-  var ist=0;for(var i=1;i<=20;i++){var x=parseFloat(gid("sd_"+i).value);if(isFinite(x))ist++;}
+  var ist=0,ac=netCount||20;for(var i=1;i<=ac;i++){var ei=gid("sd_"+i);if(!ei)continue;var xi=parseFloat(ei.value);if(isFinite(xi))ist++;}
   setT("o_mpist",String(ist));
   var okPlan=isFinite(plan)&&isFinite(sollMin)&&plan>=sollMin;
   badge("o_mpamp",okPlan,"Verteilung ≥ Norm-Mindest",isFinite(plan)?"unter Norm-Mindestzahl":"–");
@@ -608,7 +634,7 @@ function computeMP(){
   gid("o_mpdepth").innerHTML=depthHTML||'<div class="dprow"><span class="dp" style="color:var(--tm)">Abmessungen eingeben.</span></div>';
   gid("o_mpsvg").innerHTML=svg||'';
 }
-function recompute(){try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}saveCur();}
+function recompute(){try{computeNet();}catch(e){}try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}saveCur();}
 
 var KEY="wkz_mess_v1",CUR="wkz_cur_v1",MESS=[];
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
