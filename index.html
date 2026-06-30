@@ -147,13 +147,13 @@ svg{display:block}
   <div id="iso_handnote" style="font-size:11.5px;color:var(--acc);margin:0 2px 10px"></div>
   <div class="grp">Messung &amp; Zeitraum  (informativ — steuert nicht die Messdauer)</div>
   <div class="card tight">
-    <div class="row"><label>Datum</label><input id="iso_datum" type="date" style="width:160px;text-align:left"></div>
+    <div class="row"><label>Datum</label><input id="iso_datum" type="date" style="width:120px;text-align:left"></div>
     <div class="row"><label>Startzeit (Zeitraum)</label><input id="iso_start" type="time" value="08:00" style="width:120px;text-align:left"></div>
     <div class="row"><label>Endzeit (Zeitraum)</label><input id="iso_ende" type="time" value="08:45" style="width:120px;text-align:left"></div>
   </div>
   <div class="grp">Feuchte</div>
   <div class="card tight">
-    <div class="row"><label>Modus</label><select id="iso_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option></select></div>
+    <div class="row"><label>Modus</label><select id="iso_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option><option>rel. % (ϑ)</option></select></div>
     <div class="row"><label>Wert</label><input id="iso_fw" type="number" step="any" inputmode="decimal" value="3.175"></div>
   </div>
   <div class="grp">Kanal &amp; Staudruck</div>
@@ -299,6 +299,8 @@ svg{display:block}
       <div class="m"><div class="l">V̇ i.N. tr.</div><div class="v sm"><span id="o_volnorm">–</span> <span class="u">Nm³/h</span></div></div>
     </div>
     <div style="font-size:12px;color:var(--ts);line-height:1.7">v_Kanal <span id="o_volv">–</span> m/s · Δp Wurzelmittel <span id="o_sdeq">–</span> Pa · Punkte <span id="o_sdn">–</span> · Wasserdampf-Taupunkt <span id="o_taupunkt">–</span> °C</div>
+    <div id="o_volwarn" style="font-size:12px;color:var(--tno);margin-top:8px"></div>
+    <div id="o_feuchtehint" style="font-size:11.5px;color:var(--twn);margin-top:6px"></div>
   </div>
   <div class="card">
     <div class="row" style="border:none"><label>an Staubauswertung übergeben</label><input id="sd_use" type="checkbox"></div>
@@ -310,7 +312,7 @@ svg{display:block}
     <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="hub_dpstat" aria-label="Vorzeichen wechseln">±</button><input id="hub_dpstat" type="number" step="any" inputmode="decimal" value="9"></span></div>
     <div class="row"><label>Abgastemp. (°C)</label><input id="hub_tkanal" type="number" step="any" inputmode="decimal" value="166.5"></div>
     <div class="row"><label>Staurohrfaktor</label><input id="hub_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
-    <div class="row"><label>Feuchte-Modus</label><select id="hub_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option></select></div>
+    <div class="row"><label>Feuchte-Modus</label><select id="hub_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option><option>rel. % (ϑ)</option></select></div>
     <div class="row"><label>Feuchte-Wert</label><input id="hub_fw" type="number" step="any" inputmode="decimal" value="3.175"></div>
     <div class="row"><label>Zustand O₂/CO₂</label><select id="hub_basis"><option>trocken</option><option>feucht</option></select></div>
     <div class="row"><label>O₂ (Vol-%)</label><input id="hub_o2" type="number" step="any" inputmode="decimal" value="18.76"></div>
@@ -350,7 +352,7 @@ svg{display:block}
   <div class="grp">Messpunkte &amp; Verteilung</div>
   <div class="card tight">
     <div class="row" id="mprow_naxis"><label>Messachsen (Ø)</label><input id="mp_naxis" type="number" step="1" inputmode="numeric" value="2"></div>
-    <div class="row" id="mprow_nd"><label>Punkte je Achse</label><select id="mp_nd"><option>2</option><option>4</option><option>6</option><option>8</option></select></div>
+    <div class="row" id="mprow_nd"><label>Punkte je Achse (gerade)</label><input id="mp_nd" type="number" step="2" min="2" inputmode="numeric" value="2"></div>
     <div class="row" id="mprow_nx"><label>Rasterlinien Seite a</label><input id="mp_nx" type="number" step="1" inputmode="numeric" value="2"></div>
     <div class="row" id="mprow_ny"><label>Rasterlinien Seite b</label><input id="mp_ny" type="number" step="1" inputmode="numeric" value="2"></div>
   </div>
@@ -398,16 +400,27 @@ function fmtDate(s){if(!s)return "";var p=String(s).split("-");return p.length==
 function badge(id,ok,okT,badT){var e=gid(id);if(!e)return;e.textContent=ok?okT:badT;e.style.background=ok?"var(--bok)":"var(--bno)";e.style.color=ok?"var(--tok)":"var(--tno)";}
 var Tn=0,pn=1013.25,kH2O=18.015*(pn*100)/(8.314*(Tn+273.15))/100;
 var rO2=1.429,rCO2=1.977,rN2=1.2566,rH2O=0.804,NOZ=[6,8,10,12,14,16,18,20];
+function satP(t){return 6.112*Math.exp(17.62*t/(243.12+t));}
+function moistPhi(modus,fw,tk,pk){
+  if(modus==="g/m³ (feucht)")return fw/kH2O;
+  if(modus==="g/m³ (trocken)")return 100*(fw/kH2O)/(100+(fw/kH2O));
+  if(modus==="rel. % (ϑ)")return fw/100*satP(tk)/pk*100;
+  return fw;
+}
+function ndPositions(nd){nd=Math.max(2,2*Math.round(nd/2));
+  var T={2:[14.6,85.4],4:[6.7,25,75,93.3],6:[4.4,14.6,29.6,70.4,85.4,95.6],8:[3.3,10.5,19.4,32.3,67.7,80.6,89.5,96.7]};
+  if(T[nd])return T[nd].slice();
+  var a=[];for(var m=1;m<=nd/2;m++){var r=Math.sqrt((2*m-1)/nd);a.push(50*(1-r));a.push(50*(1+r));}a.sort(function(x,y){return x-y;});return a;}
 var ISO=["iso_datum","iso_start","iso_ende","iso_modus","iso_fw","iso_pbaro","iso_dpstat","iso_tkanal","iso_dpstau","iso_spitot","iso_form","iso_drund","iso_aeckig","iso_beckig","iso_basis","iso_o2","iso_co2","iso_tmess","iso_fgas","iso_tgas","iso_dpgas","iso_zaehler","iso_duese","iso_ziel"];
 var SD=["sd_use"];for(var sk=1;sk<=20;sk++)SD.push("sd_"+sk);
 var MP=["mp_naxis","mp_nd","mp_nx","mp_ny","mp_ein","mp_aus","mp_muend","mp_flow","mp_winkel"];
 var HUB=["hub_pbaro","hub_dpstat","hub_tkanal","hub_spitot","hub_modus","hub_fw","hub_basis","hub_o2","hub_co2"];
 
 function isoCalc(o){
-  var fw=parseFloat(o.iso_fw),modus=o.iso_modus,phi;
-  if(modus==="Vol.-%")phi=fw;else if(modus==="g/m³ (feucht)")phi=fw/kH2O;else phi=100*(fw/kH2O)/(100+(fw/kH2O));
+  var fw=parseFloat(o.iso_fw),modus=o.iso_modus;
   var pbaro=parseFloat(o.iso_pbaro),dpstat=parseFloat(o.iso_dpstat),pk=pbaro+dpstat/100;
   var tk=parseFloat(o.iso_tkanal),dpstau=parseFloat(o.iso_dpstau),S=parseFloat(o.iso_spitot);
+  var phi=moistPhi(modus,fw,tk,pk);
   var form=o.iso_form,d=parseFloat(o.iso_drund),a=parseFloat(o.iso_aeckig),b=parseFloat(o.iso_beckig);
   var basis=o.iso_basis,o2=parseFloat(o.iso_o2),co2=parseFloat(o.iso_co2);
   var n2=basis==="trocken"?100-o2-co2:100-o2-co2-phi, fac=basis==="trocken"?(1-phi/100):1;
@@ -504,15 +517,14 @@ function applyHandover(use,dpeq,n){
 var netCount=0,netLabels=[],netShort=[];
 function computeNet(){
   var form=val("iso_form"),rnd=form==="rund";
-  var Kmap={2:[14.6,85.4],4:[6.7,25,75,93.3],6:[4.4,14.6,29.6,70.4,85.4,95.6],8:[3.3,10.5,19.4,32.3,67.7,80.6,89.5,96.7]};
   function clx(ks,L){var minA=Math.max(0.05,0.03*L),xs=[];for(var q=0;q<ks.length;q++){var x=ks[q]/100*L,dw=Math.min(x,L-x);if(dw<minA)x=(x<=L/2)?minA:(L-minA);xs.push(x);}return xs;}
   function ctr(n){var a=[];for(var q=1;q<=n;q++)a.push((q-0.5)/n*100);return a;}
   var labels=[],sh=[],plan=NaN,valid=false;
   if(rnd){
     var d=parseFloat(val("iso_drund"))/1000,A=(isFinite(d)&&d>0)?Math.PI/4*d*d:NaN;
-    var naxis=Math.max(1,Math.round(parseFloat(val("mp_naxis"))||2)),nd=Math.max(2,Math.round(parseFloat(val("mp_nd"))||2));
+    var naxis=Math.max(1,Math.round(parseFloat(val("mp_naxis"))||2)),nd=Math.max(2,2*Math.round((parseFloat(val("mp_nd"))||2)/2));
     if(isFinite(A)&&A<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];}
-    else if(isFinite(A)&&Kmap[nd]){var xs=clx(Kmap[nd],d);plan=naxis*nd;valid=true;
+    else if(isFinite(A)){var xs=clx(ndPositions(nd),d);plan=naxis*nd;valid=true;
       for(var k=0;k<naxis;k++)for(var q=0;q<nd;q++){var nm=String.fromCharCode(65+k)+(q+1);sh.push(nm);labels.push(nm+" · "+fmt(xs[q]*100,1)+" cm");}}
   }else{
     var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000,A2=(isFinite(a)&&isFinite(b)&&a>0&&b>0)?a*b:NaN;
@@ -528,9 +540,8 @@ function computeNet(){
 }
 function dpMean(){var sum=0,nn=0,ac=netCount||20;for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)&&x>0){sum+=Math.sqrt(x);nn++;}}return {dp:nn>0?Math.pow(sum/nn,2):NaN,n:nn};}
 function gasDensity(pre){
-  var fw=parseFloat(pre.fw),modus=pre.modus,phi;
-  if(modus==="Vol.-%")phi=fw;else if(modus==="g/m³ (feucht)")phi=fw/kH2O;else phi=100*(fw/kH2O)/(100+(fw/kH2O));
   var pk=parseFloat(pre.pbaro)+parseFloat(pre.dpstat)/100,tk=parseFloat(pre.tkanal);
+  var phi=moistPhi(pre.modus,parseFloat(pre.fw),tk,pk);
   var basis=pre.basis,o2=parseFloat(pre.o2),co2=parseFloat(pre.co2);
   var n2=basis==="trocken"?100-o2-co2:100-o2-co2-phi,fac=basis==="trocken"?(1-phi/100):1;
   var rhon=rO2*(o2/100)*fac+rCO2*(co2/100)*fac+rN2*(n2/100)*fac+rH2O*(phi/100);
@@ -543,6 +554,10 @@ function computeVol(){
   var Vb=v*A*3600,Vn=Vb*((Tn+273.15)/(g.tk+273.15))*(g.pk/pn)*(1-g.phi/100);
   var pH2O=(g.phi/100)*g.pk,td=NaN;if(isFinite(pH2O)&&pH2O>0){var gg=Math.log(pH2O/6.112);td=243.12*gg/(17.62-gg);}
   setT("o_volv",fmt(v,2));setT("o_volbetrieb",fmt(Vb,0));setT("o_volnorm",fmt(Vn,0));setT("o_taupunkt",fmt(td,1));
+  var warn="";if(isFinite(td)&&isFinite(g.tk)&&g.tk<td)warn="Abgastemperatur "+fmt(g.tk,1)+" °C unter Taupunkt "+fmt(td,1)+" °C — Kondensation/Tropfen möglich (Out-Stack erwägen).";
+  setT("o_volwarn",warn);
+  var fhint="";if(val("hub_modus")==="rel. % (ϑ)"&&isFinite(g.tk)&&g.tk>90)fhint="rel. Feuchte über ~90 °C: Fühler ungenau — besser g/m³ oder Vol-% aus Kondensationsmessung.";
+  setT("o_feuchtehint",fhint);
 }
 function computeSD(){
   var sum=0,n=0,all=[],pos=[],ac=netCount||20;
@@ -573,7 +588,6 @@ function computeMP(){
   function showRow(id,on){var e=gid(id);if(e)e.style.display=on?"":"none";}
   showRow("mprow_drund",rnd);showRow("mprow_aeckig",!rnd);showRow("mprow_beckig",!rnd);
   showRow("mprow_naxis",rnd);showRow("mprow_nd",rnd);showRow("mprow_nx",!rnd);showRow("mprow_ny",!rnd);
-  var Kmap={2:[14.6,85.4],4:[6.7,25,75,93.3],6:[4.4,14.6,29.6,70.4,85.4,95.6],8:[3.3,10.5,19.4,32.3,67.7,80.6,89.5,96.7]};
   function clampset(ks,L){var minA=Math.max(0.05,0.03*L),parts=[],xs=[];
     for(var q=0;q<ks.length;q++){var x=ks[q]/100*L,cl=false,dw=Math.min(x,L-x);
       if(dw<minA){x=(x<=L/2)?minA:(L-minA);cl=true;}
@@ -600,11 +614,10 @@ function computeMP(){
     if(isFinite(d)&&d>0){A=Math.PI/4*d*d;dh=d;}
     if(isFinite(A))sollMin=A<0.1?1:A<=1.0?4:A<=2.0?8:Math.max(12,Math.ceil(4*A));
     var naxis=Math.max(1,Math.round(parseFloat(val("mp_naxis"))||2));
-    var nd=Math.max(2,Math.round(parseFloat(val("mp_nd"))||2));
+    var nd=Math.max(2,2*Math.round((parseFloat(val("mp_nd"))||2)/2));
     if(isFinite(A)&&A<0.1){plan=1;depthHTML='<div class="dprow"><span class="dp">Kanalmitte (1 Punkt)</span></div>';svg=svgRound(d,1,[]);}
-    else if(isFinite(A)){plan=naxis*nd;var cp=Kmap[nd]?clampset(Kmap[nd],d):null;
-      if(cp){depthHTML='<div><div class="dpgrp">Pro Messachse — '+nd+' Punkte (gilt für alle '+naxis+' Achsen)</div><div class="dprow">'+cp.html+'</div></div>';svg=svgRound(d,naxis,cp.xs);}
-      else{depthHTML='<div class="dprow"><span class="dp">'+nd+' Punkte je Achse</span></div>';}}
+    else if(isFinite(A)){plan=naxis*nd;var cp=clampset(ndPositions(nd),d);
+      depthHTML='<div><div class="dpgrp">Pro Messachse — '+nd+' Punkte (gilt für alle '+naxis+' Achsen)</div><div class="dprow">'+cp.html+'</div></div>';svg=svgRound(d,naxis,cp.xs);}
   }else{
     var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000;
     if(isFinite(a)&&isFinite(b)&&a>0&&b>0){A=a*b;dh=2*a*b/(a+b);}
