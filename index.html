@@ -298,7 +298,7 @@ svg{display:block}
       <div class="m"><div class="l">V̇ Betrieb</div><div class="v"><span id="o_volbetrieb">–</span> <span class="u">m³/h</span></div></div>
       <div class="m"><div class="l">V̇ i.N. tr.</div><div class="v sm"><span id="o_volnorm">–</span> <span class="u">Nm³/h</span></div></div>
     </div>
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">v_Kanal <span id="o_volv">–</span> m/s · Δp Wurzelmittel <span id="o_sdeq">–</span> Pa · Punkte <span id="o_sdn">–</span> · Wasserdampf-Taupunkt <span id="o_taupunkt">–</span> °C</div>
+    <div style="font-size:12px;color:var(--ts);line-height:1.7">v_Kanal <span id="o_volv">–</span> m/s · <span id="o_meanlbl">Δp Wurzelmittel</span> <span id="o_sdeq">–</span> <span id="o_meanunit">Pa</span> · Punkte <span id="o_sdn">–</span> · Wasserdampf-Taupunkt <span id="o_taupunkt">–</span> °C</div>
     <div id="o_volwarn" style="font-size:12px;color:var(--tno);margin-top:8px"></div>
     <div id="o_feuchtehint" style="font-size:11.5px;color:var(--twn);margin-top:6px"></div>
   </div>
@@ -311,7 +311,8 @@ svg{display:block}
     <div class="row"><label>Barometer (hPa)</label><input id="hub_pbaro" type="number" step="any" inputmode="decimal" value="995"></div>
     <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="hub_dpstat" aria-label="Vorzeichen wechseln">±</button><input id="hub_dpstat" type="number" step="any" inputmode="decimal" value="9"></span></div>
     <div class="row"><label>Abgastemp. (°C)</label><input id="hub_tkanal" type="number" step="any" inputmode="decimal" value="166.5"></div>
-    <div class="row"><label>Staurohrfaktor</label><input id="hub_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
+    <div class="row"><label>Messprinzip</label><select id="hub_typ"><option>Prandtl-Staurohr</option><option>S-Staurohr (Pitot)</option><option>Flügelrad (m/s)</option></select></div>
+    <div class="row"><label>Staurohr-/Kalibrierfaktor</label><input id="hub_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
     <div class="row"><label>Feuchte-Modus</label><select id="hub_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option><option>rel. % (ϑ)</option></select></div>
     <div class="row"><label>Feuchte-Wert</label><input id="hub_fw" type="number" step="any" inputmode="decimal" value="3.175"></div>
     <div class="row"><label>Zustand O₂/CO₂</label><select id="hub_basis"><option>trocken</option><option>feucht</option></select></div>
@@ -320,10 +321,12 @@ svg{display:block}
   </div>
   <div class="grp">Strömungs-Checks (VDI 2066 §7.2 · je Einzelpunkt)</div>
   <div class="card tight"><div id="o_sdchk" class="chklist"></div></div>
-  <div class="grp">Staudrücke Δp (Pa) — bis 20 Punkte</div>
+  <div class="grp" id="sdhdr">Staudrücke Δp (Pa) — bis 20 Punkte</div>
   <div class="card">
     <div class="sdgrid"><div class="sdcell"><span id="sdlab_1">1</span><input id="sd_1" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_2">2</span><input id="sd_2" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_3">3</span><input id="sd_3" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_4">4</span><input id="sd_4" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_5">5</span><input id="sd_5" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_6">6</span><input id="sd_6" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_7">7</span><input id="sd_7" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_8">8</span><input id="sd_8" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_9">9</span><input id="sd_9" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_10">10</span><input id="sd_10" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_11">11</span><input id="sd_11" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_12">12</span><input id="sd_12" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_13">13</span><input id="sd_13" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_14">14</span><input id="sd_14" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_15">15</span><input id="sd_15" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_16">16</span><input id="sd_16" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_17">17</span><input id="sd_17" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_18">18</span><input id="sd_18" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_19">19</span><input id="sd_19" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_20">20</span><input id="sd_20" type="number" step="any" inputmode="decimal"></div></div>
   </div>
+  <div class="grp">Strömungsprofil (idealisiert)</div>
+  <div class="card"><div id="o_profile"></div></div>
   <div class="note">Volumenstrom rechnet aus Gaszustand, Δp-Wurzelmittel und der Geometrie der Messplatz-Beurteilung — auch ohne Staubmessung. „An Staubauswertung übergeben" reicht Gaszustand und Δp ans Iso-Blatt durch (dort gesperrt, Wert angezeigt); abgewählt werden sie im Iso-Blatt selbst eingegeben. Übergeben wird das Wurzelmittel Δp = ((1/n)·Σ√Δpᵢ)².</div>
 </section>
 
@@ -414,7 +417,7 @@ function ndPositions(nd){nd=Math.max(2,2*Math.round(nd/2));
 var ISO=["iso_datum","iso_start","iso_ende","iso_modus","iso_fw","iso_pbaro","iso_dpstat","iso_tkanal","iso_dpstau","iso_spitot","iso_form","iso_drund","iso_aeckig","iso_beckig","iso_basis","iso_o2","iso_co2","iso_tmess","iso_fgas","iso_tgas","iso_dpgas","iso_zaehler","iso_duese","iso_ziel"];
 var SD=["sd_use"];for(var sk=1;sk<=20;sk++)SD.push("sd_"+sk);
 var MP=["mp_naxis","mp_nd","mp_nx","mp_ny","mp_ein","mp_aus","mp_muend","mp_flow","mp_winkel"];
-var HUB=["hub_pbaro","hub_dpstat","hub_tkanal","hub_spitot","hub_modus","hub_fw","hub_basis","hub_o2","hub_co2"];
+var HUB=["hub_pbaro","hub_dpstat","hub_tkanal","hub_typ","hub_spitot","hub_modus","hub_fw","hub_basis","hub_o2","hub_co2"];
 
 function isoCalc(o){
   var fw=parseFloat(o.iso_fw),modus=o.iso_modus;
@@ -514,31 +517,35 @@ function applyHandover(use,dpeq,n){
   setT("sd_hint",use?(n>0?"Gaszustand & Δp werden ans Iso-Blatt übergeben.":"Gaszustand wird übergeben; Δp-Netz noch leer."):"");
   setT("iso_handnote",use?"Gaszustand & Δp aus Volumenstrom übernommen — Felder gesperrt.":"");
 }
-var netCount=0,netLabels=[],netShort=[];
+var netCount=0,netLabels=[],netShort=[],netPosFrac=[],netAxisOf=[];
 function computeNet(){
   var form=val("iso_form"),rnd=form==="rund";
   function clx(ks,L){var minA=Math.max(0.05,0.03*L),xs=[];for(var q=0;q<ks.length;q++){var x=ks[q]/100*L,dw=Math.min(x,L-x);if(dw<minA)x=(x<=L/2)?minA:(L-minA);xs.push(x);}return xs;}
   function ctr(n){var a=[];for(var q=1;q<=n;q++)a.push((q-0.5)/n*100);return a;}
-  var labels=[],sh=[],plan=NaN,valid=false;
+  var labels=[],sh=[],pf=[],ax=[],plan=NaN,valid=false;
   if(rnd){
     var d=parseFloat(val("iso_drund"))/1000,A=(isFinite(d)&&d>0)?Math.PI/4*d*d:NaN;
     var naxis=Math.max(1,Math.round(parseFloat(val("mp_naxis"))||2)),nd=Math.max(2,2*Math.round((parseFloat(val("mp_nd"))||2)/2));
-    if(isFinite(A)&&A<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];}
+    if(isFinite(A)&&A<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];pf=[0.5];ax=[0];}
     else if(isFinite(A)){var xs=clx(ndPositions(nd),d);plan=naxis*nd;valid=true;
-      for(var k=0;k<naxis;k++)for(var q=0;q<nd;q++){var nm=String.fromCharCode(65+k)+(q+1);sh.push(nm);labels.push(nm+" · "+fmt(xs[q]*100,1)+" cm");}}
+      for(var k=0;k<naxis;k++)for(var q=0;q<nd;q++){var nm=String.fromCharCode(65+k)+(q+1);sh.push(nm);labels.push(nm+" · "+fmt(xs[q]*100,1)+" cm");pf.push(xs[q]/d);ax.push(k);}}
   }else{
     var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000,A2=(isFinite(a)&&isFinite(b)&&a>0&&b>0)?a*b:NaN;
     var nx=Math.max(1,Math.round(parseFloat(val("mp_nx"))||2)),ny=Math.max(1,Math.round(parseFloat(val("mp_ny"))||2));
-    if(isFinite(A2)&&A2<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];}
+    if(isFinite(A2)&&A2<0.1){plan=1;valid=true;labels=["Mitte"];sh=["Mitte"];pf=[0.5];ax=[0];}
     else if(isFinite(A2)){var xa=clx(ctr(nx),a),xb=clx(ctr(ny),b);plan=nx*ny;valid=true;
-      for(var j=0;j<ny;j++)for(var ii=0;ii<nx;ii++){var nm2=String.fromCharCode(65+j)+(ii+1);sh.push(nm2);labels.push(nm2+" · a "+fmt(xa[ii]*100,1)+"/b "+fmt(xb[j]*100,1)+" cm");}}
+      for(var j=0;j<ny;j++)for(var ii=0;ii<nx;ii++){var nm2=String.fromCharCode(65+j)+(ii+1);sh.push(nm2);labels.push(nm2+" · a "+fmt(xa[ii]*100,1)+"/b "+fmt(xb[j]*100,1)+" cm");pf.push(xa[ii]/a);ax.push(j);}}
   }
-  netCount=valid?Math.min(plan,20):0;netLabels=labels;netShort=sh;
+  netCount=valid?Math.min(plan,20):0;netLabels=labels;netShort=sh;netPosFrac=pf;netAxisOf=ax;
   var shown=valid?Math.min(plan,20):20;
-  for(var i=1;i<=20;i++){var inp=gid("sd_"+i),lab=gid("sdlab_"+i);if(!inp||!lab)continue;var cell=inp.parentNode;
+  for(var i=1;i<=20;i++){var inp=gid("sd_"+i),lab=gid("sdlab_"+i);if(!inp||!lab)continue;var cell=inp.parentNode;inp.placeholder=isVane()?"0,00":"0,0";
     if(i<=shown){cell.style.display="";lab.textContent=valid?(labels[i-1]||String(i)):String(i);}else cell.style.display="none";}
 }
-function dpMean(){var sum=0,nn=0,ac=netCount||20;for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)&&x>0){sum+=Math.sqrt(x);nn++;}}return {dp:nn>0?Math.pow(sum/nn,2):NaN,n:nn};}
+function isVane(){return val("hub_typ")==="Flügelrad (m/s)";}
+function flowMean(){var vane=isVane(),sum=0,nn=0,ac=netCount||20;
+  for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(!isFinite(x)||x<=0)continue;
+    if(vane){sum+=x;}else{sum+=Math.sqrt(x);}nn++;}
+  return {vane:vane,mean:nn>0?(vane?sum/nn:Math.pow(sum/nn,2)):NaN,n:nn};}
 function gasDensity(pre){
   var pk=parseFloat(pre.pbaro)+parseFloat(pre.dpstat)/100,tk=parseFloat(pre.tkanal);
   var phi=moistPhi(pre.modus,parseFloat(pre.fw),tk,pk);
@@ -550,35 +557,84 @@ function gasDensity(pre){
 function geomArea(){var form=val("iso_form");if(form==="rund"){var d=parseFloat(val("iso_drund"))/1000;return Math.PI/4*d*d;}var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000;return a*b;}
 function computeVol(){
   var g=gasDensity({fw:val("hub_fw"),modus:val("hub_modus"),pbaro:val("hub_pbaro"),dpstat:val("hub_dpstat"),tkanal:val("hub_tkanal"),basis:val("hub_basis"),o2:val("hub_o2"),co2:val("hub_co2")});
-  var S=parseFloat(val("hub_spitot")),dm=dpMean(),v=S*Math.sqrt(2*dm.dp/g.rhob),A=geomArea();
+  var S=parseFloat(val("hub_spitot")),fm=flowMean(),A=geomArea();
+  var v=fm.vane?S*fm.mean:S*Math.sqrt(2*fm.mean/g.rhob);
   var Vb=v*A*3600,Vn=Vb*((Tn+273.15)/(g.tk+273.15))*(g.pk/pn)*(1-g.phi/100);
   var pH2O=(g.phi/100)*g.pk,td=NaN;if(isFinite(pH2O)&&pH2O>0){var gg=Math.log(pH2O/6.112);td=243.12*gg/(17.62-gg);}
   setT("o_volv",fmt(v,2));setT("o_volbetrieb",fmt(Vb,0));setT("o_volnorm",fmt(Vn,0));setT("o_taupunkt",fmt(td,1));
+  setT("o_sdeq",fmt(fm.mean,fm.vane?2:3));setT("o_sdn",fm.n?String(fm.n):"–");
+  setT("o_meanlbl",fm.vane?"v Mittel (arithm.)":"Δp Wurzelmittel");setT("o_meanunit",fm.vane?"m/s":"Pa");
+  var hdr=gid("sdhdr");if(hdr)hdr.textContent=(fm.vane?"Geschwindigkeiten v (m/s)":"Staudrücke Δp (Pa)")+" — bis 20 Punkte";
+  var dpHand=fm.vane?(g.rhob*v*v/(2*S*S)):fm.mean;
+  applyHandover(chk("sd_use"),dpHand,fm.n);
   var warn="";if(isFinite(td)&&isFinite(g.tk)&&g.tk<td)warn="Abgastemperatur "+fmt(g.tk,1)+" °C unter Taupunkt "+fmt(td,1)+" °C — Kondensation/Tropfen möglich (Out-Stack erwägen).";
   setT("o_volwarn",warn);
   var fhint="";if(val("hub_modus")==="rel. % (ϑ)"&&isFinite(g.tk)&&g.tk>90)fhint="rel. Feuchte über ~90 °C: Fühler ungenau — besser g/m³ oder Vol-% aus Kondensationsmessung.";
   setT("o_feuchtehint",fhint);
 }
+function computeProfile(){
+  var el=gid("o_profile");if(!el)return;
+  var ph='<div style="font-size:12px;color:var(--tm);padding:14px 4px;text-align:center">';
+  if(!netCount||netCount<1){el.innerHTML=ph+'Geometrie im Messplatz eingeben.</div>';return;}
+  var g=gasDensity({fw:val("hub_fw"),modus:val("hub_modus"),pbaro:val("hub_pbaro"),dpstat:val("hub_dpstat"),tkanal:val("hub_tkanal"),basis:val("hub_basis"),o2:val("hub_o2"),co2:val("hub_co2")});
+  var S=parseFloat(val("hub_spitot")),vane=isVane();
+  var axes={},order=[],vmax=0,any=false;
+  for(var i=1;i<=netCount;i++){var e=gid("sd_"+i);if(!e)continue;var raw=parseFloat(e.value);
+    var v=(isFinite(raw)&&raw>0)?(vane?S*raw:(isFinite(g.rhob)?S*Math.sqrt(2*raw/g.rhob):NaN)):NaN;
+    var a=netAxisOf[i-1],x=netPosFrac[i-1];if(a===undefined||x===undefined)continue;
+    if(!axes[a]){axes[a]=[];order.push(a);}axes[a].push({x:x,v:v});
+    if(isFinite(v)){if(v>vmax)vmax=v;any=true;}}
+  if(!any){el.innerHTML=ph+'Δp-Werte eingeben — dann erscheint das Profil.</div>';return;}
+  var COL=["#2F80ED","#E2932B","#3AA655","#D2493F","#8E5BD8","#1FA6A6","#C2456E","#5B7A1F"];
+  var L=36,R=294,T=10,B=150,W=R-L,H=B-T,top=vmax*1.1;
+  function px(x){return (L+x*W).toFixed(1);}
+  function py(v){return (B-(v/top)*H).toFixed(1);}
+  var s='<svg viewBox="0 0 304 174" width="100%" style="max-width:340px;margin:0 auto">';
+  s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+B+'" style="stroke:var(--bds);stroke-width:1"/>';
+  s+='<line x1="'+L+'" y1="'+B+'" x2="'+R+'" y2="'+B+'" style="stroke:var(--bds);stroke-width:1"/>';
+  var yt=[0,top/2,top];for(var g2=0;g2<yt.length;g2++){var yy=py(yt[g2]);
+    s+='<line x1="'+L+'" y1="'+yy+'" x2="'+R+'" y2="'+yy+'" style="stroke:var(--bd);stroke-width:.5"/>';
+    s+='<text x="'+(L-4)+'" y="'+(parseFloat(yy)+3)+'" text-anchor="end" style="font-size:9px;fill:var(--tm)">'+fmt(yt[g2],1)+'</text>';}
+  var xt=[0,0.5,1];for(var x2=0;x2<xt.length;x2++){s+='<text x="'+px(xt[x2])+'" y="'+(B+12)+'" text-anchor="middle" style="font-size:9px;fill:var(--tm)">'+(xt[x2]*100)+'%</text>';}
+  s+='<text x="'+((L+R)/2).toFixed(0)+'" y="172" text-anchor="middle" style="font-size:9px;fill:var(--tm)">Position über Querschnitt (0 % = Wand)</text>';
+  s+='<text x="10" y="'+((T+B)/2).toFixed(0)+'" text-anchor="middle" transform="rotate(-90 10 '+((T+B)/2).toFixed(0)+')" style="font-size:9px;fill:var(--tm)">v in m/s</text>';
+  for(var oi=0;oi<order.length;oi++){var pts=axes[order[oi]].filter(function(p){return isFinite(p.v);}).sort(function(p,q){return p.x-q.x;});
+    var c=COL[oi%COL.length];
+    if(pts.length>=2){var pl="";for(var pp=0;pp<pts.length;pp++)pl+=px(pts[pp].x)+","+py(pts[pp].v)+" ";
+      s+='<polyline points="'+pl.trim()+'" style="fill:none;stroke:'+c+';stroke-width:2"/>';}
+    for(var pp2=0;pp2<pts.length;pp2++)s+='<circle cx="'+px(pts[pp2].x)+'" cy="'+py(pts[pp2].v)+'" r="2.6" style="fill:'+c+'"/>';}
+  s+='</svg>';
+  var leg='<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:6px">';
+  for(var li=0;li<order.length;li++){var cc=COL[li%COL.length],nmA=String.fromCharCode(65+order[li]);
+    leg+='<span style="font-size:11.5px;color:var(--ts);display:flex;align-items:center;gap:4px"><span style="width:14px;height:3px;border-radius:2px;background:'+cc+';display:inline-block"></span>Achse '+nmA+'</span>';}
+  leg+='</div>';
+  el.innerHTML=leg+s;
+}
 function computeSD(){
-  var sum=0,n=0,all=[],pos=[],ac=netCount||20;
-  for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)){all.push({i:i,v:x});if(x>0){sum+=Math.sqrt(x);n++;pos.push(x);}}}
-  var dpeq=n>0?Math.pow(sum/n,2):NaN;
-  setT("o_sdeq",fmt(dpeq,3));setT("o_sdn",n?String(n):"–");
-  applyHandover(chk("sd_use"),dpeq,n);
+  var vane=isVane(),all=[],pos=[],ac=netCount||20;
+  for(var i=1;i<=ac;i++){var e=gid("sd_"+i);if(!e)continue;var x=parseFloat(e.value);if(isFinite(x)){all.push({i:i,v:x});if(x>0)pos.push(x);}}
   function lbl(ix){return netShort[ix-1]||("Pkt "+ix);}
   var cc=gid("o_sdchk");
   if(cc){
     function row(st,t){var col=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":"var(--tm)");return '<div class="chk"><span class="dot" style="background:'+col+'"></span><span>'+t+'</span></div>';}
-    if(all.length===0){cc.innerHTML=row("na","Noch keine Δp-Werte eingetragen.");}
+    if(all.length===0){cc.innerHTML=row("na",vane?"Noch keine v-Werte eingetragen.":"Noch keine Δp-Werte eingetragen.");}
     else{
-      var back=[],low=[];
-      for(var k=0;k<all.length;k++){if(all[k].v<=0)back.push(lbl(all[k].i));else if(all[k].v<5)low.push(lbl(all[k].i));}
       var H="";
-      H+=back.length?row("bad","Rückströmung an "+back.join(", ")+" — negative Geschwindigkeit unzulässig."):row("ok","Keine Rückströmung (alle Δp > 0).");
-      H+=low.length?row("bad","Δp < 5 Pa an "+low.join(", ")+" — Staurohr unzulässig (Flügelrad / erhöhte Unsicherheit)."):row("ok","Alle Δp ≥ 5 Pa — Staurohr zulässig.");
-      if(pos.length<2){H+=row("na","v_max/v_min: mindestens 2 gültige Werte nötig.");}
-      else{var mx=Math.max.apply(null,pos),mn=Math.min.apply(null,pos),rt=Math.sqrt(mx/mn);
-        H+=rt<3?row("ok","v_max/v_min = "+fmt(rt,2)+" ( < 3:1 )."):row("bad","v_max/v_min = "+fmt(rt,2)+" ( ≥ 3:1 ) — Strömung zu ungleichmäßig.");}
+      if(vane){
+        var bv=[];for(var k=0;k<all.length;k++)if(all[k].v<=0)bv.push(lbl(all[k].i));
+        H+=bv.length?row("bad","Stillstand/Rückströmung an "+bv.join(", ")+" — v ≤ 0 unzulässig."):row("ok","Keine Rückströmung (alle v > 0).");
+        if(pos.length<2){H+=row("na","v_max/v_min: mindestens 2 gültige Werte nötig.");}
+        else{var mx=Math.max.apply(null,pos),mn=Math.min.apply(null,pos),rt=mx/mn;
+          H+=rt<3?row("ok","v_max/v_min = "+fmt(rt,2)+" ( < 3:1 )."):row("bad","v_max/v_min = "+fmt(rt,2)+" ( ≥ 3:1 ) — Strömung zu ungleichmäßig.");}
+      }else{
+        var back=[],low=[];
+        for(var k2=0;k2<all.length;k2++){if(all[k2].v<=0)back.push(lbl(all[k2].i));else if(all[k2].v<5)low.push(lbl(all[k2].i));}
+        H+=back.length?row("bad","Rückströmung an "+back.join(", ")+" — negative Geschwindigkeit unzulässig."):row("ok","Keine Rückströmung (alle Δp > 0).");
+        H+=low.length?row("bad","Δp < 5 Pa an "+low.join(", ")+" — Staurohr unzulässig (Flügelrad / erhöhte Unsicherheit)."):row("ok","Alle Δp ≥ 5 Pa — Staurohr zulässig.");
+        if(pos.length<2){H+=row("na","v_max/v_min: mindestens 2 gültige Werte nötig.");}
+        else{var mx2=Math.max.apply(null,pos),mn2=Math.min.apply(null,pos),rt2=Math.sqrt(mx2/mn2);
+          H+=rt2<3?row("ok","v_max/v_min = "+fmt(rt2,2)+" ( < 3:1 )."):row("bad","v_max/v_min = "+fmt(rt2,2)+" ( ≥ 3:1 ) — Strömung zu ungleichmäßig.");}
+      }
       cc.innerHTML=H;
     }
   }
@@ -655,7 +711,7 @@ function computeMP(){
   gid("o_mpdepth").innerHTML=depthHTML||'<div class="dprow"><span class="dp" style="color:var(--tm)">Abmessungen eingeben.</span></div>';
   gid("o_mpsvg").innerHTML=svg||'';
 }
-function recompute(){try{computeNet();}catch(e){}try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}try{updateHeads();}catch(e){}saveCur();}
+function recompute(){try{computeNet();}catch(e){}try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeProfile();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}try{updateHeads();}catch(e){}saveCur();}
 
 var KEY="wkz_mess_v1",CUR="wkz_cur_v1",ACT="wkz_act_v1",MESS=[],activeIdx=-1;
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
@@ -705,6 +761,7 @@ for(var p=0;p<pms.length;p++)(function(b){b.addEventListener("click",function(){
 document.querySelector(".app").addEventListener("input",recompute);
 document.querySelector(".app").addEventListener("change",recompute);
 document.querySelector(".app").addEventListener("focus",function(e){var t=e.target;if(t&&t.matches&&t.matches('input[inputmode="decimal"]')){setTimeout(function(){try{t.select();}catch(_){}},0);}},true);
+(function(){var typEl=gid("hub_typ");if(!typEl)return;typEl.addEventListener("change",function(){var m={"Prandtl-Staurohr":"1.000","S-Staurohr (Pitot)":"0.840","Flügelrad (m/s)":"1.000"},sp=gid("hub_spitot");if(sp&&m[typEl.value]!==undefined)sp.value=m[typEl.value];});})();
 
 loadStore();
 var av=lsGet(ACT);if(av!==null){var ai=parseInt(av,10);if(!isNaN(ai)&&ai>=0&&ai<MESS.length)activeIdx=ai;}
