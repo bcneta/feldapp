@@ -361,8 +361,8 @@ svg{display:block}
   </div>
   <div class="card">
     <div class="grid2" style="margin-bottom:10px">
-      <div class="m"><div class="l">Norm-Mindestpunkte</div><div class="v"><span id="o_mpsoll">–</span></div></div>
-      <div class="m"><div class="l">geplant</div><div class="v"><span id="o_mpplan">–</span></div></div>
+      <div class="m"><div class="l">Mindestanzahl (Achse × Ebene)</div><div class="v sm"><span id="o_mpsoll">–</span></div></div>
+      <div class="m"><div class="l">geplant (Achse × Ebene)</div><div class="v sm"><span id="o_mpplan">–</span></div></div>
     </div>
     <div style="margin-bottom:8px"><span class="badge" id="o_mpamp">–</span></div>
     <div style="font-size:12px;color:var(--ts)">Im Staudruck-Netz erfasst: <span id="o_mpist">0</span></div>
@@ -686,12 +686,24 @@ function computeMP(){
       if(a>2*b||b>2*a)noteTxt="Längste Seite > 2× kürzeste — ggf. andere Seiteneinteilung nötig (VDI 2066 Anhang C2).";}
   }
   setT("o_mpdh",fmt(dh,3));
-  setT("o_mpsoll",isFinite(sollMin)?String(sollMin):"–");
-  setT("o_mpplan",isFinite(plan)?String(plan):"–");
+  var reqAx=NaN,reqLv=NaN,istAx=NaN,istLv=NaN,structOk=false,single=(isFinite(A)&&A<0.1);
+  if(rnd){istAx=naxis;istLv=nd;
+    if(single){reqAx=1;reqLv=1;structOk=(plan>=1);}
+    else if(isFinite(sollMin)){reqAx=2;reqLv=2*Math.ceil(sollMin/4);structOk=(naxis>=2&&nd>=reqLv);}
+  }else{istAx=nx;istLv=ny;
+    if(single){reqAx=1;reqLv=1;structOk=(plan>=1);}
+    else if(isFinite(sollMin)){reqAx=Math.ceil(Math.sqrt(sollMin));reqLv=Math.ceil(sollMin/reqAx);structOk=(nx>=2&&ny>=2);}
+  }
+  function brk(ax,lv){return (isFinite(ax)&&isFinite(lv))?(ax+" × "+lv+" = "+(ax*lv)):"–";}
+  setT("o_mpsoll",single?"1 Punkt":brk(reqAx,reqLv));
+  setT("o_mpplan",single?"1 Punkt":brk(istAx,istLv));
   var ist=0,ac=netCount||20;for(var i=1;i<=ac;i++){var ei=gid("sd_"+i);if(!ei)continue;var xi=parseFloat(ei.value);if(isFinite(xi))ist++;}
   setT("o_mpist",String(ist));
-  var okPlan=isFinite(plan)&&isFinite(sollMin)&&plan>=sollMin;
-  badge("o_mpamp",okPlan,"Verteilung ≥ Norm-Mindest",isFinite(plan)?"unter Norm-Mindestzahl":"–");
+  var okAll=isFinite(plan)&&isFinite(sollMin)&&structOk&&plan>=sollMin,over=okAll&&plan>sollMin;
+  var ampEl=gid("o_mpamp");
+  if(ampEl){ampEl.textContent=isFinite(plan)?(!okAll?"Anforderung nicht erfüllt":(over?"Anforderung übererfüllt":"Anforderung erfüllt")):"–";
+    ampEl.style.background=!isFinite(plan)?"var(--s1)":(okAll?"var(--bok)":"var(--bno)");
+    ampEl.style.color=!isFinite(plan)?"var(--tm)":(okAll?"var(--tok)":"var(--tno)");}
   var cc=gid("o_mpchk");
   if(cc){
     function row(st,t){var col=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":(st==="warn"?"var(--twn)":"var(--tm)"));return '<div class="chk"><span class="dot" style="background:'+col+'"></span><span>'+t+'</span></div>';}
@@ -704,10 +716,20 @@ function computeMP(){
     H+=val("mp_winkel").indexOf("≥")<0?row("ok","Strömungswinkel < 15° — Regel erfüllt."):row("bad","Strömungswinkel ≥ 15° — Regel verletzt.");
     cc.innerHTML=H;
   }
+  var msgs=[];
+  if(isFinite(plan)&&isFinite(sollMin)&&!single){
+    if(!structOk){
+      if(rnd){if(naxis<2)msgs.push("Mindestens 2 Messachsen nötig (zwei senkrechte Durchmesser).");if(nd<reqLv)msgs.push("Mindestens "+reqLv+" Punkte je Achse nötig.");}
+      else{msgs.push("Raster in beiden Richtungen ≥ 2 nötig.");}
+    }
+    if(plan<sollMin)msgs.push("Es fehlen "+(sollMin-plan)+" Punkte zur Mindestanzahl ("+sollMin+").");
+    if(over)msgs.push((plan-sollMin)+" Punkte über der Mindestanzahl — kann zu kurze Ein-/Auslaufstrecken kompensieren.");
+  }
+  if(noteTxt)msgs.push(noteTxt);
   var ein2=parseFloat(val("mp_ein")),aus2=parseFloat(val("mp_aus"));
   var strFail=(isFinite(dh)&&dh>0)&&((isFinite(ein2)&&ein2<=5*dh)||(isFinite(aus2)&&aus2<=2*dh));
-  if(strFail)noteTxt=(noteTxt?noteTxt+" ":"")+"Bei verfehlter Ein-/Auslaufstrecke kann die erhöhte Messunsicherheit durch mehr Messpunkte kompensiert werden — Punktzahl/Rasterdichte oben erhöhen.";
-  setT("o_mpnote",noteTxt);
+  if(strFail&&!over)msgs.push("Ein-/Auslaufstrecke verfehlt — erhöhte Messunsicherheit lässt sich durch mehr Messpunkte kompensieren (Punktzahl oben erhöhen).");
+  setT("o_mpnote",msgs.join(" "));
   gid("o_mpdepth").innerHTML=depthHTML||'<div class="dprow"><span class="dp" style="color:var(--tm)">Abmessungen eingeben.</span></div>';
   gid("o_mpsvg").innerHTML=svg||'';
 }
