@@ -756,43 +756,57 @@ function computeMP(){
 }
 function recompute(){try{computeNet();}catch(e){}try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeProfile();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}try{updateHeads();}catch(e){}saveCur();}
 
-var KEY="wkz_mess_v1",CUR="wkz_cur_v1",ACT="wkz_act_v1",MESS=[],activeIdx=-1;
+var KEY="wkz_mess_v1",CUR="wkz_cur_v1",ACT="wkz_act_v1",MESS=[],activeId=null;
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
-function loadStore(){var s=lsGet(KEY);if(s){try{MESS=JSON.parse(s)||[];}catch(e){MESS=[];}}}
-function saveStore(){lsSet(KEY,JSON.stringify(MESS));}
-function saveCur(){lsSet(CUR,JSON.stringify(snapshot()));}
-function setActive(i){activeIdx=i;lsSet(ACT,String(i));}
+var DB=(function(){
+  var NAME="wkz",ST="kv",p=null,ok=(typeof indexedDB!=="undefined"&&indexedDB);
+  function open(){if(p)return p;p=new Promise(function(res,rej){try{var r=indexedDB.open(NAME,1);r.onupgradeneeded=function(){try{r.result.createObjectStore(ST);}catch(e){}};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};}catch(e){rej(e);}});return p;}
+  function ig(k){return open().then(function(db){return new Promise(function(res,rej){var t=db.transaction(ST,"readonly"),q=t.objectStore(ST).get(k);q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});});}
+  function is(k,v){return open().then(function(db){return new Promise(function(res,rej){var t=db.transaction(ST,"readwrite");t.objectStore(ST).put(v,k);t.oncomplete=function(){res(true);};t.onerror=function(){rej(t.error);};});});}
+  function lp(k){var s=lsGet(k);if(s===null||s===undefined)return null;try{return JSON.parse(s);}catch(e){return null;}}
+  return {
+    get:function(k){if(!ok)return Promise.resolve(lp(k));return ig(k).then(function(v){return (v===undefined||v===null)?lp(k):v;},function(){return lp(k);});},
+    set:function(k,v){lsSet(k,JSON.stringify(v));if(ok){try{is(k,v).catch(function(){});}catch(e){}}return v;}
+  };
+})();
+function saveStore(){DB.set(KEY,MESS);}
+function saveCur(){DB.set(CUR,snapshot());}
+function newId(){return "m_"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function activeIndex(){for(var i=0;i<MESS.length;i++)if(MESS[i].id===activeId)return i;return -1;}
+function activeMeasurement(){var i=activeIndex();return i>=0?MESS[i]:null;}
+function setActive(id){activeId=id;DB.set(ACT,id);}
 function activeLabel(){
-  var nr=activeIdx>=0?("Nr. "+(activeIdx+1)):"neu (ungespeichert)";
+  var ax=activeIndex();var nr=ax>=0?("Nr. "+(ax+1)):"neu (ungespeichert)";
   var dt=fmtDate(val("iso_datum")),st=val("iso_start"),en=val("iso_ende");
   var zeit=st?(st+(en?"–"+en:"")):"";
   return "Messung "+nr+(dt?" · "+dt:"")+(zeit?" · "+zeit:"");
 }
 function updateHeads(){
   var s=activeLabel();setT("iso_mhead",s);setT("vol_mhead",s);setT("mp_mhead",s);setT("save_mhead",s);
-  var bi=gid("btn_isosave");if(bi)bi.textContent=activeIdx>=0?("Messung Nr. "+(activeIdx+1)+" aktualisieren"):"Als neue Messung speichern";
-  var bu=gid("btn_update");if(bu){bu.disabled=activeIdx<0;bu.style.opacity=activeIdx<0?"0.5":"";}
+  var ax=activeIndex();
+  var bi=gid("btn_isosave");if(bi)bi.textContent=ax>=0?("Messung Nr. "+(ax+1)+" aktualisieren"):"Als neue Messung speichern";
+  var bu=gid("btn_update");if(bu){bu.disabled=ax<0;bu.style.opacity=ax<0?"0.5":"";}
 }
 function renderList(){
   var c=gid("messlist");c.innerHTML="";
   if(!MESS.length){c.innerHTML='<div class="empty">Noch keine Messung gespeichert.<br>Oben „Als neue Messung speichern".</div>';return;}
   for(var i=0;i<MESS.length;i++){(function(idx){
-    var e=MESS[idx],R=isoCalc(e.data);
+    var e=MESS[idx],R=isoCalc(e.data),isAct=(e.id===activeId);
     var dat=fmtDate(e.data.iso_datum),st=e.data.iso_start||"";
     var label="Nr. "+(idx+1)+(dat?" · "+dat:"")+(st?" · "+st:"");
-    var d=document.createElement("div");d.className="mi"+(idx===activeIdx?" active":"");
-    d.innerHTML='<div class="top"><span class="nm">'+label+(idx===activeIdx?'<span class="tag">aktiv</span>':'')+'</span><span class="sm">'+(isFinite(R.iso)?fmt(R.iso,1)+" %":"–")+'</span></div>'+
+    var d=document.createElement("div");d.className="mi"+(isAct?" active":"");
+    d.innerHTML='<div class="top"><span class="nm">'+label+(isAct?'<span class="tag">aktiv</span>':'')+'</span><span class="sm">'+(isFinite(R.iso)?fmt(R.iso,1)+" %":"–")+'</span></div>'+
       '<div class="sm">Zähler '+fmt(R.zaehler,3)+' m³ · V̇ '+fmt(R.Vdot,0)+' m³/h · Düse '+fmt(R.vor,0)+' mm</div>'+
       '<div class="acts"><button class="ld">Laden</button><button class="del">Löschen</button></div>';
-    d.querySelector(".ld").addEventListener("click",function(){setActive(idx);applySnap(e.data);renderList();show("iso");});
-    d.querySelector(".del").addEventListener("click",function(){MESS.splice(idx,1);if(activeIdx===idx)setActive(-1);else if(activeIdx>idx)setActive(activeIdx-1);saveStore();renderList();updateHeads();});
+    d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);applySnap(e.data);renderList();show("iso");});
+    d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();updateHeads();});
     c.appendChild(d);
   })(i);}
 }
-function saveNew(){MESS.push({ts:Date.now(),data:snapshot()});setActive(MESS.length-1);saveStore();renderList();updateHeads();show("mess");}
-function saveUpdate(){if(activeIdx>=0&&MESS[activeIdx]){MESS[activeIdx].data=snapshot();MESS[activeIdx].ts=Date.now();saveStore();renderList();updateHeads();show("mess");}else saveNew();}
-function saveSmart(){if(activeIdx>=0)saveUpdate();else saveNew();}
+function saveNew(){var m={id:newId(),ts:Date.now(),data:snapshot()};MESS.push(m);setActive(m.id);saveStore();renderList();updateHeads();show("mess");}
+function saveUpdate(){var m=activeMeasurement();if(m){m.data=snapshot();m.ts=Date.now();saveStore();renderList();updateHeads();show("mess");}else saveNew();}
+function saveSmart(){if(activeMeasurement())saveUpdate();else saveNew();}
 
 function show(id){var s=document.querySelectorAll(".scr");for(var i=0;i<s.length;i++)s[i].style.display="none";var t=gid(id);if(t)t.style.display="block";window.scrollTo(0,0);}
 var gos=document.querySelectorAll("[data-go]");
@@ -806,11 +820,25 @@ document.querySelector(".app").addEventListener("change",recompute);
 document.querySelector(".app").addEventListener("focus",function(e){var t=e.target;if(t&&t.matches&&t.matches('input[inputmode="decimal"]')){setTimeout(function(){try{t.select();}catch(_){}},0);}},true);
 (function(){var typEl=gid("hub_typ");if(!typEl)return;typEl.addEventListener("change",function(){var m={"Prandtl-Staurohr":"1.000","S-Staurohr (Pitot)":"0.840","Flügelrad (m/s)":"1.000"},sp=gid("hub_spitot");if(sp&&m[typEl.value]!==undefined)sp.value=m[typEl.value];});})();
 
-loadStore();
-var av=lsGet(ACT);if(av!==null){var ai=parseInt(av,10);if(!isNaN(ai)&&ai>=0&&ai<MESS.length)activeIdx=ai;}
-var cur=lsGet(CUR);if(cur){try{applySnap(JSON.parse(cur));}catch(e){}}
-var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}
-renderList();show("home");recompute();
+show("home");
+(function boot(){
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();recompute();}
+  Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR)]).then(function(r){
+    MESS=Array.isArray(r[0])?r[0]:[];
+    var needSave=false,i;
+    for(i=0;i<MESS.length;i++)if(!MESS[i].id){MESS[i].id=newId();needSave=true;}
+    var a=r[1];
+    if(a===null||a===undefined)activeId=null;
+    else if(typeof a==="number"||(typeof a==="string"&&/^-?\d+$/.test(a))){var ix=parseInt(a,10);activeId=(ix>=0&&ix<MESS.length)?MESS[ix].id:null;}
+    else activeId=a;
+    if(activeId&&activeIndex()<0)activeId=null;
+    if(r[2]){try{applySnap(r[2]);}catch(e){}}
+    if(needSave)saveStore();
+    DB.set(ACT,activeId);
+    fin();
+  },fin);
+})();
 })();
 </script>
 </body>
