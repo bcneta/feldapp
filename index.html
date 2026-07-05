@@ -87,6 +87,14 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .mhead{font-size:11.5px;color:var(--ts);background:var(--s1);border-radius:8px;padding:6px 10px;margin:0 0 12px;font-variant-numeric:tabular-nums}
 .mi.active{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
 .mi .tag{font-size:10px;font-weight:500;color:#fff;background:var(--acc);padding:2px 7px;border-radius:6px;margin-left:8px}
+.katgrp{background:var(--s2);border:.5px solid var(--bd);border-radius:12px;margin-bottom:9px;padding:2px 12px}
+.katgrp>summary{font-weight:500;font-size:15px;padding:10px 0;cursor:pointer}
+.katsub{margin:0 4px 10px 6px;padding-left:10px;border-left:2px solid var(--bd)}
+.katsub>summary{font-size:14px;color:var(--ts);padding:7px 0;cursor:pointer}
+.cnt{font-size:11px;color:var(--tm);background:var(--s1);padding:2px 7px;border-radius:6px;margin-left:5px}
+.katsub .mi{margin:7px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 8px}
+.chip{font-size:12px;padding:5px 10px;border-radius:8px;background:var(--s1);border:.5px solid var(--bd);color:var(--ts);cursor:pointer;font-family:inherit}
 .nozcmp{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0}
 .nz{font-size:12.5px;padding:5px 9px;border-radius:8px;font-variant-numeric:tabular-nums}
 .nz.sel{outline:2px solid var(--acc);outline-offset:1px}
@@ -119,6 +127,7 @@ svg{display:block}
     <button class="tool" data-go="sig"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 4 14 2.5-7H21"/></svg></span><b>Signalumrechnung</b><span>mA ↔ Messwert, Prüfgas-Sollwert</span></button>
     <button class="tool" data-go="um"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span><b>Normierung</b><span>f_T, f_p, f_F, f_O₂ + feucht→trocken</span></button>
     <button class="tool" data-go="norm"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><b>Bezugsrechnung</b><span>T / p / Feuchte / O₂-Bezug, AGR</span></button>
+    <button class="tool" data-go="kat"><span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 11h16"/></svg></span><b>Katalog</b><span>Kunden / Standorte / Anlagen-Konfigurationen</span></button>
   </div>
   <div class="note">Tipp: In Safari öffnen, dann „Teilen → Zum Home-Bildschirm" — danach App-Icon, Vollbild, offline. Messungen werden lokal auf dem Gerät gespeichert.</div>
 </section>
@@ -388,6 +397,35 @@ svg{display:block}
   <button class="btn sec" id="btn_update" data-saveupd="1">Aktive Messung aktualisieren</button>
   <div id="messlist"></div>
   <div class="note">Gespeichert werden alle Eingaben (Geometrie, Gaszustand, Δp-Netz, Messplatz, Probenahme). „Laden" macht eine Messung aktiv und setzt alle Masken darauf. „Aktualisieren" überschreibt die gerade aktive Messung. Die Daten liegen lokal auf dem Gerät.</div>
+  <div class="grp">Datensicherung (alle Daten)</div>
+  <div class="card">
+    <button class="btn sec" id="btn_export">Alle Daten exportieren</button>
+    <button class="btn sec" id="btn_importfile" style="margin-top:2px">Aus Datei importieren</button>
+    <input type="file" id="imp_file" accept="application/json,.json" style="display:none">
+    <details id="bk_details" style="margin-top:4px"><summary style="font-size:13px;color:var(--acc);cursor:pointer;padding:6px 0">Alternativ per Text (kopieren/einfügen)</summary>
+      <button class="btn sec" id="btn_exporttext" style="margin-top:6px">Sicherung als Text anzeigen</button>
+      <textarea id="imp_text" placeholder="Sicherungstext hier einfügen …" style="width:100%;min-height:88px;font-size:12px;font-family:ui-monospace,Menlo,monospace;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);box-sizing:border-box;resize:vertical"></textarea>
+      <button class="btn sec" id="btn_importtext" style="margin-top:2px">Aus Text importieren</button>
+    </details>
+    <div class="note" style="margin-top:8px">Sichert Messungen (und später den Anlagen-Katalog) als Datei — für Backup oder Gerätewechsel. Import <b>ersetzt</b> die Daten auf diesem Gerät; im Zweifel vorher exportieren.</div>
+  </div>
+</section>
+
+<section class="scr" id="kat">
+  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Katalog</span></div>
+  <div class="grp">Neue Anlage aus aktueller Konfiguration</div>
+  <div class="card tight">
+    <div class="row"><label>Kunde</label><input id="kat_kunde" type="text" autocomplete="off" style="width:190px;text-align:left" placeholder="Musterkunde GmbH"></div>
+    <div class="chips" id="kat_kchips"></div>
+    <div class="row"><label>Standort</label><input id="kat_standort" type="text" autocomplete="off" style="width:190px;text-align:left" placeholder="Flensburg"></div>
+    <div class="chips" id="kat_schips"></div>
+    <div class="row"><label>Anlage</label><input id="kat_anlage" type="text" autocomplete="off" style="width:190px;text-align:left" placeholder="Kesselanlage 1"></div>
+  </div>
+  <button class="btn" id="btn_katsave">Aktuelle Konfiguration als Anlage speichern</button>
+  <div class="grp">Anlagen</div>
+  <div class="card tight"><div class="row" style="border:none"><label>Suche</label><input id="kat_such" type="search" autocomplete="off" style="width:190px;text-align:left" placeholder="Kunde, Standort, Anlage"></div></div>
+  <div id="katlist"></div>
+  <div class="note">Eine Anlage speichert die komplette aktuelle Konfiguration (Geometrie, Messplatz, Messprinzip, Gaszustand als Startwerte). Das Anwenden auf eine neue Messung folgt im nächsten Schritt. Anlagen sind in der Datensicherung enthalten.</div>
 </section>
 
 </div>
@@ -756,7 +794,8 @@ function computeMP(){
 }
 function recompute(){try{computeNet();}catch(e){}try{computeSD();}catch(e){}try{computeVol();}catch(e){}try{computeProfile();}catch(e){}try{computeIso();}catch(e){}try{computeSig();}catch(e){}try{computeUm();}catch(e){}try{computeNorm();}catch(e){}try{computeMP();}catch(e){}try{updateHeads();}catch(e){}saveCur();}
 
-var KEY="wkz_mess_v1",CUR="wkz_cur_v1",ACT="wkz_act_v1",MESS=[],activeId=null;
+var KEY="wkz_mess_v1",CUR="wkz_cur_v1",ACT="wkz_act_v1",KATK="wkz_anl_v1",ANLCUR="wkz_curanl_v1",MESS=[],ANL=[],activeId=null,curAnl=null;
+function setCurAnl(a){curAnl=a;DB.set(ANLCUR,a);}
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 var DB=(function(){
@@ -772,7 +811,7 @@ var DB=(function(){
 })();
 function saveStore(){DB.set(KEY,MESS);}
 function saveCur(){DB.set(CUR,snapshot());}
-function newId(){return "m_"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function newId(p){return (p||"m_")+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 function activeIndex(){for(var i=0;i<MESS.length;i++)if(MESS[i].id===activeId)return i;return -1;}
 function activeMeasurement(){var i=activeIndex();return i>=0?MESS[i]:null;}
 function setActive(id){activeId=id;DB.set(ACT,id);}
@@ -780,10 +819,14 @@ function activeLabel(){
   var ax=activeIndex();var nr=ax>=0?("Nr. "+(ax+1)):"neu (ungespeichert)";
   var dt=fmtDate(val("iso_datum")),st=val("iso_start"),en=val("iso_ende");
   var zeit=st?(st+(en?"–"+en:"")):"";
-  return "Messung "+nr+(dt?" · "+dt:"")+(zeit?" · "+zeit:"");
+  var pre=curAnl?(curAnl.kunde+" – "+curAnl.standort+" – "+curAnl.anlage+" · "):"";
+  var s=pre+"Messung "+nr+(dt?" · "+dt:"")+(zeit?" · "+zeit:"");
+  if(curAnl&&curAnl.fresh)s+=" — Tageswerte tagesaktuell eingeben!";
+  return s;
 }
 function updateHeads(){
-  var s=activeLabel();setT("iso_mhead",s);setT("vol_mhead",s);setT("mp_mhead",s);setT("save_mhead",s);
+  var s=activeLabel();var ids=["iso_mhead","vol_mhead","mp_mhead","save_mhead"];
+  for(var i=0;i<ids.length;i++){var e=gid(ids[i]);if(!e)continue;e.textContent=s;e.style.color=(curAnl&&curAnl.fresh)?"var(--twn)":"";e.style.background=(curAnl&&curAnl.fresh)?"var(--bwn)":"";}
   var ax=activeIndex();
   var bi=gid("btn_isosave");if(bi)bi.textContent=ax>=0?("Messung Nr. "+(ax+1)+" aktualisieren"):"Als neue Messung speichern";
   var bu=gid("btn_update");if(bu){bu.disabled=ax<0;bu.style.opacity=ax<0?"0.5":"";}
@@ -797,22 +840,140 @@ function renderList(){
     var label="Nr. "+(idx+1)+(dat?" · "+dat:"")+(st?" · "+st:"");
     var d=document.createElement("div");d.className="mi"+(isAct?" active":"");
     d.innerHTML='<div class="top"><span class="nm">'+label+(isAct?'<span class="tag">aktiv</span>':'')+'</span><span class="sm">'+(isFinite(R.iso)?fmt(R.iso,1)+" %":"–")+'</span></div>'+
+      (e.anl?'<div class="sm">'+esc(e.anl.kunde)+' – '+esc(e.anl.standort)+' – '+esc(e.anl.anlage)+'</div>':'')+
       '<div class="sm">Zähler '+fmt(R.zaehler,3)+' m³ · V̇ '+fmt(R.Vdot,0)+' m³/h · Düse '+fmt(R.vor,0)+' mm</div>'+
       '<div class="acts"><button class="ld">Laden</button><button class="del">Löschen</button></div>';
-    d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);applySnap(e.data);renderList();show("iso");});
+    d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);setCurAnl(e.anl?{id:e.anl.id,kunde:e.anl.kunde,standort:e.anl.standort,anlage:e.anl.anlage,fresh:false}:null);applySnap(e.data);renderList();show("iso");});
     d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();updateHeads();});
     c.appendChild(d);
   })(i);}
 }
-function saveNew(){var m={id:newId(),ts:Date.now(),data:snapshot()};MESS.push(m);setActive(m.id);saveStore();renderList();updateHeads();show("mess");}
-function saveUpdate(){var m=activeMeasurement();if(m){m.data=snapshot();m.ts=Date.now();saveStore();renderList();updateHeads();show("mess");}else saveNew();}
+function anlRef(){return curAnl?{id:curAnl.id,kunde:curAnl.kunde,standort:curAnl.standort,anlage:curAnl.anlage}:null;}
+function clearFresh(){if(curAnl&&curAnl.fresh){curAnl.fresh=false;setCurAnl(curAnl);}}
+function saveNew(){var m={id:newId(),ts:Date.now(),anl:anlRef(),data:snapshot()};MESS.push(m);setActive(m.id);clearFresh();saveStore();renderList();updateHeads();show("mess");}
+function saveUpdate(){var m=activeMeasurement();if(m){m.data=snapshot();m.anl=anlRef();m.ts=Date.now();clearFresh();saveStore();renderList();updateHeads();show("mess");}else saveNew();}
 function saveSmart(){if(activeMeasurement())saveUpdate();else saveNew();}
+function saveKat(){DB.set(KATK,ANL);}
+function katLabel(a){return a.kunde+" – "+a.standort+" – "+a.anlage;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function katEntry(a){
+  var g=a.data||{},geo=(g.iso_form==="rund")?("rund · Ø "+(g.iso_drund||"–")+" mm"):("eckig · "+(g.iso_aeckig||"–")+" × "+(g.iso_beckig||"–")+" mm");
+  var d=document.createElement("div");d.className="mi";
+  d.innerHTML='<div class="top"><span class="nm">'+esc(a.anlage)+'</span><span class="sm">'+geo+'</span></div>'+
+    '<div class="acts"><button class="ap">Anwenden</button><button class="del">Löschen</button></div>';
+  d.querySelector(".ap").addEventListener("click",function(){katApply(a);});
+  d.querySelector(".del").addEventListener("click",function(){
+    if(!confirm('Anlage "'+katLabel(a)+'" löschen?'))return;
+    for(var k=0;k<ANL.length;k++)if(ANL[k].id===a.id){ANL.splice(k,1);break;}
+    saveKat();renderKat();
+  });
+  return d;
+}
+function renderKatChips(){
+  var kc=gid("kat_kchips"),sc=gid("kat_schips");if(!kc||!sc)return;
+  function de(x,y){return x.localeCompare(y,"de");}
+  function chipHTML(v){return '<button type="button" class="chip">'+esc(v)+'</button>';}
+  var kv=(val("kat_kunde")||"").trim(),sv=(val("kat_standort")||"").trim();
+  var kunden=[];for(var i=0;i<ANL.length;i++)if(kunden.indexOf(ANL[i].kunde)<0)kunden.push(ANL[i].kunde);
+  kunden.sort(de);
+  var kl=kv.toLowerCase();
+  var kshow=kunden.filter(function(k){return k.toLowerCase()!==kl&&(!kl||k.toLowerCase().indexOf(kl)>=0);}).slice(0,6);
+  kc.innerHTML=kshow.map(chipHTML).join("");
+  var sts=[];for(var j=0;j<ANL.length;j++)if(ANL[j].kunde.toLowerCase()===kl&&sts.indexOf(ANL[j].standort)<0)sts.push(ANL[j].standort);
+  sts.sort(de);
+  var sl=sv.toLowerCase();
+  var sshow=sts.filter(function(s){return s.toLowerCase()!==sl&&(!sl||s.toLowerCase().indexOf(sl)>=0);}).slice(0,6);
+  sc.innerHTML=sshow.map(chipHTML).join("");
+}
+function renderKat(){
+  renderKatChips();
+  var c=gid("katlist");if(!c)return;c.innerHTML="";
+  if(!ANL.length){c.innerHTML='<div class="empty">Noch keine Anlage gespeichert.<br>Oben Kunde/Standort/Anlage eintragen und die aktuelle Konfiguration speichern.</div>';return;}
+  var q=(val("kat_such")||"").trim().toLowerCase();
+  var list=ANL.filter(function(a){return !q||katLabel(a).toLowerCase().indexOf(q)>=0;});
+  if(!list.length){c.innerHTML='<div class="empty">Keine Treffer für „'+esc(q)+'".</div>';return;}
+  function de(x,y){return x.localeCompare(y,"de");}
+  var byK={},ks=[];
+  for(var i=0;i<list.length;i++){var a=list[i];if(!byK[a.kunde]){byK[a.kunde]={};ks.push(a.kunde);}if(!byK[a.kunde][a.standort])byK[a.kunde][a.standort]=[];byK[a.kunde][a.standort].push(a);}
+  ks.sort(de);
+  for(var k2=0;k2<ks.length;k2++){var kn=ks[k2];
+    var det=document.createElement("details");det.className="katgrp";if(q||ks.length===1)det.open=true;
+    var total=0,sts=Object.keys(byK[kn]).sort(de);
+    for(var t=0;t<sts.length;t++)total+=byK[kn][sts[t]].length;
+    var sum=document.createElement("summary");sum.innerHTML=esc(kn)+'<span class="cnt">'+total+'</span>';det.appendChild(sum);
+    for(var s2=0;s2<sts.length;s2++){var sn=sts[s2],arr=byK[kn][sn].slice().sort(function(x,y){return de(x.anlage,y.anlage);});
+      var sd=document.createElement("details");sd.className="katsub";if(q||sts.length===1)sd.open=true;
+      var ssum=document.createElement("summary");ssum.innerHTML=esc(sn)+'<span class="cnt">'+arr.length+'</span>';sd.appendChild(ssum);
+      for(var e2=0;e2<arr.length;e2++)sd.appendChild(katEntry(arr[e2]));
+      det.appendChild(sd);
+    }
+    c.appendChild(det);
+  }
+}
+function katApply(a){
+  setActive(null);
+  setCurAnl({id:a.id,kunde:a.kunde,standort:a.standort,anlage:a.anlage,fresh:true});
+  applySnap(a.data);
+  var dEl=gid("iso_datum");if(dEl){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}
+  recompute();renderList();updateHeads();show("iso");
+}
+function katCreate(){
+  var ku=(val("kat_kunde")||"").trim(),st=(val("kat_standort")||"").trim(),an=(val("kat_anlage")||"").trim();
+  if(!ku||!st||!an){alert("Bitte Kunde, Standort und Anlage ausfüllen.");return;}
+  for(var i=0;i<ANL.length;i++)if(ANL[i].kunde.toLowerCase()===ku.toLowerCase()&&ANL[i].standort.toLowerCase()===st.toLowerCase()&&ANL[i].anlage.toLowerCase()===an.toLowerCase()){alert("Diese Anlage existiert bereits ("+katLabel(ANL[i])+").");return;}
+  ANL.push({id:newId("a_"),ts:Date.now(),kunde:ku,standort:st,anlage:an,data:snapshot()});
+  saveKat();renderKat();
+  gid("kat_anlage").value="";
+  alert("Anlage gespeichert: "+ku+" – "+st+" – "+an);
+}
+function buildBackup(){var data={};data[KEY]=MESS;data[ACT]=activeId;data[CUR]=snapshot();data[KATK]=ANL;data[ANLCUR]=curAnl;return {app:"wkz",type:"backup",version:1,exportedAt:new Date().toISOString(),data:data};}
+function backupName(){var t=new Date();return "emissionsmessung_backup_"+t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2)+".json";}
+function showExportText(txt){var ta=gid("imp_text");if(ta)ta.value=txt;var det=gid("bk_details");if(det)det.open=true;}
+function saveFile(name,text){
+  var blob=null;try{blob=new Blob([text],{type:"application/json"});}catch(e){}
+  try{if(blob&&navigator.canShare&&typeof File!=="undefined"){var f=new File([blob],name,{type:"application/json"});if(navigator.canShare({files:[f]})){navigator.share({files:[f],title:name}).catch(function(){});return true;}}}catch(e){}
+  try{if(blob&&URL&&URL.createObjectURL){var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(url);}catch(_){}},1500);return true;}}catch(e){}
+  return false;
+}
+function doExportFile(){var txt=JSON.stringify(buildBackup());if(!saveFile(backupName(),txt)){showExportText(txt);alert("Datei-Export nicht möglich — Sicherung wurde als Text bereitgestellt (kopieren und sichern).");}}
+function doExportText(){showExportText(JSON.stringify(buildBackup()));}
+function applyImport(obj){
+  if(!obj||obj.app!=="wkz"||!obj.data){alert("Keine gültige Sicherung.");return;}
+  if(!confirm("Import ersetzt die aktuellen Daten auf diesem Gerät. Fortfahren?"))return;
+  var data=obj.data,i;
+  MESS=Array.isArray(data[KEY])?data[KEY]:[];
+  for(i=0;i<MESS.length;i++)if(!MESS[i].id)MESS[i].id=newId();
+  ANL=Array.isArray(data[KATK])?data[KATK]:[];
+  for(i=0;i<ANL.length;i++)if(!ANL[i].id)ANL[i].id=newId("a_");
+  activeId=(typeof data[ACT]==="string")?data[ACT]:null;if(activeId&&activeIndex()<0)activeId=null;
+  curAnl=(data[ANLCUR]&&typeof data[ANLCUR]==="object")?data[ANLCUR]:null;
+  for(var k in data)if(data.hasOwnProperty(k))DB.set(k,data[k]);
+  if(data[CUR]){try{applySnap(data[CUR]);}catch(e){}}
+  saveStore();saveKat();DB.set(ACT,activeId);
+  renderList();renderKat();updateHeads();recompute();
+  alert("Import abgeschlossen: "+MESS.length+" Messung(en), "+ANL.length+" Anlage(n).");
+}
+function importFromText(){var ta=gid("imp_text");if(!ta)return;var s=(ta.value||"").trim();if(!s){alert("Bitte Sicherungstext einfügen.");return;}var o;try{o=JSON.parse(s);}catch(e){alert("Text ist keine gültige Sicherung (JSON-Fehler).");return;}applyImport(o);}
+function importFromFile(file){var fr=new FileReader();fr.onload=function(){var o;try{o=JSON.parse(fr.result);}catch(e){alert("Datei ist keine gültige Sicherung (JSON-Fehler).");return;}applyImport(o);};fr.onerror=function(){alert("Datei konnte nicht gelesen werden.");};fr.readAsText(file);}
 
 function show(id){var s=document.querySelectorAll(".scr");for(var i=0;i<s.length;i++)s[i].style.display="none";var t=gid(id);if(t)t.style.display="block";window.scrollTo(0,0);}
 var gos=document.querySelectorAll("[data-go]");
 for(var i=0;i<gos.length;i++)(function(el){el.addEventListener("click",function(){show(el.getAttribute("data-go"));});})(gos[i]);
 function bindBtn(sel,fn){var a=document.querySelectorAll(sel);for(var j=0;j<a.length;j++)a[j].addEventListener("click",fn);}
 bindBtn("[data-savenew]",saveNew);bindBtn("[data-saveupd]",saveUpdate);bindBtn("[data-savesmart]",saveSmart);
+(function(){
+  var be=gid("btn_export");if(be)be.addEventListener("click",doExportFile);
+  var bet=gid("btn_exporttext");if(bet)bet.addEventListener("click",doExportText);
+  var bif=gid("btn_importfile");if(bif)bif.addEventListener("click",function(){var f=gid("imp_file");if(f)f.click();});
+  var impf=gid("imp_file");if(impf)impf.addEventListener("change",function(){if(impf.files&&impf.files[0])importFromFile(impf.files[0]);impf.value="";});
+  var bit=gid("btn_importtext");if(bit)bit.addEventListener("click",importFromText);
+  var bks=gid("btn_katsave");if(bks)bks.addEventListener("click",katCreate);
+  var ksu=gid("kat_such");if(ksu)ksu.addEventListener("input",renderKat);
+  var kku=gid("kat_kunde");if(kku)kku.addEventListener("input",renderKatChips);
+  var kst=gid("kat_standort");if(kst)kst.addEventListener("input",renderKatChips);
+  function chipPick(container,field){var el=gid(container);if(!el)return;el.addEventListener("click",function(ev){var b=ev.target;if(b&&b.classList&&b.classList.contains("chip")){gid(field).value=b.textContent;renderKatChips();}});}
+  chipPick("kat_kchips","kat_kunde");chipPick("kat_schips","kat_standort");
+})();
 var pms=document.querySelectorAll("[data-pm]");
 for(var p=0;p<pms.length;p++)(function(b){b.addEventListener("click",function(){var e=gid(b.getAttribute("data-pm"));var v=String(e.value).trim();if(v==="")return;e.value=v.charAt(0)==="-"?v.slice(1):"-"+v;e.dispatchEvent(new Event("input",{bubbles:true}));});})(pms[p]);
 document.querySelector(".app").addEventListener("input",recompute);
@@ -823,11 +984,14 @@ document.querySelector(".app").addEventListener("focus",function(e){var t=e.targ
 show("home");
 (function boot(){
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();recompute();}
-  Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR)]).then(function(r){
+  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();renderKat();recompute();}
+  Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR),DB.get(KATK),DB.get(ANLCUR)]).then(function(r){
     MESS=Array.isArray(r[0])?r[0]:[];
-    var needSave=false,i;
+    ANL=Array.isArray(r[3])?r[3]:[];
+    curAnl=(r[4]&&typeof r[4]==="object")?r[4]:null;
+    var needSave=false,needKat=false,i;
     for(i=0;i<MESS.length;i++)if(!MESS[i].id){MESS[i].id=newId();needSave=true;}
+    for(i=0;i<ANL.length;i++)if(!ANL[i].id){ANL[i].id=newId("a_");needKat=true;}
     var a=r[1];
     if(a===null||a===undefined)activeId=null;
     else if(typeof a==="number"||(typeof a==="string"&&/^-?\d+$/.test(a))){var ix=parseInt(a,10);activeId=(ix>=0&&ix<MESS.length)?MESS[ix].id:null;}
@@ -835,6 +999,7 @@ show("home");
     if(activeId&&activeIndex()<0)activeId=null;
     if(r[2]){try{applySnap(r[2]);}catch(e){}}
     if(needSave)saveStore();
+    if(needKat)saveKat();
     DB.set(ACT,activeId);
     fin();
   },fin);
