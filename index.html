@@ -124,8 +124,7 @@ svg{display:block}
   </div></div>
   <div class="grid2">
     <button class="tool" data-go="sig"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 4 14 2.5-7H21"/></svg></span><b>mA-Wandler</b></button>
-    <button class="tool" data-go="um"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/></svg></span><b>Normierung</b></button>
-    <button class="tool" data-go="norm"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><b>O₂-Bezug</b></button>
+    <button class="tool" data-go="norm"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><b>Normierung</b></button>
     <button class="tool" data-go="kat"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 11h16"/></svg></span><b>Katalog</b></button>
   </div>
   <div class="note">Tipp: In Safari öffnen, dann „Teilen → Zum Home-Bildschirm" — danach App-Icon, Vollbild, offline. Messungen werden lokal auf dem Gerät gespeichert.</div>
@@ -228,49 +227,42 @@ svg{display:block}
     <div class="note" style="margin-top:8px">Für Prüfgas: Zertifikatswert eintragen (Einheit rechts wählen — ppm oder mg/m³ je nach Zertifikat) → mA-Sollwert.</div></div>
 </section>
 
-<section class="scr" id="um">
+<section class="scr" id="norm">
   <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Normierung</span></div>
-
-  <div class="grp">Temperatur → f_T</div>
-  <div class="card">
-    <div class="row" style="border:none"><label>Kanaltemp. ϑ (°C)</label><input id="u_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
-    <div class="m" style="margin-top:8px"><div class="l">f_T</div><div class="v sm"><span id="o_uft">–</span></div></div>
-    <div class="note" style="margin-top:8px">f_T = (ϑ + 273,15) / 273,15</div>
+  <div class="grp">Abgaszustand (gemeinsam für alle Komponenten)</div>
+  <div class="card tight">
+    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="nb_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
+    <div class="row"><label>Kanaltemp. ϑ (°C)</label><input id="nb_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
+    <div class="row"><label>Kanaldruck p (hPa)</label><input id="nb_p" type="number" step="any" inputmode="decimal" value="995.09"></div>
+    <div class="row"><label>O₂ gemessen</label><span class="uw"><input id="nb_o2" type="number" step="any" inputmode="decimal" value="18.76"><select id="nb_o2basis"><option>Vol.-% trocken</option><option>Vol.-% feucht</option></select></span></div>
+    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nb_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
   </div>
-
-  <div class="grp">Druck → f_p</div>
   <div class="card">
-    <div class="row"><label>Barometer (hPa)</label><input id="u_baro" type="number" step="any" inputmode="decimal" value="995"></div>
-    <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="u_stat" aria-label="Vorzeichen wechseln">±</button><input id="u_stat" type="number" step="any" inputmode="decimal" value="9"></span></div>
-    <div class="grid2" style="margin-top:8px">
-      <div class="m"><div class="l">Kanaldruck p (hPa abs.)</div><div class="v sm"><span id="o_up">–</span></div></div>
-      <div class="m"><div class="l">f_p</div><div class="v sm"><span id="o_ufp">–</span></div></div>
-    </div>
-    <div class="note" style="margin-top:8px">p = Barometer + stat. Druck/100  ·  f_p = 1013,25 / p</div>
+    <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_nft">–</span> · f_p <span id="o_nfp">–</span> · f_F <span id="o_nff">–</span> · f_O₂ <span id="o_nfo2">–</span> (AGR: <span id="o_nfo2agr">–</span>) · O₂ tr. <span id="o_no2eff">–</span></div>
+    <div style="font-size:11.5px;color:var(--tm);margin-top:4px">f_T = (ϑ+273,15)/273,15 · f_p = 1013,25/p · f_F = 100/(100−φ) · f_O₂ = (21−Bezug)/(21−O₂)</div>
   </div>
-
-  <div class="grp">Feuchte → f_F</div>
+<div class="grp">Komponente 1</div>
+  <div class="card tight"><div class="row"><label>Bezeichnung</label><input id="nb_name_1" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="CO"></div><div class="row"><label>c gemessen</label><span class="uw"><input id="nb_c_1" type="number" step="any" inputmode="decimal" value="50"><select id="nb_basis_1"><option>mg/m³ trocken</option><option>mg/m³ feucht</option></select></span></div><div class="row"><label>Gerät liefert</label><select id="nb_zust_1"><option>i.N. (normiert)</option><option>Betriebszustand</option></select></div><div class="row"><label>O₂-Bezug anwenden</label><input id="nb_swO2_1" type="checkbox"></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_1" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_1" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_1" type="number" step="any" inputmode="decimal"></div></div>
+  <details class="katgrp" style="margin-top:9px"><summary>Komponente 2 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_2" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="NOx"></div><div class="row"><label>c gemessen</label><span class="uw"><input id="nb_c_2" type="number" step="any" inputmode="decimal"><select id="nb_basis_2"><option>mg/m³ trocken</option><option>mg/m³ feucht</option></select></span></div><div class="row"><label>Gerät liefert</label><select id="nb_zust_2"><option>i.N. (normiert)</option><option>Betriebszustand</option></select></div><div class="row"><label>O₂-Bezug anwenden</label><input id="nb_swO2_2" type="checkbox"></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_2" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_2" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_2" type="number" step="any" inputmode="decimal"></div></details>
+  <details class="katgrp" style="margin-top:9px"><summary>Komponente 3 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_3" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="Ges.-C"></div><div class="row"><label>c gemessen</label><span class="uw"><input id="nb_c_3" type="number" step="any" inputmode="decimal"><select id="nb_basis_3"><option>mg/m³ trocken</option><option>mg/m³ feucht</option></select></span></div><div class="row"><label>Gerät liefert</label><select id="nb_zust_3"><option>i.N. (normiert)</option><option>Betriebszustand</option></select></div><div class="row"><label>O₂-Bezug anwenden</label><input id="nb_swO2_3" type="checkbox"></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_3" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_3" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_3" type="number" step="any" inputmode="decimal"></div></details>
+  <div class="grp">Bewertung</div>
+  <div id="nb_results"></div>
+  <div class="note">Je Komponente: Basis feucht/trocken, Gerätezustand (Betrieb → f_T·f_p anwenden / i.N. → bereits normiert), O₂-Bezug und AGR-Deckelung einzeln wählbar — z. B. CO ohne Abgasreinigung ungedeckelt, NOx hinter DeNOx mit AGR. Ampel: grün eingehalten, orange ELV im Unsicherheitsband c ± U, rot überschritten. Ohne U hartes Grün/Rot gegen den ELV.</div>
+  <div class="grp">Umrechnungshilfen</div>
   <div class="card">
-    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="u_vol" type="number" step="any" inputmode="decimal" value="3.175"></div>
+    <div class="row" style="border:none"><label>Feuchte (Vol-%)</label><input id="u_vol" type="number" step="any" inputmode="decimal" value="3.175"></div>
     <div class="grid2" style="margin-top:8px">
-      <div class="m"><div class="l">f_F</div><div class="v sm"><span id="o_uff">–</span></div></div>
       <div class="m"><div class="l">g/m³ feucht</div><div class="v sm"><span id="o_uwf">–</span></div></div>
+      <div class="m"><div class="l">g/m³ trocken</div><div class="v sm"><span id="o_uwt">–</span></div></div>
     </div>
-    <div class="m" style="margin-top:8px"><div class="l">g/m³ trocken</div><div class="v sm"><span id="o_uwt">–</span></div></div>
-    <div class="note" style="margin-top:8px">f_F = 100 / (100 − φ)  ·  g/m³ = φ · 8,038</div>
     <div class="row" style="margin-top:6px"><label>g/m³ (feucht) →</label><input id="u_gm" type="number" step="any" inputmode="decimal" value="25.52"></div>
     <div class="m" style="margin-top:8px"><div class="l">→ Feuchte (Vol-%)</div><div class="v sm"><span id="o_uvol">–</span></div></div>
   </div>
-
-  <div class="grp">O₂-Bezug → f_O₂</div>
   <div class="card">
-    <div class="row"><label>O₂ gemessen (Vol-%)</label><input id="u_o2m" type="number" step="any" inputmode="decimal" value="18.76"></div>
-    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="u_o2bez" type="number" step="any" inputmode="decimal" value="11"></div>
-    <div class="m" style="margin-top:8px"><div class="l">f_O₂</div><div class="v sm"><span id="o_ufo2">–</span></div></div>
-    <div class="note" style="margin-top:8px">f_O₂ = (21 − O₂-Bezug) / (21 − O₂)</div>
+    <div class="row"><label>Barometer (hPa)</label><input id="u_baro" type="number" step="any" inputmode="decimal" value="995"></div>
+    <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="u_stat" aria-label="Vorzeichen wechseln">±</button><input id="u_stat" type="number" step="any" inputmode="decimal" value="9"></span></div>
+    <div class="m" style="margin-top:8px"><div class="l">Kanaldruck p (hPa abs.)</div><div class="v sm"><span id="o_up">–</span></div></div>
   </div>
-
-  <div class="grp">O₂ / CO₂ feucht → trocken</div>
   <div class="card">
     <div class="row"><label>Feuchte φ (Vol-%)</label><input id="u_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
     <div class="row"><label>O₂ feucht (Vol-%)</label><input id="u_o2f" type="number" step="any" inputmode="decimal" value="18.76"></div>
@@ -279,41 +271,6 @@ svg{display:block}
       <div class="m"><div class="l">O₂ trocken</div><div class="v sm"><span id="o_uo2">–</span></div></div>
       <div class="m"><div class="l">CO₂ trocken</div><div class="v sm"><span id="o_uco2">–</span></div></div>
     </div>
-    <div class="note" style="margin-top:8px">X_trocken = X_feucht · 100/(100 − φ)</div>
-  </div>
-</section>
-
-<section class="scr" id="norm">
-  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">O₂-Bezug</span></div>
-  <div class="card">
-    <div class="grid2" style="margin-bottom:10px">
-      <div class="m"><div class="l">c bezogen</div><div class="v"><span id="o_cbez">–</span> <span class="u">mg/m³</span></div></div>
-      <div class="m"><div class="l">c normiert</div><div class="v sm"><span id="o_cnorm">–</span> <span class="u">mg/m³</span></div></div>
-    </div>
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_ft">–</span> · f_p <span id="o_fp">–</span> · f_F <span id="o_ff">–</span> · f_O₂ <span id="o_fo2">–</span> · O₂ tr. <span id="o_o2eff">–</span></div>
-    <div style="font-size:11.5px;color:var(--tm);margin-top:4px">c bezogen = c · f_T · f_p · f_F · f_O₂</div>
-  </div>
-  <div class="grp">Eingaben</div>
-  <div class="card tight">
-    <div class="row"><label>Feuchte φ (Vol-%)</label><input id="nm_phi" type="number" step="any" inputmode="decimal" value="3.175"></div>
-    <div class="row"><label>c gemessen</label><span class="uw"><input id="nm_conc" type="number" step="any" inputmode="decimal" value="50"><select id="nm_cbasis"><option>mg/m³ trocken</option><option>mg/m³ feucht</option></select></span></div>
-    <div class="row"><label>O₂ gemessen</label><span class="uw"><input id="nm_o2" type="number" step="any" inputmode="decimal" value="18.76"><select id="nm_o2basis"><option>Vol.-% trocken</option><option>Vol.-% feucht</option></select></span></div>
-    <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nm_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
-    <div class="row"><label>Kanaltemp. ϑ (°C)</label><input id="nm_t" type="number" step="any" inputmode="decimal" value="166.5"></div>
-    <div class="row"><label>Kanaldruck p (hPa)</label><input id="nm_p" type="number" step="any" inputmode="decimal" value="995.09"></div>
-  </div>
-  <div class="note">Einheit/Zustand je Komponente rechts wählen: „feucht" rechnet mit dem φ oben auf trocken, „trocken" lässt unverändert. Der O₂-Bezug ist immer der gesetzliche Trockenwert.</div>
-  <div class="grp">Schalter (Häkchen = anwenden)</div>
-  <div class="card tight">
-    <div class="row"><label>Norm. Temperatur</label><input id="nm_swT" type="checkbox"></div>
-    <div class="row"><label>Norm. Druck</label><input id="nm_swp" type="checkbox"></div>
-    <div class="row"><label>O₂-Bezug</label><input id="nm_swO2" type="checkbox"></div>
-    <div class="row"><label>AGR-Deckelung</label><input id="nm_swAGR" type="checkbox"></div>
-  </div>
-  <div class="grp">Rückwärts: Zielwert → erforderl. Messwert</div>
-  <div class="card">
-    <div class="row" style="border:none"><label>Zielwert bezogen (mg/m³)</label><input id="nm_ziel" type="number" step="any" inputmode="decimal" value="50"></div>
-    <div class="m" style="margin-top:8px"><div class="l">→ erforderl. Rohwert (mg/m³)</div><div class="v sm"><span id="o_cmess">–</span></div></div>
   </div>
 </section>
 
@@ -577,24 +534,55 @@ function computeUm(){
   var vol=num("u_vol");
   setT("o_uwf",fmt(vol*kH2O,3));setT("o_uwt",fmt(vol*kH2O*100/(100-vol),3));
   setT("o_uvol",fmt(num("u_gm")/kH2O,3));
-  setT("o_uff",fmt(100/(100-vol),4));
-  setT("o_uft",fmt((num("u_t")+273.15)/(Tn+273.15),4));
-  var pabs=num("u_baro")+num("u_stat")/100;
-  setT("o_up",fmt(pabs,3));setT("o_ufp",fmt(pn/pabs,4));
-  setT("o_ufo2",fmt((21-num("u_o2bez"))/(21-num("u_o2m")),4));
+  setT("o_up",fmt(num("u_baro")+num("u_stat")/100,3));
   var ph=num("u_phi");setT("o_uo2",fmt(num("u_o2f")*100/(100-ph),2));setT("o_uco2",fmt(num("u_co2f")*100/(100-ph),2));
 }
 function computeNorm(){
-  var conc=num("nm_conc"),t=num("nm_t"),p=num("nm_p"),phi=num("nm_phi"),o2=num("nm_o2"),o2b=num("nm_o2b");
-  var o2eff=(/feucht/.test(val("nm_o2basis")))?o2*100/(100-phi):o2;
-  var fT=chk("nm_swT")?(t+273.15)/(Tn+273.15):1;
-  var fp=chk("nm_swp")?pn/p:1;
-  var fF=(/feucht/.test(val("nm_cbasis")))?100/(100-phi):1;
-  var fO2=chk("nm_swO2")?(chk("nm_swAGR")?Math.max(1,(21-o2b)/(21-o2eff)):(21-o2b)/(21-o2eff)):1;
-  var cn=conc*fT*fp*fF,cb=cn*fO2;
-  setT("o_ft",fmt(fT,3));setT("o_fp",fmt(fp,3));setT("o_ff",fmt(fF,3));setT("o_fo2",fmt(fO2,3));setT("o_o2eff",fmt(o2eff,2));
-  setT("o_cnorm",fmt(cn,3));setT("o_cbez",fmt(cb,3));
-  setT("o_cmess",fmt(num("nm_ziel")/fO2/(fT*fp*fF),3));
+  var phi=num("nb_phi"),t=num("nb_t"),p=num("nb_p"),o2=num("nb_o2"),o2b=num("nb_o2b");
+  var o2eff=(/feucht/.test(val("nb_o2basis")))?o2*100/(100-phi):o2;
+  var fT=(t+273.15)/(Tn+273.15),fp=pn/p,fF=100/(100-phi);
+  var fo2raw=(21-o2b)/(21-o2eff),fo2agr=Math.max(1,fo2raw);
+  setT("o_nft",fmt(fT,3));setT("o_nfp",fmt(fp,3));setT("o_nff",fmt(fF,3));
+  setT("o_nfo2",fmt(fo2raw,3));setT("o_nfo2agr",fmt(fo2agr,3));setT("o_no2eff",fmt(o2eff,2));
+  var res=gid("nb_results");if(!res)return;
+  var html="";
+  for(var i=1;i<=3;i++){
+    var c=num("nb_c_"+i);if(!isFinite(c))continue;
+    var name=(val("nb_name_"+i)||"").trim()||("Komponente "+i);
+    var betrieb=(val("nb_zust_"+i)==="Betriebszustand");
+    var fTi=betrieb?fT:1,fpi=betrieb?fp:1;
+    var fFi=(/feucht/.test(val("nb_basis_"+i)))?fF:1;
+    var fo2i=chk("nb_swO2_"+i)?(chk("nb_swAGR_"+i)?fo2agr:fo2raw):1;
+    var ges=fTi*fpi*fFi*fo2i,cbez=c*ges;
+    var elv=num("nb_elv_"+i),u=num("nb_u_"+i);
+    var Uabs=(isFinite(u)&&u>0&&isFinite(cbez))?Math.abs(cbez)*u/100:0;
+    var badge="";
+    if(isFinite(elv)){
+      var st,txt;
+      if(Uabs>0){
+        if(cbez+Uabs<elv){st="ok";txt="eingehalten";}
+        else if(cbez-Uabs>elv){st="bad";txt="ELV überschritten";}
+        else{st="warn";txt="ELV im Unsicherheitsband";}
+      }else{
+        if(cbez<=elv){st="ok";txt="eingehalten";}else{st="bad";txt="ELV überschritten";}
+      }
+      var bg=st==="ok"?"var(--bok)":(st==="bad"?"var(--bno)":"var(--bwn)");
+      var fg=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":"var(--twn)");
+      badge='<span class="badge" style="background:'+bg+';color:'+fg+'">'+txt+'</span>';
+    }
+    var roh=(isFinite(elv)&&ges!==0)?elv/ges:NaN;
+    html+='<div class="card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b style="font-size:15px">'+esc(name)+'</b>'+badge+'</div>'
+      +'<div class="grid2" style="margin-top:9px">'
+      +'<div class="m"><div class="l">c bezogen</div><div class="v sm"><span>'+fmt(cbez,3)+'</span> <span class="u">mg/m³</span></div></div>'
+      +'<div class="m"><div class="l">Rohwert bei ELV</div><div class="v sm"><span>'+fmt(roh,3)+'</span> <span class="u">mg/m³</span></div></div>'
+      +'</div>'
+      +'<div style="font-size:12px;color:var(--ts);line-height:1.7;margin-top:7px">f_T '+fmt(fTi,3)+' · f_p '+fmt(fpi,3)+' · f_F '+fmt(fFi,3)+' · f_O₂ '+fmt(fo2i,3)+' · gesamt '+fmt(ges,3)
+      +(isFinite(elv)?' · ELV '+fmt(elv,1):'')
+      +(Uabs>0?' · U ±'+fmt(Uabs,2)+' mg/m³':'')
+      +'</div></div>';
+  }
+  res.innerHTML=html||'<div class="empty">Komponente 1 oben eingeben — Bewertung erscheint hier.</div>';
 }
 var HANDOVER=[["hub_pbaro","iso_pbaro"],["hub_dpstat","iso_dpstat"],["hub_tkanal","iso_tkanal"],["hub_spitot","iso_spitot"],["hub_modus","iso_modus"],["hub_fw","iso_fw"],["hub_basis","iso_basis"],["hub_o2","iso_o2"],["hub_co2","iso_co2"]];
 function lockField(id,on){var e=gid(id);if(!e)return;e.disabled=on;e.style.opacity=on?"0.55":"";}
