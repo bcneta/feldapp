@@ -203,6 +203,7 @@ svg{display:block}
   <div class="card tight">
     <div class="row"><label>Komponente</label><select id="s_comp"><option>frei</option><option>O₂ (Vol.-%)</option><option>CO₂ (Vol.-%)</option><option>CO</option><option>NO</option><option>NO → NO₂</option><option>NO mg → NO₂</option><option>SO₂</option><option>Ges.-C (Propan)</option><option>Ges.-C (Methan)</option></select></div>
     <div class="row" id="srow_faktor"><label>Umrechnungsfaktor</label><input id="s_faktor" type="number" step="any" inputmode="decimal" value="1.000"></div>
+    <div class="row" id="srow_rng"><label>Messbereich in</label><select id="s_rng"><option value="dev">ppm</option><option value="conv">mg/m³</option></select></div>
     <div class="row"><label>Signal von (mA)</label><input id="s_von" type="number" step="any" inputmode="decimal" value="4"></div>
     <div class="row"><label>Signal bis (mA)</label><input id="s_bis" type="number" step="any" inputmode="decimal" value="20"></div>
     <div class="row"><label>Messb. Anfang</label><input id="s_mba" type="number" step="any" inputmode="decimal" value="0"></div>
@@ -548,23 +549,29 @@ var COMPS={
 function compInfo(){return COMPS[val("s_comp")]||COMPS["frei"];}
 function computeSig(){
   var von=num("s_von"),bis=num("s_bis"),mba=num("s_mba"),mbe=num("s_mbe");
-  var c=compInfo(),hasF=(c.f!==null),f=parseFloat(val("s_faktor"));
+  var c=compInfo(),hasF=(c.f!==null),f=parseFloat(val("s_faktor")),fOk=(isFinite(f)&&f!==0);
   var fr=gid("srow_faktor");if(fr)fr.style.display=hasF?"":"none";
+  var rs=gid("s_rng"),rr=gid("srow_rng");
+  if(rr)rr.style.display=hasF?"":"none";
+  var rng=(hasF&&rs&&rs.value==="conv")?"conv":"dev";
+  if(rs&&hasF){rs.options[0].text=c.unit;rs.options[1].text=c.tgt;}
+  var rngUnit=(rng==="conv")?c.tgt:c.unit,othUnit=(rng==="conv")?c.unit:c.tgt;
   var wert=mba+(mbe-mba)*(num("s_ma")-von)/(bis-von);
-  setT("o_swl","Messwert ("+c.unit+")");
+  setT("o_swl","Messwert ("+rngUnit+")");
   setT("o_swert",fmt(wert,3));
   var cv=gid("s_conv");
-  if(hasF&&isFinite(f)){if(cv)cv.style.display="";setT("o_swl2",c.tgt);setT("o_swert2",fmt(wert*f,3));}
+  if(hasF&&fOk){if(cv)cv.style.display="";setT("o_swl2",othUnit);setT("o_swert2",fmt(rng==="conv"?wert/f:wert*f,3));}
   else if(cv)cv.style.display="none";
   var qb=gid("sig_quick");
   if(qb){qb.style.display=hasF?"":"none";setT("s_qdevl",c.unit);setT("s_qcnvl",c.tgt||"umgerechnet");}
   var us=gid("s_wertunit");
-  if(us){us.parentNode.style.display="";us.style.display=hasF?"":"none";
+  if(us){us.style.display=hasF?"":"none";
     if(hasF){us.options[0].text=c.unit;us.options[1].text=c.tgt;}
     if(!hasF)us.value="dev";}
-  var w=num("s_wert");
-  var wDev=(hasF&&us&&us.value==="conv"&&isFinite(f)&&f!==0)?w/f:w;
-  setT("o_sma",fmt(von+(wDev-mba)/(mbe-mba)*(bis-von),3));
+  var w=num("s_wert"),inU=(hasF&&us)?us.value:"dev";
+  var wRange=w;
+  if(hasF&&fOk&&inU!==rng)wRange=(inU==="dev")?w*f:w/f;
+  setT("o_sma",fmt(von+(wRange-mba)/(mbe-mba)*(bis-von),3));
 }
 function computeUm(){
   var vol=num("u_vol");
