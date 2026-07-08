@@ -201,6 +201,8 @@ svg{display:block}
   <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">mA-Wandler</span></div>
   <div class="grp">Geräte-Setup</div>
   <div class="card tight">
+    <div class="row"><label>Komponente</label><select id="s_comp"><option>frei</option><option>O₂ (Vol.-%)</option><option>CO₂ (Vol.-%)</option><option>CO</option><option>NO</option><option>NO → NO₂</option><option>NO mg → NO₂</option><option>SO₂</option><option>Ges.-C (Propan)</option><option>Ges.-C (Methan)</option></select></div>
+    <div class="row" id="srow_faktor"><label>Umrechnungsfaktor</label><input id="s_faktor" type="number" step="any" inputmode="decimal" value="1.000"></div>
     <div class="row"><label>Signal von (mA)</label><input id="s_von" type="number" step="any" inputmode="decimal" value="4"></div>
     <div class="row"><label>Signal bis (mA)</label><input id="s_bis" type="number" step="any" inputmode="decimal" value="20"></div>
     <div class="row"><label>Messb. Anfang</label><input id="s_mba" type="number" step="any" inputmode="decimal" value="0"></div>
@@ -208,11 +210,14 @@ svg{display:block}
   </div>
   <div class="grp">mA → Messwert</div>
   <div class="card"><div class="row" style="border:none"><label>mA-Wert</label><input id="s_ma" type="number" step="any" inputmode="decimal" value="12"></div>
-    <div class="m" style="margin-top:8px"><div class="l">Messwert</div><div class="v sm"><span id="o_swert">–</span></div></div></div>
+    <div class="grid2" style="margin-top:8px">
+      <div class="m"><div class="l" id="o_swl">Messwert</div><div class="v sm"><span id="o_swert">–</span></div></div>
+      <div class="m" id="s_conv"><div class="l" id="o_swl2">umgerechnet</div><div class="v sm"><span id="o_swert2">–</span></div></div>
+    </div></div>
   <div class="grp">Messwert → mA (auch Prüfgas-Sollwert)</div>
-  <div class="card"><div class="row" style="border:none"><label>Messwert</label><input id="s_wert" type="number" step="any" inputmode="decimal" value="100"></div>
+  <div class="card"><div class="row" style="border:none"><label>Messwert</label><span class="uw"><input id="s_wert" type="number" step="any" inputmode="decimal" value="100"><select id="s_wertunit"><option value="dev">Geräteeinheit</option><option value="conv">umgerechnet</option></select></span></div>
     <div class="m" style="margin-top:8px"><div class="l">mA-Wert</div><div class="v sm"><span id="o_sma">–</span></div></div>
-    <div class="note" style="margin-top:8px">Für Prüfgas: Zertifikatswert eintragen → mA-Sollwert.</div></div>
+    <div class="note" style="margin-top:8px">Für Prüfgas: Zertifikatswert eintragen (Einheit rechts wählen — ppm oder mg/m³ je nach Zertifikat) → mA-Sollwert.</div></div>
 </section>
 
 <section class="scr" id="um">
@@ -521,10 +526,36 @@ function computeIso(){
   var okF=isFinite(R.zaehler)&&isFinite(R.vmin)&&R.zaehler>=R.vmin&&R.zaehler<=R.vmax;
   badge("o_fen",okF,"Volumen im Sollbereich",isFinite(R.zaehler)?"Volumen außerhalb":"–");
 }
+var COMPS={
+ "frei":{unit:"Geräteeinheit",f:1.0,tgt:"umgerechnet"},
+ "O₂ (Vol.-%)":{unit:"Vol.-%",f:null,tgt:""},
+ "CO₂ (Vol.-%)":{unit:"Vol.-%",f:null,tgt:""},
+ "CO":{unit:"ppm",f:1.250,tgt:"mg/m³ CO"},
+ "NO":{unit:"ppm",f:1.339,tgt:"mg/m³ NO"},
+ "NO → NO₂":{unit:"ppm NO",f:2.053,tgt:"mg/m³ NO₂"},
+ "NO mg → NO₂":{unit:"mg/m³ NO",f:1.533,tgt:"mg/m³ NO₂"},
+ "SO₂":{unit:"ppm",f:2.858,tgt:"mg/m³ SO₂"},
+ "Ges.-C (Propan)":{unit:"ppm",f:1.607,tgt:"mg C/m³"},
+ "Ges.-C (Methan)":{unit:"ppm",f:0.536,tgt:"mg C/m³"}
+};
+function compInfo(){return COMPS[val("s_comp")]||COMPS["frei"];}
 function computeSig(){
   var von=num("s_von"),bis=num("s_bis"),mba=num("s_mba"),mbe=num("s_mbe");
-  setT("o_swert",fmt(mba+(mbe-mba)*(num("s_ma")-von)/(bis-von),3));
-  setT("o_sma",fmt(von+(num("s_wert")-mba)/(mbe-mba)*(bis-von),3));
+  var c=compInfo(),hasF=(c.f!==null),f=parseFloat(val("s_faktor"));
+  var fr=gid("srow_faktor");if(fr)fr.style.display=hasF?"":"none";
+  var wert=mba+(mbe-mba)*(num("s_ma")-von)/(bis-von);
+  setT("o_swl","Messwert ("+c.unit+")");
+  setT("o_swert",fmt(wert,3));
+  var cv=gid("s_conv");
+  if(hasF&&isFinite(f)){if(cv)cv.style.display="";setT("o_swl2",c.tgt);setT("o_swert2",fmt(wert*f,3));}
+  else if(cv)cv.style.display="none";
+  var us=gid("s_wertunit");
+  if(us){us.parentNode.style.display="";us.style.display=hasF?"":"none";
+    if(hasF){us.options[0].text=c.unit;us.options[1].text=c.tgt;}
+    if(!hasF)us.value="dev";}
+  var w=num("s_wert");
+  var wDev=(hasF&&us&&us.value==="conv"&&isFinite(f)&&f!==0)?w/f:w;
+  setT("o_sma",fmt(von+(wDev-mba)/(mbe-mba)*(bis-von),3));
 }
 function computeUm(){
   var vol=num("u_vol");
@@ -979,6 +1010,7 @@ document.querySelector(".app").addEventListener("input",recompute);
 document.querySelector(".app").addEventListener("change",recompute);
 document.querySelector(".app").addEventListener("focus",function(e){var t=e.target;if(t&&t.matches&&t.matches('input[inputmode="decimal"]')){setTimeout(function(){try{t.select();}catch(_){}},0);}},true);
 (function(){var typEl=gid("hub_typ");if(!typEl)return;typEl.addEventListener("change",function(){var m={"Prandtl-Staurohr":"1.000","S-Staurohr (Pitot)":"0.840","Flügelrad (m/s)":"1.000"},sp=gid("hub_spitot");if(sp&&m[typEl.value]!==undefined)sp.value=m[typEl.value];});})();
+(function(){var ce=gid("s_comp");if(!ce)return;ce.addEventListener("change",function(){var c=COMPS[ce.value];var fe=gid("s_faktor");if(fe&&c&&c.f!==null)fe.value=c.f.toFixed(3);});})();
 
 show("home");
 (function boot(){
