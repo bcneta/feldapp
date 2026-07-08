@@ -208,6 +208,13 @@ svg{display:block}
     <div class="row"><label>Messb. Anfang</label><input id="s_mba" type="number" step="any" inputmode="decimal" value="0"></div>
     <div class="row"><label>Messb. Endwert</label><input id="s_mbe" type="number" step="any" inputmode="decimal" value="160.7"></div>
   </div>
+  <div id="sig_quick">
+    <div class="grp">Schnellumrechner (ohne mA)</div>
+    <div class="card tight">
+      <div class="row"><label id="s_qdevl">ppm</label><input id="s_qdev" type="number" step="any" inputmode="decimal"></div>
+      <div class="row"><label id="s_qcnvl">mg/m³</label><input id="s_qcnv" type="number" step="any" inputmode="decimal"></div>
+    </div>
+  </div>
   <div class="grp">mA → Messwert</div>
   <div class="card"><div class="row" style="border:none"><label>mA-Wert</label><input id="s_ma" type="number" step="any" inputmode="decimal" value="12"></div>
     <div class="grid2" style="margin-top:8px">
@@ -549,6 +556,8 @@ function computeSig(){
   var cv=gid("s_conv");
   if(hasF&&isFinite(f)){if(cv)cv.style.display="";setT("o_swl2",c.tgt);setT("o_swert2",fmt(wert*f,3));}
   else if(cv)cv.style.display="none";
+  var qb=gid("sig_quick");
+  if(qb){qb.style.display=hasF?"":"none";setT("s_qdevl",c.unit);setT("s_qcnvl",c.tgt||"umgerechnet");}
   var us=gid("s_wertunit");
   if(us){us.parentNode.style.display="";us.style.display=hasF?"":"none";
     if(hasF){us.options[0].text=c.unit;us.options[1].text=c.tgt;}
@@ -1010,7 +1019,20 @@ document.querySelector(".app").addEventListener("input",recompute);
 document.querySelector(".app").addEventListener("change",recompute);
 document.querySelector(".app").addEventListener("focus",function(e){var t=e.target;if(t&&t.matches&&t.matches('input[inputmode="decimal"]')){setTimeout(function(){try{t.select();}catch(_){}},0);}},true);
 (function(){var typEl=gid("hub_typ");if(!typEl)return;typEl.addEventListener("change",function(){var m={"Prandtl-Staurohr":"1.000","S-Staurohr (Pitot)":"0.840","Flügelrad (m/s)":"1.000"},sp=gid("hub_spitot");if(sp&&m[typEl.value]!==undefined)sp.value=m[typEl.value];});})();
-(function(){var ce=gid("s_comp");if(!ce)return;ce.addEventListener("change",function(){var c=COMPS[ce.value];var fe=gid("s_faktor");if(fe&&c&&c.f!==null)fe.value=c.f.toFixed(3);});})();
+(function(){var ce=gid("s_comp");if(!ce)return;ce.addEventListener("change",function(){var c=COMPS[ce.value];var fe=gid("s_faktor");if(fe&&c&&c.f!==null)fe.value=c.f.toFixed(3);quickUpdate("dev");});})();
+function quickUpdate(from){
+  var f=parseFloat(val("s_faktor")),a=gid("s_qdev"),b=gid("s_qcnv");
+  if(!a||!b||!isFinite(f)||f===0)return;
+  function trim(x){return String(+(x.toFixed(3)));}
+  if(from==="dev"){var v=parseFloat(a.value);b.value=isFinite(v)?trim(v*f):"";}
+  else{var w=parseFloat(b.value);a.value=isFinite(w)?trim(w/f):"";}
+}
+(function(){
+  var a=gid("s_qdev"),b=gid("s_qcnv"),fe=gid("s_faktor");
+  if(a)a.addEventListener("input",function(){quickUpdate("dev");});
+  if(b)b.addEventListener("input",function(){quickUpdate("cnv");});
+  if(fe)fe.addEventListener("input",function(){quickUpdate("dev");});
+})();
 
 show("home");
 (function boot(){
