@@ -93,6 +93,10 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .cnt{font-size:11px;color:var(--tm);background:var(--s1);padding:2px 7px;border-radius:6px;margin-left:5px}
 .katsub .mi{margin:7px 0}
 .chips{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 8px}
+.tgr{display:grid;grid-template-columns:max-content max-content max-content;column-gap:12px;row-gap:3px;font-size:12px;color:var(--ts);line-height:1.55;font-variant-numeric:tabular-nums;align-items:baseline}
+.tgr .v2{text-align:right;color:var(--tp)}
+.tgr .u2{color:var(--tm)}
+.lnk{background:none;border:none;color:var(--acc);font-size:inherit;font-family:inherit;padding:0;cursor:pointer;text-decoration:underline}
 .chip{font-size:12px;padding:5px 10px;border-radius:8px;background:var(--s1);border:.5px solid var(--bd);color:var(--ts);cursor:pointer;font-family:inherit}
 .nozcmp{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0}
 .nz{font-size:12.5px;padding:5px 9px;border-radius:8px;font-variant-numeric:tabular-nums}
@@ -133,6 +137,7 @@ svg{display:block}
 <section class="scr" id="iso">
   <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Staub</span></div>
   <div class="mhead" id="iso_mhead">–</div>
+  <div id="iso_anllink" style="display:none;font-size:12px;margin:-6px 2px 10px"><button class="lnk" data-go="staudruck">→ Tageswerte im Volumenstrom eingeben</button></div>
   <div class="grp">Vorgabe</div>
   <div class="card tight">
     <div class="row"><label>gewählte Düse (mm)</label><input id="iso_duese" type="number" step="any" inputmode="decimal" value="12"></div>
@@ -148,17 +153,18 @@ svg{display:block}
       <div><div class="l">Isokinetie</div><div class="v"><span id="o_iso">–</span> %</div></div>
       <span class="badge" id="o_amp">–</span>
     </div>
-    <div style="font-size:12px;color:var(--ts);margin:0 2px 8px">v_Sonde <span id="o_vsonde">–</span> m/s · v_Kanal <span id="o_v">–</span> m/s — Iso = v_Sonde ⁄ v_Kanal</div>
+    <div class="tgr" style="margin:0 2px 8px"><span>v<sub>Sonde</sub></span><span class="v2"><span id="o_vsonde">–</span></span><span class="u2">m/s</span><span>v<sub>Kanal</sub></span><span class="v2"><span id="o_v">–</span></span><span class="u2">m/s</span></div>
+    <div style="font-size:11.5px;color:var(--tm);margin:0 2px 8px">Iso = v<sub>Sonde</sub> ⁄ v<sub>Kanal</sub></div>
     <div id="o_isohint" style="margin-bottom:10px;font-size:12.5px;font-weight:500"></div>
     <div style="margin-bottom:10px"><span class="badge" id="o_fen">–</span></div>
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">V̇ <span id="o_vdot">–</span> m³/h · Teilvol. i.N. tr. <span id="o_tvt">–</span> Nm³ · O₂ tr. <span id="o_o2t">–</span> · CO₂ tr. <span id="o_co2t">–</span> Vol-%</div>
+    <div class="tgr"><span>V̇</span><span class="v2"><span id="o_vdot">–</span></span><span class="u2">m³/h</span><span>Teilvolumen i.N. tr.</span><span class="v2"><span id="o_tvt">–</span></span><span class="u2">Nm³</span><span>O₂ tr.</span><span class="v2"><span id="o_o2t">–</span></span><span class="u2">Vol-%</span><span>CO₂ tr.</span><span class="v2"><span id="o_co2t">–</span></span><span class="u2">Vol-%</span></div>
   </div>
   <div class="grp">Düsenvergleich — erwartete Iso bei Zielabsaugvolumen</div>
   <div class="card tight"><div id="o_nozcmp" class="nozcmp"></div>
     <div class="note" style="margin-top:6px">Grün = 95–115 %. Umrandet = gewählte Düse. Annahme: Zielabsaugvolumen konstant.</div></div>
   <button class="btn" id="btn_isosave" data-savesmart="1">Als neue Messung speichern</button>
   <div id="iso_handnote" style="font-size:11.5px;color:var(--acc);margin:0 2px 10px"></div>
-  <div class="grp">Messung &amp; Zeitraum  (informativ — steuert nicht die Messdauer)</div>
+  <div class="grp">Messung &amp; Zeitraum</div>
   <div class="card tight">
     <div class="row"><label>Datum</label><input id="iso_datum" type="date" style="width:120px;text-align:left"></div>
     <div class="row"><label>Startzeit (Zeitraum)</label><input id="iso_start" type="time" value="08:00" style="width:120px;text-align:left"></div>
@@ -178,8 +184,7 @@ svg{display:block}
     <div id="iso_dpnote" style="font-size:11px;color:var(--acc);padding:0 0 4px"></div>
     <div class="row"><label>Staurohrfaktor</label><input id="iso_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
   </div>
-  <div class="grp">Kanalquerschnitt</div>
-  <div class="card tight"><div class="row" style="border:none"><label>Form &amp; Abmessungen</label><span style="font-size:12.5px;color:var(--acc)">→ Messplatz-Beurteilung</span></div></div>
+  <div class="note" style="margin:2px 2px 12px">Kanalquerschnitt: Form &amp; Abmessungen → <button class="lnk" data-go="mp">Messplatz</button></div>
   <div class="grp">Abgaszusammensetzung</div>
   <div class="card tight">
     <div class="row"><label>Zustand</label><select id="iso_basis"><option>trocken</option><option>feucht</option></select></div>
@@ -212,6 +217,7 @@ svg{display:block}
     <div class="grp">Schnellumrechner (ohne mA)</div>
     <div class="card tight">
       <div class="row"><label id="s_qdevl">ppm</label><input id="s_qdev" type="number" step="any" inputmode="decimal"></div>
+      <div id="o_qfak" style="text-align:center;font-size:12px;color:var(--tm);padding:2px 0">× –</div>
       <div class="row"><label id="s_qcnvl">mg/m³</label><input id="s_qcnv" type="number" step="any" inputmode="decimal"></div>
     </div>
   </div>
@@ -238,16 +244,16 @@ svg{display:block}
     <div class="row"><label>O₂-Bezug (Vol-%)</label><input id="nb_o2b" type="number" step="any" inputmode="decimal" value="11"></div>
   </div>
   <div class="card">
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">f_T <span id="o_nft">–</span> · f_p <span id="o_nfp">–</span> · f_F <span id="o_nff">–</span> · f_O₂ <span id="o_nfo2">–</span> (AGR: <span id="o_nfo2agr">–</span>) · O₂ tr. <span id="o_no2eff">–</span></div>
-    <div style="font-size:11.5px;color:var(--tm);margin-top:4px">f_T = (ϑ+273,15)/273,15 · f_p = 1013,25/p · f_F = 100/(100−φ) · f_O₂ = (21−Bezug)/(21−O₂)</div>
+    <div style="font-size:12px;color:var(--ts);line-height:1.7">f<sub>T</sub> <span id="o_nft">–</span> · f<sub>p</sub> <span id="o_nfp">–</span> · f<sub>F</sub> <span id="o_nff">–</span> · f<sub>O₂</sub> <span id="o_nfo2">–</span> (AGR: <span id="o_nfo2agr">–</span>) · O₂ tr. <span id="o_no2eff">–</span></div>
+    <div style="font-size:11.5px;color:var(--tm);margin-top:4px">f<sub>T</sub> = (ϑ+273,15)/273,15 · f<sub>p</sub> = 1013,25/p · f<sub>F</sub> = 100/(100−φ) · f<sub>O₂</sub> = (21−Bezug)/(21−O₂)</div>
   </div>
 <div class="grp">Komponente 1 — Häkchen = wird noch angewendet</div>
-  <div class="card tight"><div class="row"><label>Bezeichnung</label><input id="nb_name_1" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="CO"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_1" type="number" step="any" inputmode="decimal" value="50"></div><div class="row"><label>Temp.-Normierung f_T</label><input id="nb_swT_1" type="checkbox"></div><div class="row"><label>Druck-Normierung f_p</label><input id="nb_swp_1" type="checkbox"></div><div class="row"><label>Feuchte f_F (Wert liegt feucht vor)</label><input id="nb_swF_1" type="checkbox" checked></div><div class="row"><label>O₂-Bezug f_O₂</label><input id="nb_swO2_1" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_1" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_1" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_1" type="number" step="any" inputmode="decimal"></div></div>
-  <details class="katgrp" style="margin-top:9px"><summary>Komponente 2 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_2" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="NOx"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_2" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Temp.-Normierung f_T</label><input id="nb_swT_2" type="checkbox"></div><div class="row"><label>Druck-Normierung f_p</label><input id="nb_swp_2" type="checkbox"></div><div class="row"><label>Feuchte f_F (Wert liegt feucht vor)</label><input id="nb_swF_2" type="checkbox" checked></div><div class="row"><label>O₂-Bezug f_O₂</label><input id="nb_swO2_2" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_2" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_2" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_2" type="number" step="any" inputmode="decimal"></div></details>
-  <details class="katgrp" style="margin-top:9px"><summary>Komponente 3 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_3" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="Ges.-C"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_3" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Temp.-Normierung f_T</label><input id="nb_swT_3" type="checkbox"></div><div class="row"><label>Druck-Normierung f_p</label><input id="nb_swp_3" type="checkbox"></div><div class="row"><label>Feuchte f_F (Wert liegt feucht vor)</label><input id="nb_swF_3" type="checkbox" checked></div><div class="row"><label>O₂-Bezug f_O₂</label><input id="nb_swO2_3" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_3" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_3" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_3" type="number" step="any" inputmode="decimal"></div></details>
+  <div class="card tight"><div class="row"><label>Bezeichnung</label><input id="nb_name_1" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="CO"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_1" type="number" step="any" inputmode="decimal" value="50"></div><div class="row"><label>f<sub>T</sub> Temperatur</label><input id="nb_swT_1" type="checkbox"></div><div class="row"><label>f<sub>p</sub> Druck</label><input id="nb_swp_1" type="checkbox"></div><div class="row"><label>f<sub>F</sub> Feuchte (Wert liegt feucht vor)</label><input id="nb_swF_1" type="checkbox" checked></div><div class="row"><label>f<sub>O₂</sub> O₂-Bezug</label><input id="nb_swO2_1" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_1" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_1" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_1" type="number" step="any" inputmode="decimal"></div></div>
+  <details class="katgrp" style="margin-top:9px"><summary>Komponente 2 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_2" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="NOx"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_2" type="number" step="any" inputmode="decimal"></div><div class="row"><label>f<sub>T</sub> Temperatur</label><input id="nb_swT_2" type="checkbox"></div><div class="row"><label>f<sub>p</sub> Druck</label><input id="nb_swp_2" type="checkbox"></div><div class="row"><label>f<sub>F</sub> Feuchte (Wert liegt feucht vor)</label><input id="nb_swF_2" type="checkbox" checked></div><div class="row"><label>f<sub>O₂</sub> O₂-Bezug</label><input id="nb_swO2_2" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_2" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_2" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_2" type="number" step="any" inputmode="decimal"></div></details>
+  <details class="katgrp" style="margin-top:9px"><summary>Komponente 3 (optional)</summary><div class="row"><label>Bezeichnung</label><input id="nb_name_3" type="text" autocomplete="off" style="width:120px;text-align:left" placeholder="Ges.-C"></div><div class="row"><label>c gemessen (mg/m³)</label><input id="nb_c_3" type="number" step="any" inputmode="decimal"></div><div class="row"><label>f<sub>T</sub> Temperatur</label><input id="nb_swT_3" type="checkbox"></div><div class="row"><label>f<sub>p</sub> Druck</label><input id="nb_swp_3" type="checkbox"></div><div class="row"><label>f<sub>F</sub> Feuchte (Wert liegt feucht vor)</label><input id="nb_swF_3" type="checkbox" checked></div><div class="row"><label>f<sub>O₂</sub> O₂-Bezug</label><input id="nb_swO2_3" type="checkbox" checked></div><div class="row"><label>AGR-Deckelung</label><input id="nb_swAGR_3" type="checkbox"></div><div class="row"><label>ELV bezogen (mg/m³)</label><input id="nb_elv_3" type="number" step="any" inputmode="decimal"></div><div class="row"><label>Unsicherheit U (%)</label><input id="nb_u_3" type="number" step="any" inputmode="decimal"></div></details>
   <div class="grp">Bewertung</div>
   <div id="nb_results"></div>
-  <div class="note">Mentales Prinzip je Komponente: „Was muss an diesem Wert noch umgerechnet werden?" — Häkchen setzen für jeden Schritt, den das Gerät nicht schon erledigt hat (f_T/f_p bei Betriebszustand, f_F wenn der Wert feucht vorliegt, O₂-Bezug, AGR-Deckelung je nach Abgasreinigung). Ampel: grün eingehalten, orange ELV im Unsicherheitsband c ± U, rot überschritten. Ohne U hartes Grün/Rot.</div>
+  <details class="katgrp"><summary>ⓘ Hinweise</summary><div class="note" style="margin-top:4px">Mentales Prinzip je Komponente: „Was muss an diesem Wert noch umgerechnet werden?" — Häkchen setzen für jeden Schritt, den das Gerät nicht schon erledigt hat (f_T/f_p bei Betriebszustand, f_F wenn der Wert feucht vorliegt, O₂-Bezug, AGR-Deckelung je nach Abgasreinigung). Ampel: grün eingehalten, orange ELV im Unsicherheitsband c ± U, rot überschritten. Ohne U hartes Grün/Rot.</div></details>
   <div class="grp">Hilfen (einklappbar)</div>
   <details class="katgrp"><summary>Feuchte: Vol-% ↔ g/m³</summary>
     <div class="row"><label>Feuchte (Vol-%)</label><input id="u_vol" type="number" step="any" inputmode="decimal" value="3.175"></div>
@@ -290,10 +296,11 @@ svg{display:block}
   <div class="mhead" id="vol_mhead">–</div>
   <div class="card">
     <div class="grid2" style="margin-bottom:10px">
-      <div class="m"><div class="l">V̇ Betrieb</div><div class="v"><span id="o_volbetrieb">–</span> <span class="u">m³/h</span></div></div>
-      <div class="m"><div class="l">V̇ i.N. tr.</div><div class="v sm"><span id="o_volnorm">–</span> <span class="u">Nm³/h</span></div></div>
+      <div class="m"><div class="l">V̇<sub>Betrieb</sub></div><div class="v"><span id="o_volbetrieb">–</span> <span class="u">m³/h</span></div></div>
+      <div class="m"><div class="l">V̇<sub>N, tr.</sub></div><div class="v sm"><span id="o_volnorm">–</span> <span class="u">Nm³/h</span></div></div>
     </div>
-    <div style="font-size:12px;color:var(--ts);line-height:1.7">v_Kanal <span id="o_volv">–</span> m/s · <span id="o_meanlbl">Δp Wurzelmittel</span> <span id="o_sdeq">–</span> <span id="o_meanunit">Pa</span> · Punkte <span id="o_sdn">–</span> · Wasserdampf-Taupunkt <span id="o_taupunkt">–</span> °C</div>
+    <div class="tgr"><span>Abgasgeschwindigkeit v</span><span class="v2"><span id="o_volv">–</span></span><span class="u2">m/s</span><span id="o_meanlbl">mittlerer Staudruck Δp</span><span class="v2"><span id="o_sdeq">–</span></span><span class="u2" id="o_meanunit">Pa</span><span>Taupunkt</span><span class="v2"><span id="o_taupunkt">–</span></span><span class="u2">°C</span></div>
+    <div id="o_ptwarn" style="font-size:12px;color:var(--twn);margin-top:7px"></div>
     <div id="o_volwarn" style="font-size:12px;color:var(--tno);margin-top:8px"></div>
     <div id="o_feuchtehint" style="font-size:11.5px;color:var(--twn);margin-top:6px"></div>
   </div>
@@ -306,7 +313,7 @@ svg{display:block}
     <div class="row"><label>Barometer (hPa)</label><input id="hub_pbaro" type="number" step="any" inputmode="decimal" value="995"></div>
     <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="hub_dpstat" aria-label="Vorzeichen wechseln">±</button><input id="hub_dpstat" type="number" step="any" inputmode="decimal" value="9"></span></div>
     <div class="row"><label>Abgastemp. (°C)</label><input id="hub_tkanal" type="number" step="any" inputmode="decimal" value="166.5"></div>
-    <div class="row"><label>Messprinzip</label><select id="hub_typ"><option>Prandtl-Staurohr</option><option>S-Staurohr (Pitot)</option><option>Flügelrad (m/s)</option></select></div>
+    <div class="row"><label>Messeinrichtung</label><select id="hub_typ"><option value="Prandtl-Staurohr">Prandtl</option><option value="S-Staurohr (Pitot)">S-Pitot</option><option value="Flügelrad (m/s)">Flügelrad</option></select></div>
     <div class="row"><label>Staurohr-/Kalibrierfaktor</label><input id="hub_spitot" type="number" step="any" inputmode="decimal" value="1.005"></div>
     <div class="row"><label>Feuchte-Modus</label><select id="hub_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option><option>rel. % (ϑ)</option></select></div>
     <div class="row"><label>Feuchte-Wert</label><input id="hub_fw" type="number" step="any" inputmode="decimal" value="3.175"></div>
@@ -316,34 +323,34 @@ svg{display:block}
   </div>
   <div class="grp">Strömungs-Checks (VDI 2066 §7.2 · je Einzelpunkt)</div>
   <div class="card tight"><div id="o_sdchk" class="chklist"></div></div>
-  <div class="grp" id="sdhdr">Staudrücke Δp (Pa) — bis 20 Punkte</div>
+  <div class="grp" id="sdhdr">Staudrücke Δp (Pa)</div>
   <div class="card">
     <div class="sdgrid"><div class="sdcell"><span id="sdlab_1">1</span><input id="sd_1" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_2">2</span><input id="sd_2" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_3">3</span><input id="sd_3" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_4">4</span><input id="sd_4" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_5">5</span><input id="sd_5" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_6">6</span><input id="sd_6" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_7">7</span><input id="sd_7" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_8">8</span><input id="sd_8" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_9">9</span><input id="sd_9" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_10">10</span><input id="sd_10" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_11">11</span><input id="sd_11" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_12">12</span><input id="sd_12" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_13">13</span><input id="sd_13" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_14">14</span><input id="sd_14" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_15">15</span><input id="sd_15" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_16">16</span><input id="sd_16" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_17">17</span><input id="sd_17" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_18">18</span><input id="sd_18" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_19">19</span><input id="sd_19" type="number" step="any" inputmode="decimal"></div><div class="sdcell"><span id="sdlab_20">20</span><input id="sd_20" type="number" step="any" inputmode="decimal"></div></div>
   </div>
   <div class="grp">Strömungsprofil (idealisiert)</div>
   <div class="card"><div id="o_profile"></div></div>
-  <div class="note">Volumenstrom rechnet aus Gaszustand, Δp-Wurzelmittel und der Geometrie der Messplatz-Beurteilung — auch ohne Staubmessung. „An Staubauswertung übergeben" reicht Gaszustand und Δp ans Iso-Blatt durch (dort gesperrt, Wert angezeigt); abgewählt werden sie im Iso-Blatt selbst eingegeben. Übergeben wird das Wurzelmittel Δp = ((1/n)·Σ√Δpᵢ)².</div>
+  <details class="katgrp"><summary>ⓘ Hinweise</summary><div class="note" style="margin-top:4px">Volumenstrom rechnet aus Gaszustand, mittlerem Staudruck und der Geometrie des Messplatzes — auch ohne Staubmessung. „An Staubauswertung übergeben" reicht Gaszustand und Δp an das Staubblatt durch (dort gesperrt); abgewählt werden sie im Staubblatt selbst eingegeben. Mittlerer Staudruck Δp = ((1/n)·Σ√Δpᵢ)².</div></details>
 </section>
 
 <section class="scr" id="mp">
   <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Messplatz</span></div>
   <div class="mhead" id="mp_mhead">–</div>
   <div class="card">
-    <div class="m" style="margin-bottom:10px"><div class="l">hydraul. Durchmesser d_h</div><div class="v"><span id="o_mpdh">–</span> <span class="u">m</span></div></div>
+    <div class="m" style="margin-bottom:10px"><div class="l">hydr. Durchmesser D<sub>h</sub></div><div class="v"><span id="o_mpdh">–</span> <span class="u">m</span></div></div>
     <div id="o_mpchk" class="chklist"></div>
   </div>
   <div class="grp">Kanalform &amp; Abmessungen</div>
   <div class="card tight">
     <div class="row"><label>Form</label><select id="iso_form"><option>rund</option><option>eckig</option></select></div>
-    <div class="row" id="mprow_drund"><label>d rund (mm)</label><input id="iso_drund" type="number" step="any" inputmode="decimal" value="800"></div>
-    <div class="row" id="mprow_aeckig"><label>a eckig (mm)</label><input id="iso_aeckig" type="number" step="any" inputmode="decimal" value="600"></div>
-    <div class="row" id="mprow_beckig"><label>b eckig (mm)</label><input id="iso_beckig" type="number" step="any" inputmode="decimal" value="800"></div>
+    <div class="row" id="mprow_drund"><label>Durchmesser ⌀ (mm)</label><input id="iso_drund" type="number" step="any" inputmode="decimal" value="800"></div>
+    <div class="row" id="mprow_aeckig"><label>a (mm)</label><input id="iso_aeckig" type="number" step="any" inputmode="decimal" value="600"></div>
+    <div class="row" id="mprow_beckig"><label>b (mm)</label><input id="iso_beckig" type="number" step="any" inputmode="decimal" value="800"></div>
   </div>
   <div class="grp">Messstrecke &amp; Strömung</div>
   <div class="card tight">
     <div class="row"><label>Einlaufstrecke (m)</label><input id="mp_ein" type="number" step="any" inputmode="decimal" value="6"></div>
     <div class="row"><label>Auslaufstrecke (m)</label><input id="mp_aus" type="number" step="any" inputmode="decimal" value="3"></div>
-    <div class="row"><label>Abstand Mündung (m)</label><input id="mp_muend" type="number" step="any" inputmode="decimal" value="6"></div>
+    <div class="row"><label>Abstand zur Mündung (m)</label><input id="mp_muend" type="number" step="any" inputmode="decimal" value="6"></div>
     <div class="row"><label>Strömungsverlauf</label><select id="mp_flow"><option>horizontal</option><option>vertikal</option><option>schräg</option></select></div>
     <div class="row"><label>Strömungswinkel</label><select id="mp_winkel"><option>&lt; 15°</option><option>≥ 15°</option></select></div>
   </div>
@@ -361,13 +368,11 @@ svg{display:block}
     </div>
     <div style="margin-bottom:8px"><span class="badge" id="o_mpamp">–</span></div>
     <div style="font-size:12px;color:var(--ts)">Im Staudruck-Netz erfasst: <span id="o_mpist">0</span></div>
-    <div id="o_mpnote" style="font-size:12px;color:var(--twn);margin-top:8px"></div>
   </div>
   <div class="grp">Lage der Messpunkte (ab Wand)</div>
   <div class="card tight"><div id="o_mpdepth" class="dplist"></div></div>
   <div class="grp">Messnetz</div>
   <div class="card"><div id="o_mpsvg" style="display:flex;justify-content:center"></div></div>
-  <div class="note">Form &amp; Abmessungen gelten auch für die Isokinetik-Auswertung. Mindestabstand zur Wand = größerer Wert aus 5 cm und 3 % der Messachsenlänge; „*" = auf diesen Abstand gesetzt, übrige Punkte unverändert. Einlauf &gt; 5·d_h und Auslauf &gt; 2·d_h sind Regeln (rot), Abstand zur Mündung &gt; 5·d_h ist Empfehlung (orange).</div>
 </section>
 
 <section class="scr" id="mess">
@@ -376,7 +381,7 @@ svg{display:block}
   <button class="btn" data-savenew="1">Als neue Messung speichern</button>
   <button class="btn sec" id="btn_update" data-saveupd="1">Aktive Messung aktualisieren</button>
   <div id="messlist"></div>
-  <div class="note">Gespeichert werden alle Eingaben (Geometrie, Gaszustand, Δp-Netz, Messplatz, Probenahme). „Laden" macht eine Messung aktiv und setzt alle Masken darauf. „Aktualisieren" überschreibt die gerade aktive Messung. Die Daten liegen lokal auf dem Gerät.</div>
+  <details class="katgrp"><summary>ⓘ Hinweise</summary><div class="note" style="margin-top:4px">Gespeichert werden alle Eingaben (Geometrie, Gaszustand, Δp-Netz, Messplatz, Probenahme). „Laden" macht eine Messung aktiv und setzt alle Masken darauf. „Aktualisieren" überschreibt die gerade aktive Messung. Die Daten liegen lokal auf dem Gerät.</div></details>
   <div class="grp">Datensicherung (alle Daten)</div>
   <div class="card">
     <button class="btn sec" id="btn_export">Alle Daten exportieren</button>
@@ -387,7 +392,8 @@ svg{display:block}
       <textarea id="imp_text" placeholder="Sicherungstext hier einfügen …" style="width:100%;min-height:88px;font-size:12px;font-family:ui-monospace,Menlo,monospace;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);box-sizing:border-box;resize:vertical"></textarea>
       <button class="btn sec" id="btn_importtext" style="margin-top:2px">Aus Text importieren</button>
     </details>
-    <div class="note" style="margin-top:8px">Sichert Messungen (und später den Anlagen-Katalog) als Datei — für Backup oder Gerätewechsel. Import <b>ersetzt</b> die Daten auf diesem Gerät; im Zweifel vorher exportieren.</div>
+    <div class="note" id="o_lastexp" style="margin-top:8px"></div>
+    <details class="katgrp" style="margin-top:6px"><summary>ⓘ Hinweise</summary><div class="note" style="margin-top:4px">Sichert Messungen und den Anlagen-Katalog als Datei — für Backup oder Gerätewechsel. Import <b>ersetzt</b> die Daten auf diesem Gerät; im Zweifel vorher exportieren.</div></details>
   </div>
 </section>
 
@@ -405,7 +411,7 @@ svg{display:block}
   <div class="grp">Anlagen</div>
   <div class="card tight"><div class="row" style="border:none"><label>Suche</label><input id="kat_such" type="search" autocomplete="off" style="width:190px;text-align:left" placeholder="Kunde, Standort, Anlage"></div></div>
   <div id="katlist"></div>
-  <div class="note">Eine Anlage speichert die komplette aktuelle Konfiguration (Geometrie, Messplatz, Messprinzip, Gaszustand als Startwerte). Das Anwenden auf eine neue Messung folgt im nächsten Schritt. Anlagen sind in der Datensicherung enthalten.</div>
+  <div class="note">Eine Anlage speichert die komplette aktuelle Konfiguration (Geometrie, Messplatz, Messeinrichtung, Gaszustand als Startwerte). Das Anwenden auf eine neue Messung folgt im nächsten Schritt. Anlagen sind in der Datensicherung enthalten.</div>
 </section>
 
 </div>
@@ -531,7 +537,7 @@ function computeSig(){
   if(hasF&&fOk){if(cv)cv.style.display="";setT("o_swl2",othUnit);setT("o_swert2",fmt(rng==="conv"?wert/f:wert*f,3));}
   else if(cv)cv.style.display="none";
   var qb=gid("sig_quick");
-  if(qb){qb.style.display=hasF?"":"none";setT("s_qdevl",c.unit);setT("s_qcnvl",c.tgt||"umgerechnet");}
+  if(qb){qb.style.display=hasF?"":"none";setT("s_qdevl",c.unit);setT("s_qcnvl",c.tgt||"umgerechnet");setT("o_qfak",(hasF&&fOk)?("× "+fmt(f,3)):"× –");}
   var us=gid("s_wertunit");
   if(us){us.style.display=hasF?"":"none";
     if(hasF){us.options[0].text=c.unit;us.options[1].text=c.tgt;}
@@ -576,11 +582,12 @@ function computeNorm(){
       var st,txt;
       if(Uabs>0){
         if(cbez+Uabs<elv){st="ok";txt="eingehalten";}
-        else if(cbez-Uabs>elv){st="bad";txt="ELV überschritten";}
-        else{st="warn";txt="ELV im Unsicherheitsband";}
+        else if(cbez-Uabs>elv){st="bad";txt="überschritten";}
+        else{st="warn";txt="im Unsicherheitsband";}
       }else{
-        if(cbez<=elv){st="ok";txt="eingehalten";}else{st="bad";txt="ELV überschritten";}
+        if(cbez<=elv){st="ok";txt="eingehalten";}else{st="bad";txt="überschritten";}
       }
+      txt+=" · ELV "+fmt(elv,1);
       var bg=st==="ok"?"var(--bok)":(st==="bad"?"var(--bno)":"var(--bwn)");
       var fg=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":"var(--twn)");
       badge='<span class="badge" style="background:'+bg+';color:'+fg+'">'+txt+'</span>';
@@ -592,9 +599,8 @@ function computeNorm(){
       +'<div class="m"><div class="l">c bezogen</div><div class="v sm"><span>'+fmt(cbez,3)+'</span> <span class="u">mg/m³</span></div></div>'
       +'<div class="m"><div class="l">Rohwert bei ELV</div><div class="v sm"><span>'+fmt(roh,3)+'</span> <span class="u">mg/m³</span></div></div>'
       +'</div>'
-      +'<div style="font-size:12px;color:var(--ts);line-height:1.7;margin-top:7px">f_T '+fmt(fTi,3)+' · f_p '+fmt(fpi,3)+' · f_F '+fmt(fFi,3)+' · f_O₂ '+fmt(fo2i,3)+' · gesamt '+fmt(ges,3)
-      +(isFinite(elv)?' · ELV '+fmt(elv,1):'')
-      +(Uabs>0?' · U ±'+fmt(Uabs,2)+' mg/m³':'')
+      +'<div class="tgr" style="margin-top:8px"><span>f<sub>T</sub></span><span class="v2">'+fmt(fTi,3)+'</span><span></span><span>f<sub>p</sub></span><span class="v2">'+fmt(fpi,3)+'</span><span></span><span>f<sub>F</sub></span><span class="v2">'+fmt(fFi,3)+'</span><span></span><span>f<sub>O₂</sub></span><span class="v2">'+fmt(fo2i,3)+'</span><span></span><span>gesamt</span><span class="v2">'+fmt(ges,3)+'</span><span></span>'
+      +(Uabs>0?'<span>U</span><span class="v2">±'+fmt(Uabs,2)+'</span><span class="u2">mg/m³</span>':'')
       +'</div></div>';
   }
   res.innerHTML=html||'<div class="empty">Komponente 1 oben eingeben — Bewertung erscheint hier.</div>';
@@ -606,9 +612,9 @@ function applyHandover(use,dpeq,n){
     if(use){ss.value=hh.value;lockField(HANDOVER[i][1],true);}else lockField(HANDOVER[i][1],false);}
   var dz=gid("iso_dpstau");
   if(use&&isFinite(dpeq)&&n>0){dz.value=dpeq.toFixed(3);lockField("iso_dpstau",true);setT("iso_dpnote","Δp aus Volumenstrom-Netz");}
-  else{lockField("iso_dpstau",false);setT("iso_dpnote",use?"Netz leer — Δp im Iso-Blatt eingeben":"");}
-  setT("sd_hint",use?(n>0?"Gaszustand & Δp werden ans Iso-Blatt übergeben.":"Gaszustand wird übergeben; Δp-Netz noch leer."):"");
-  setT("iso_handnote",use?"Gaszustand & Δp aus Volumenstrom übernommen — Felder gesperrt.":"");
+  else{lockField("iso_dpstau",false);setT("iso_dpnote",use?"Netz leer — Δp im Staubblatt eingeben":"");}
+  setT("sd_hint",use?(n>0?"Gaszustand & Δp werden an das Staubblatt übergeben.":"Gaszustand wird übergeben; Δp-Netz noch leer."):"");
+  var hnx=gid("iso_handnote");if(hnx)hnx.innerHTML=use?'Gaszustand &amp; Δp aus Volumenstrom übernommen — Felder gesperrt. <button class="lnk" data-go="staudruck">→ ändern im Volumenstrom</button>':"";
 }
 var netCount=0,netLabels=[],netShort=[],netPosFrac=[],netAxisOf=[];
 function computeNet(){
@@ -655,11 +661,13 @@ function computeVol(){
   var Vb=v*A*3600,Vn=Vb*((Tn+273.15)/(g.tk+273.15))*(g.pk/pn)*(1-g.phi/100);
   var pH2O=(g.phi/100)*g.pk,td=NaN;if(isFinite(pH2O)&&pH2O>0){var gg=Math.log(pH2O/6.112);td=243.12*gg/(17.62-gg);}
   setT("o_volv",fmt(v,2));setT("o_volbetrieb",fmt(Vb,0));setT("o_volnorm",fmt(Vn,0));setT("o_taupunkt",fmt(td,1));
-  setT("o_sdeq",fmt(fm.mean,fm.vane?2:3));setT("o_sdn",fm.n?String(fm.n):"–");
-  setT("o_meanlbl",fm.vane?"v Mittel (arithm.)":"Δp Wurzelmittel");setT("o_meanunit",fm.vane?"m/s":"Pa");
-  var hdr=gid("sdhdr");if(hdr)hdr.textContent=(fm.vane?"Geschwindigkeiten v (m/s)":"Staudrücke Δp (Pa)")+" — bis 20 Punkte";
+  setT("o_sdeq",fmt(fm.mean,fm.vane?2:3));
+  setT("o_meanlbl",fm.vane?"mittlere Geschwindigkeit v":"mittlerer Staudruck Δp");setT("o_meanunit",fm.vane?"m/s":"Pa");
+  setT("o_ptwarn",(netCount>0&&fm.n>0&&fm.n<netCount)?(fm.n+" von "+netCount+" Punkten gefüllt"):"");
+  var hdr=gid("sdhdr");if(hdr)hdr.textContent=fm.vane?"Geschwindigkeiten v (m/s)":"Staudrücke Δp (Pa)";
   var dpHand=fm.vane?(g.rhob*v*v/(2*S*S)):fm.mean;
   applyHandover(chk("sd_use"),dpHand,fm.n);
+  var tde=gid("o_taupunkt");if(tde)tde.style.color=(isFinite(td)&&isFinite(g.tk)&&g.tk<td)?"var(--tno)":"";
   var warn="";if(isFinite(td)&&isFinite(g.tk)&&g.tk<td)warn="Abgastemperatur "+fmt(g.tk,1)+" °C unter Taupunkt "+fmt(td,1)+" °C — Kondensation/Tropfen möglich (Out-Stack erwägen).";
   setT("o_volwarn",warn);
   var fhint="";if(val("hub_modus")==="rel. % (ϑ)"&&isFinite(g.tk)&&g.tk>90)fhint="rel. Feuchte über ~90 °C: Fühler ungenau — besser g/m³ oder Vol-% aus Kondensationsmessung.";
@@ -781,7 +789,8 @@ function computeMP(){
     var nd=Math.max(2,2*Math.round((parseFloat(val("mp_nd"))||2)/2));
     if(isFinite(A)&&A<0.1){plan=1;depthHTML='<div class="dprow"><span class="dp">Kanalmitte (1 Punkt)</span></div>';svg=svgRound(d,1,[]);}
     else if(isFinite(A)){plan=naxis*nd;var cp=clampset(ndPositions(nd),d);
-      depthHTML='<div><div class="dpgrp">Pro Messachse — '+nd+' Punkte (gilt für alle '+naxis+' Achsen)</div><div class="dprow">'+cp.html+'</div></div>';svg=svgRound(d,naxis,cp.xs);}
+      depthHTML="";for(var ax1=0;ax1<naxis;ax1++)depthHTML+='<div><div class="dpgrp">Achse '+String.fromCharCode(65+ax1)+' — '+nd+' Punkte (Eintauchtiefen)</div><div class="dprow">'+cp.html+'</div></div>';
+      svg=svgRound(d,naxis,cp.xs);}
   }else{
     var a=parseFloat(val("iso_aeckig"))/1000,b=parseFloat(val("iso_beckig"))/1000;
     if(isFinite(a)&&isFinite(b)&&a>0&&b>0){A=a*b;dh=2*a*b/(a+b);}
@@ -789,7 +798,7 @@ function computeMP(){
     var nx=Math.max(1,Math.round(parseFloat(val("mp_nx"))||2)),ny=Math.max(1,Math.round(parseFloat(val("mp_ny"))||2));
     if(isFinite(A)&&A<0.1){plan=1;depthHTML='<div class="dprow"><span class="dp">Kanalmitte (1 Punkt)</span></div>';svg=svgRect(a,b,[a/2],[b/2]);}
     else if(isFinite(A)){plan=nx*ny;var ca=clampset(centers(nx),a),cb=clampset(centers(ny),b);
-      depthHTML='<div><div class="dpgrp">Achse a — '+nx+' Punkte</div><div class="dprow">'+ca.html+'</div></div><div><div class="dpgrp">Achse b — '+ny+' Punkte</div><div class="dprow">'+cb.html+'</div></div>';
+      depthHTML="";for(var ax2=0;ax2<ny;ax2++)depthHTML+='<div><div class="dpgrp">Achse '+(ax2+1)+' — Lage: b '+fmt(cb.xs[ax2]*100,1)+' cm · '+nx+' Punkte (Eintauchtiefen entlang a)</div><div class="dprow">'+ca.html+'</div></div>';
       svg=svgRect(a,b,ca.xs,cb.xs);
       if(a>2*b||b>2*a)noteTxt="Längste Seite > 2× kürzeste — ggf. andere Seiteneinteilung nötig (VDI 2066 Anhang C2).";}
   }
@@ -809,35 +818,23 @@ function computeMP(){
   setT("o_mpist",String(ist));
   var okAll=isFinite(plan)&&isFinite(sollMin)&&structOk&&plan>=sollMin,over=okAll&&plan>sollMin;
   var ampEl=gid("o_mpamp");
-  if(ampEl){ampEl.textContent=isFinite(plan)?(!okAll?"Anforderung nicht erfüllt":(over?"Anforderung übererfüllt":"Anforderung erfüllt")):"–";
+  if(ampEl){ampEl.textContent=isFinite(plan)?(!okAll?"Anforderung nicht erfüllt":(over?String(plan-sollMin)+" über Mindestanzahl":"Anforderung erfüllt")):"–";
     ampEl.style.background=!isFinite(plan)?"var(--s1)":(okAll?"var(--bok)":"var(--bno)");
     ampEl.style.color=!isFinite(plan)?"var(--tm)":(okAll?"var(--tok)":"var(--tno)");}
   var cc=gid("o_mpchk");
   if(cc){
-    function row(st,t){var col=st==="ok"?"var(--tok)":(st==="bad"?"var(--tno)":(st==="warn"?"var(--twn)":"var(--tm)"));return '<div class="chk"><span class="dot" style="background:'+col+'"></span><span>'+t+'</span></div>';}
+    function line(lbl,valTxt,rule,col){return '<span>'+lbl+'</span><span class="v2">'+valTxt+'</span><span style="color:'+col+'">'+rule+'</span>';}
     var H="",ein=parseFloat(val("mp_ein")),aus=parseFloat(val("mp_aus")),mu=parseFloat(val("mp_muend"));
+    var DH='D<sub>h</sub>';
     if(isFinite(dh)&&dh>0){
-      H+=isFinite(ein)?(ein>5*dh?row("ok","Einlauf "+fmt(ein,2)+" m > 5·d_h ("+fmt(5*dh,2)+" m) — Regel erfüllt."):row("bad","Einlauf "+fmt(ein,2)+" m ≤ 5·d_h ("+fmt(5*dh,2)+" m) — Regel verletzt.")):row("na","Einlaufstrecke fehlt.");
-      H+=isFinite(aus)?(aus>2*dh?row("ok","Auslauf "+fmt(aus,2)+" m > 2·d_h ("+fmt(2*dh,2)+" m) — Regel erfüllt."):row("bad","Auslauf "+fmt(aus,2)+" m ≤ 2·d_h ("+fmt(2*dh,2)+" m) — Regel verletzt.")):row("na","Auslaufstrecke fehlt.");
-      H+=isFinite(mu)?(mu>5*dh?row("ok","Mündung "+fmt(mu,2)+" m > 5·d_h — Empfehlung erfüllt."):row("warn","Mündung "+fmt(mu,2)+" m ≤ 5·d_h ("+fmt(5*dh,2)+" m) — Empfehlung (orange).")):row("na","Abstand Mündung fehlt.");
-    }else{H+=row("na","d_h unbekannt — Abmessungen eingeben.");}
-    H+=val("mp_winkel").indexOf("≥")<0?row("ok","Strömungswinkel < 15° — Regel erfüllt."):row("bad","Strömungswinkel ≥ 15° — Regel verletzt.");
-    cc.innerHTML=H;
+      H+=isFinite(ein)?line("Einlaufstrecke",fmt(ein,2)+" m","&gt; 5·"+DH+" ("+fmt(5*dh,2)+" m)",ein>5*dh?"var(--tok)":"var(--tno)"):line("Einlaufstrecke","–","fehlt","var(--tm)");
+      H+=isFinite(aus)?line("Auslaufstrecke",fmt(aus,2)+" m","&gt; 2·"+DH+" ("+fmt(2*dh,2)+" m)",aus>2*dh?"var(--tok)":"var(--tno)"):line("Auslaufstrecke","–","fehlt","var(--tm)");
+      H+=isFinite(mu)?line("Abstand zur Mündung",fmt(mu,2)+" m","&gt; 5·"+DH+" ("+fmt(5*dh,2)+" m)",mu>5*dh?"var(--tok)":"var(--twn)"):line("Abstand zur Mündung","–","fehlt","var(--tm)");
+    }else{H+=line(DH,"–","Abmessungen eingeben","var(--tm)");}
+    var wOk=val("mp_winkel").indexOf("≥")<0;
+    H+=line("Strömungswinkel",val("mp_winkel"),"&lt; 15°",wOk?"var(--tok)":"var(--tno)");
+    cc.innerHTML='<div class="tgr">'+H+'</div>';
   }
-  var msgs=[];
-  if(isFinite(plan)&&isFinite(sollMin)&&!single){
-    if(!structOk){
-      if(rnd){if(naxis<2)msgs.push("Mindestens 2 Messachsen nötig (zwei senkrechte Durchmesser).");if(nd<reqLv)msgs.push("Mindestens "+reqLv+" Punkte je Achse nötig.");}
-      else{msgs.push("Raster in beiden Richtungen ≥ 2 nötig.");}
-    }
-    if(plan<sollMin)msgs.push("Es fehlen "+(sollMin-plan)+" Punkte zur Mindestanzahl ("+sollMin+").");
-    if(over)msgs.push((plan-sollMin)+" Punkte über der Mindestanzahl — kann zu kurze Ein-/Auslaufstrecken kompensieren.");
-  }
-  if(noteTxt)msgs.push(noteTxt);
-  var ein2=parseFloat(val("mp_ein")),aus2=parseFloat(val("mp_aus"));
-  var strFail=(isFinite(dh)&&dh>0)&&((isFinite(ein2)&&ein2<=5*dh)||(isFinite(aus2)&&aus2<=2*dh));
-  if(strFail&&!over)msgs.push("Ein-/Auslaufstrecke verfehlt — erhöhte Messunsicherheit lässt sich durch mehr Messpunkte kompensieren (Punktzahl oben erhöhen).");
-  setT("o_mpnote",msgs.join(" "));
   gid("o_mpdepth").innerHTML=depthHTML||'<div class="dprow"><span class="dp" style="color:var(--tm)">Abmessungen eingeben.</span></div>';
   gid("o_mpsvg").innerHTML=svg||'';
 }
@@ -870,12 +867,14 @@ function activeLabel(){
   var zeit=st?(st+(en?"–"+en:"")):"";
   var pre=curAnl?(curAnl.kunde+" – "+curAnl.standort+" – "+curAnl.anlage+" · "):"";
   var s=pre+"Messung "+nr+(dt?" · "+dt:"")+(zeit?" · "+zeit:"");
+  if(ax>=0&&MESS[ax]&&JSON.stringify(snapshot())!==JSON.stringify(MESS[ax].data))s+=" · geändert";
   if(curAnl&&curAnl.fresh)s+=" — Tageswerte tagesaktuell eingeben!";
   return s;
 }
 function updateHeads(){
   var s=activeLabel();var ids=["iso_mhead","vol_mhead","mp_mhead","save_mhead"];
   for(var i=0;i<ids.length;i++){var e=gid(ids[i]);if(!e)continue;e.textContent=s;e.style.color=(curAnl&&curAnl.fresh)?"var(--twn)":"";e.style.background=(curAnl&&curAnl.fresh)?"var(--bwn)":"";}
+  var al=gid("iso_anllink");if(al)al.style.display=(curAnl&&curAnl.fresh)?"":"none";
   var ax=activeIndex();
   var bi=gid("btn_isosave");if(bi)bi.textContent=ax>=0?("Messung Nr. "+(ax+1)+" aktualisieren"):"Als neue Messung speichern";
   var bu=gid("btn_update");if(bu){bu.disabled=ax<0;bu.style.opacity=ax<0?"0.5":"";}
@@ -890,7 +889,7 @@ function renderList(){
     var d=document.createElement("div");d.className="mi"+(isAct?" active":"");
     d.innerHTML='<div class="top"><span class="nm">'+label+(isAct?'<span class="tag">aktiv</span>':'')+'</span><span class="sm">'+(isFinite(R.iso)?fmt(R.iso,1)+" %":"–")+'</span></div>'+
       (e.anl?'<div class="sm">'+esc(e.anl.kunde)+' – '+esc(e.anl.standort)+' – '+esc(e.anl.anlage)+'</div>':'')+
-      '<div class="sm">Zähler '+fmt(R.zaehler,3)+' m³ · V̇ '+fmt(R.Vdot,0)+' m³/h · Düse '+fmt(R.vor,0)+' mm</div>'+
+      '<div class="tgr" style="margin-top:3px"><span>Zähler</span><span class="v2">'+fmt(R.zaehler,3)+'</span><span class="u2">m³</span><span>V̇</span><span class="v2">'+fmt(R.Vdot,0)+'</span><span class="u2">m³/h</span><span>Düse</span><span class="v2">'+fmt(R.vor,0)+'</span><span class="u2">mm</span></div>'+
       '<div class="acts"><button class="ld">Laden</button><button class="del">Löschen</button></div>';
     d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);setCurAnl(e.anl?{id:e.anl.id,kunde:e.anl.kunde,standort:e.anl.standort,anlage:e.anl.anlage,fresh:false}:null);applySnap(e.data);renderList();show("iso");});
     d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();updateHeads();});
@@ -906,7 +905,7 @@ function saveKat(){DB.set(KATK,ANL);}
 function katLabel(a){return a.kunde+" – "+a.standort+" – "+a.anlage;}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
 function katEntry(a){
-  var g=a.data||{},geo=(g.iso_form==="rund")?("rund · Ø "+(g.iso_drund||"–")+" mm"):("eckig · "+(g.iso_aeckig||"–")+" × "+(g.iso_beckig||"–")+" mm");
+  var g=a.data||{},geo=(g.iso_form==="rund")?("rund · ⌀ "+(g.iso_drund||"–")+" mm"):("eckig · "+(g.iso_aeckig||"–")+" × "+(g.iso_beckig||"–")+" mm");
   var d=document.createElement("div");d.className="mi";
   d.innerHTML='<div class="top"><span class="nm">'+esc(a.anlage)+'</span><span class="sm">'+geo+'</span></div>'+
     '<div class="acts"><button class="ap">Anwenden</button><button class="del">Löschen</button></div>';
@@ -984,8 +983,11 @@ function saveFile(name,text){
   try{if(blob&&URL&&URL.createObjectURL){var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(url);}catch(_){}},1500);return true;}}catch(e){}
   return false;
 }
-function doExportFile(){var txt=JSON.stringify(buildBackup());if(!saveFile(backupName(),txt)){showExportText(txt);alert("Datei-Export nicht möglich — Sicherung wurde als Text bereitgestellt (kopieren und sichern).");}}
-function doExportText(){showExportText(JSON.stringify(buildBackup()));}
+var LEXP="wkz_lastexp_v1";
+function markExport(){DB.set(LEXP,new Date().toISOString());showLastExp();}
+function showLastExp(){DB.get(LEXP).then(function(v){if(!v)return;var d2=new Date(v);setT("o_lastexp","zuletzt gesichert: "+("0"+d2.getDate()).slice(-2)+"."+("0"+(d2.getMonth()+1)).slice(-2)+"."+d2.getFullYear());},function(){});}
+function doExportFile(){var txt=JSON.stringify(buildBackup());if(!saveFile(backupName(),txt)){showExportText(txt);alert("Datei-Export nicht möglich — Sicherung wurde als Text bereitgestellt (kopieren und sichern).");}markExport();}
+function doExportText(){showExportText(JSON.stringify(buildBackup()));markExport();}
 function applyImport(obj){
   if(!obj||obj.app!=="wkz"||!obj.data){alert("Keine gültige Sicherung.");return;}
   if(!confirm("Import ersetzt die aktuellen Daten auf diesem Gerät. Fortfahren?"))return;
@@ -1006,8 +1008,7 @@ function importFromText(){var ta=gid("imp_text");if(!ta)return;var s=(ta.value||
 function importFromFile(file){var fr=new FileReader();fr.onload=function(){var o;try{o=JSON.parse(fr.result);}catch(e){alert("Datei ist keine gültige Sicherung (JSON-Fehler).");return;}applyImport(o);};fr.onerror=function(){alert("Datei konnte nicht gelesen werden.");};fr.readAsText(file);}
 
 function show(id){var s=document.querySelectorAll(".scr");for(var i=0;i<s.length;i++)s[i].style.display="none";var t=gid(id);if(t)t.style.display="block";window.scrollTo(0,0);}
-var gos=document.querySelectorAll("[data-go]");
-for(var i=0;i<gos.length;i++)(function(el){el.addEventListener("click",function(){show(el.getAttribute("data-go"));});})(gos[i]);
+document.querySelector(".app").addEventListener("click",function(e){var el=e.target;while(el&&el!==document.body){if(el.getAttribute&&el.getAttribute("data-go")){show(el.getAttribute("data-go"));return;}el=el.parentNode;}});
 function bindBtn(sel,fn){var a=document.querySelectorAll(sel);for(var j=0;j<a.length;j++)a[j].addEventListener("click",fn);}
 bindBtn("[data-savenew]",saveNew);bindBtn("[data-saveupd]",saveUpdate);bindBtn("[data-savesmart]",saveSmart);
 (function(){
@@ -1063,7 +1064,7 @@ function normQuick(from){
 show("home");
 (function boot(){
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();renderKat();recompute();}
+  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();renderKat();showLastExp();recompute();}
   Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR),DB.get(KATK),DB.get(ANLCUR)]).then(function(r){
     MESS=Array.isArray(r[0])?r[0]:[];
     ANL=Array.isArray(r[3])?r[3]:[];
