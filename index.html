@@ -1029,9 +1029,6 @@ function quickUpdate(from){
   if(from==="dev"){var v=parseFloat(a.value);b.value=isFinite(v)?trim(v*f):"";}
   else{var w=parseFloat(b.value);a.value=isFinite(w)?trim(w/f):"";}
 }
-(function(){var ob=gid("nb_o2basis");if(!ob)return;ob.addEventListener("change",function(){
-  if(/feucht/.test(ob.value))for(var i=1;i<=3;i++){var e=gid("nb_swF_"+i);if(e)e.checked=true;}
-});})();
 function normQuick(from){
   var t=parseFloat(val("u_nt2")),p=parseFloat(val("u_np2"));
   var a=gid("u_ncb"),b=gid("u_ncn");
