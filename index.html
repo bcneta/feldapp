@@ -257,12 +257,18 @@ svg{display:block}
     </div>
     <div class="row"><label>g/m³ (feucht) →</label><input id="u_gm" type="number" step="any" inputmode="decimal" value="25.52"></div>
     <div class="m" style="margin:8px 0"><div class="l">→ Feuchte (Vol-%)</div><div class="v sm"><span id="o_uvol">–</span></div></div>
-    <div class="grp" style="margin-top:12px">rel. Luftfeuchte → g/m³ (z. B. Verbrennungsluft)</div>
+    <div class="grp" style="margin-top:12px">Verbrennungsluft: rel. Feuchte → Feuchteanteil</div>
     <div class="row"><label>Lufttemp. (°C)</label><input id="u_rlt" type="number" step="any" inputmode="decimal" value="23"></div>
     <div class="row"><label>rel. Feuchte (%)</label><input id="u_rlf" type="number" step="any" inputmode="decimal" value="43.5"></div>
+    <div class="row"><label>Barometer (hPa)</label><input id="u_rlb" type="number" step="any" inputmode="decimal" value="995"></div>
+    <div class="row"><label>stat. Druck (Pa)</label><span class="ne"><button type="button" class="pm" data-pm="u_rls" aria-label="Vorzeichen wechseln">±</button><input id="u_rls" type="number" step="any" inputmode="decimal" value="0"></span></div>
     <div class="grid2" style="margin:8px 0">
-      <div class="m"><div class="l">abs. Feuchte</div><div class="v sm"><span id="o_urlgm">–</span> <span class="u">g/m³</span></div></div>
-      <div class="m"><div class="l">Sättigung bei ϑ</div><div class="v sm"><span id="o_urlsat">–</span> <span class="u">g/m³</span></div></div>
+      <div class="m"><div class="l">Dampfdruck p_w</div><div class="v sm"><span id="o_urlpw">–</span> <span class="u">hPa</span></div></div>
+      <div class="m"><div class="l">Feuchte</div><div class="v sm"><span id="o_urlvol">–</span> <span class="u">Vol-%</span></div></div>
+    </div>
+    <div class="grid2" style="margin:8px 0">
+      <div class="m"><div class="l">Wassergehalt i.N.</div><div class="v sm"><span id="o_urlgn">–</span> <span class="u">g/m³</span></div></div>
+      <div class="m"><div class="l">Beladung</div><div class="v sm"><span id="o_urlgkg">–</span> <span class="u">g/kg tr. Luft</span></div></div>
     </div>
   </details>
   <details class="katgrp"><summary>Kanaldruck: Barometer + stat. Druck</summary>
@@ -540,10 +546,12 @@ function computeUm(){
   setT("o_uwf",fmt(vol*kH2O,3));setT("o_uwt",fmt(vol*kH2O*100/(100-vol),3));
   setT("o_uvol",fmt(num("u_gm")/kH2O,3));
   setT("o_up",fmt(num("u_baro")+num("u_stat")/100,3));
-  var rt=num("u_rlt"),rf=num("u_rlf");
-  var gsat=satP(rt)*100/(461.5*(rt+273.15))*1000;
-  setT("o_urlsat",fmt(gsat,2));
-  setT("o_urlgm",fmt(gsat*rf/100,2));
+  var rt=num("u_rlt"),rf=num("u_rlf"),pt=num("u_rlb")+num("u_rls")/100;
+  var pw=satP(rt)*rf/100,volp=pw/pt*100;
+  setT("o_urlpw",fmt(pw,2));
+  setT("o_urlvol",fmt(volp,3));
+  setT("o_urlgn",fmt(volp*kH2O,2));
+  setT("o_urlgkg",fmt(622*pw/(pt-pw),2));
 }
 function computeNorm(){
   var phi=num("nb_phi"),t=num("nb_t"),p=num("nb_p"),o2=num("nb_o2"),o2b=num("nb_o2b");
