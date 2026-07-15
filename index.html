@@ -98,6 +98,14 @@ body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-i
 .tgr .u2{color:var(--tm)}
 .lnk{background:none;border:none;color:var(--acc);font-size:inherit;font-family:inherit;padding:0;cursor:pointer;text-decoration:underline}
 .chip{font-size:12px;padding:5px 10px;border-radius:8px;background:var(--s1);border:.5px solid var(--bd);color:var(--ts);cursor:pointer;font-family:inherit}
+.kedit{margin-top:9px;border-top:.5px solid var(--bd);padding-top:9px}
+.kedit input[type=number],.kedit input[type=text]{font-size:14px;padding:7px;border:.5px solid var(--bds);border-radius:8px;background:var(--s2);color:var(--tp);font-family:inherit;min-width:0}
+.kedit textarea{width:100%;min-height:64px;font-size:13px;font-family:inherit;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);box-sizing:border-box;resize:vertical}
+.kedit .erow{display:flex;gap:6px;align-items:center;padding:5px 0}
+.kedit .erow input.e_n{flex:1;text-align:left}
+.kedit .erow input.e_e{width:76px;text-align:right}
+.kedit .erow label{font-size:12px;color:var(--ts);display:flex;gap:4px;align-items:center;flex:none}
+.kedit .el{font-size:11.5px;color:var(--tm);padding:2px 0}
 .nozcmp{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0}
 .nz{font-size:12.5px;padding:5px 9px;border-radius:8px;font-variant-numeric:tabular-nums}
 .nz.sel{outline:2px solid var(--acc);outline-offset:1px}
@@ -130,6 +138,7 @@ svg{display:block}
     <button class="tool" data-go="sig"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 4 14 2.5-7H21"/></svg></span><b>mA-Wandler</b></button>
     <button class="tool" data-go="norm"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></svg></span><b>Normierung</b></button>
     <button class="tool" data-go="kat"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 11h16"/></svg></span><b>Katalog</b></button>
+    <button class="tool" data-go="pm"><span class="ic"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 12l2.2 2.2L15.5 9.5"/><path d="M8 17h8"/></svg></span><b>Prüfmittel</b></button>
   </div>
   <div class="note">Tipp: In Safari öffnen, dann „Teilen → Zum Home-Bildschirm" — danach App-Icon, Vollbild, offline. Messungen werden lokal auf dem Gerät gespeichert.</div>
 </section>
@@ -411,7 +420,36 @@ svg{display:block}
   <div class="grp">Anlagen</div>
   <div class="card tight"><div class="row" style="border:none"><label>Suche</label><input id="kat_such" type="search" autocomplete="off" style="width:190px;text-align:left" placeholder="Kunde, Standort, Anlage"></div></div>
   <div id="katlist"></div>
-  <div class="note">Eine Anlage speichert die komplette aktuelle Konfiguration (Geometrie, Messplatz, Messeinrichtung, Gaszustand als Startwerte). Das Anwenden auf eine neue Messung folgt im nächsten Schritt. Anlagen sind in der Datensicherung enthalten.</div>
+  <div class="note">Eine Anlage speichert die komplette aktuelle Konfiguration als Startwerte (Erwartungswerte) und zusätzlich Grenzwerte (ELV je Komponente, AGR, O₂-Bezug) sowie eine Notiz. „Anwenden" befüllt die Masken, „Aktualisieren" überschreibt die gespeicherte Konfiguration mit der aktuellen, „→ in Normierung" stellt die Grenzwerte ins Normierungs-Tool. Letztes Messdatum und Zähler kommen aus den gespeicherten Messungen. Alles ist in der Datensicherung enthalten.</div>
+</section>
+
+<section class="scr" id="pm">
+  <div class="bar"><button class="back" data-go="home">‹ Werkzeuge</button><span class="ttl">Prüfmittel</span></div>
+  <div class="mhead" id="pm_mhead">–</div>
+  <div class="grp">Abgleich</div>
+  <div class="card tight"><div class="row" style="border:none"><label>QS-Nr. / Suche</label><input id="pm_such" type="search" autocomplete="off" style="width:190px;text-align:left" placeholder="500-001-234 oder Gasuhr"></div></div>
+  <div id="pm_hits"></div>
+  <div class="grp">Verwendet bei dieser Messung</div>
+  <div id="pm_list"></div>
+  <div class="card">
+    <button class="btn sec" id="btn_pmexport">Verwendete PM exportieren (CSV)</button>
+    <details id="pm_expdet" style="margin-top:4px"><summary style="font-size:13px;color:var(--acc);cursor:pointer;padding:6px 0">Alternativ als Text (kopieren)</summary>
+      <button class="btn sec" id="btn_pmexporttext" style="margin-top:6px">Liste als Text anzeigen</button>
+      <textarea id="pm_exptext" style="width:100%;min-height:88px;font-size:12px;font-family:ui-monospace,Menlo,monospace;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);box-sizing:border-box;resize:vertical"></textarea>
+    </details>
+  </div>
+  <div class="grp">Stammdaten</div>
+  <div class="card">
+    <div class="note" id="pm_count" style="margin:0 0 8px"></div>
+    <button class="btn sec" id="btn_pmimportfile">Stammdaten importieren (CSV-Datei)</button>
+    <input type="file" id="pm_impfile" accept=".csv,text/csv,text/plain" style="display:none">
+    <details style="margin-top:4px"><summary style="font-size:13px;color:var(--acc);cursor:pointer;padding:6px 0">Alternativ per Text (einfügen)</summary>
+      <textarea id="pm_imptext" placeholder="CSV hier einfügen — 1. Zeile Kopfzeile …" style="width:100%;min-height:88px;font-size:12px;font-family:ui-monospace,Menlo,monospace;padding:8px;border:.5px solid var(--bds);border-radius:9px;background:var(--s2);color:var(--tp);box-sizing:border-box;resize:vertical"></textarea>
+      <button class="btn sec" id="btn_pmimporttext" style="margin-top:2px">Aus Text importieren</button>
+    </details>
+    <button class="btn sec" id="btn_pmclear" style="margin-top:6px;color:var(--tno)">Stammdaten löschen</button>
+    <details class="katgrp" style="margin-top:6px"><summary>ⓘ Hinweise</summary><div class="note" style="margin-top:4px">Erwartete Spalten (Kopfzeile, Reihenfolge egal, Semikolon/Komma/Tab): Gerät · Hersteller · Typ · QS-Nr. (5XX-XXX-XXX) · Faktor · letzte Prüfung (TT.MM.JJJJ) · gültig für Monate (leer = 12) · Kommentar. Zeilen ohne gültige 9-stellige QS-Nr. werden übersprungen. Neuimport ersetzt den Bestand. Gültigkeit = letzte Prüfung + Monate; orange ab 30 Tage vor Ablauf, rot überfällig. „✓ verwenden" heftet das PM (als Kopie mit Stand von heute) an die aktive bzw. nächste gespeicherte Messung; Export als CSV fürs Berichtswesen. Stammdaten und Listen sind in der Datensicherung enthalten.</div></details>
+  </div>
 </section>
 
 </div>
@@ -872,7 +910,7 @@ function activeLabel(){
   return s;
 }
 function updateHeads(){
-  var s=activeLabel();var ids=["iso_mhead","vol_mhead","mp_mhead","save_mhead"];
+  var s=activeLabel();var ids=["iso_mhead","vol_mhead","mp_mhead","save_mhead","pm_mhead"];
   for(var i=0;i<ids.length;i++){var e=gid(ids[i]);if(!e)continue;e.textContent=s;e.style.color=(curAnl&&curAnl.fresh)?"var(--twn)":"";e.style.background=(curAnl&&curAnl.fresh)?"var(--bwn)":"";}
   var al=gid("iso_anllink");if(al)al.style.display=(curAnl&&curAnl.fresh)?"":"none";
   var ax=activeIndex();
@@ -891,29 +929,118 @@ function renderList(){
       (e.anl?'<div class="sm">'+esc(e.anl.kunde)+' – '+esc(e.anl.standort)+' – '+esc(e.anl.anlage)+'</div>':'')+
       '<div class="tgr" style="margin-top:3px"><span>Zähler</span><span class="v2">'+fmt(R.zaehler,3)+'</span><span class="u2">m³</span><span>V̇</span><span class="v2">'+fmt(R.Vdot,0)+'</span><span class="u2">m³/h</span><span>Düse</span><span class="v2">'+fmt(R.vor,0)+'</span><span class="u2">mm</span></div>'+
       '<div class="acts"><button class="ld">Laden</button><button class="del">Löschen</button></div>';
-    d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);setCurAnl(e.anl?{id:e.anl.id,kunde:e.anl.kunde,standort:e.anl.standort,anlage:e.anl.anlage,fresh:false}:null);applySnap(e.data);renderList();show("iso");});
-    d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();updateHeads();});
+    d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);setCurAnl(e.anl?{id:e.anl.id,kunde:e.anl.kunde,standort:e.anl.standort,anlage:e.anl.anlage,fresh:false}:null);curPM=e.pm?JSON.parse(JSON.stringify(e.pm)):[];DB.set(CURPM,curPM);pmRender();applySnap(e.data);renderList();show("iso");});
+    d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();renderKat();updateHeads();});
     c.appendChild(d);
   })(i);}
 }
 function anlRef(){return curAnl?{id:curAnl.id,kunde:curAnl.kunde,standort:curAnl.standort,anlage:curAnl.anlage}:null;}
 function clearFresh(){if(curAnl&&curAnl.fresh){curAnl.fresh=false;setCurAnl(curAnl);}}
-function saveNew(){var m={id:newId(),ts:Date.now(),anl:anlRef(),data:snapshot()};MESS.push(m);setActive(m.id);clearFresh();saveStore();renderList();updateHeads();show("mess");}
-function saveUpdate(){var m=activeMeasurement();if(m){m.data=snapshot();m.anl=anlRef();m.ts=Date.now();clearFresh();saveStore();renderList();updateHeads();show("mess");}else saveNew();}
+function saveNew(){var m={id:newId(),ts:Date.now(),anl:anlRef(),pm:JSON.parse(JSON.stringify(curPM)),data:snapshot()};MESS.push(m);setActive(m.id);clearFresh();saveStore();renderList();renderKat();updateHeads();show("mess");}
+function saveUpdate(){var m=activeMeasurement();if(m){m.data=snapshot();m.anl=anlRef();m.pm=JSON.parse(JSON.stringify(curPM));m.ts=Date.now();clearFresh();saveStore();renderList();renderKat();updateHeads();show("mess");}else saveNew();}
 function saveSmart(){if(activeMeasurement())saveUpdate();else saveNew();}
 function saveKat(){DB.set(KATK,ANL);}
 function katLabel(a){return a.kunde+" – "+a.standort+" – "+a.anlage;}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function lastMess(aid){
+  var n=0,dt="";
+  for(var i=0;i<MESS.length;i++){var m=MESS[i];
+    if(m.anl&&m.anl.id===aid){n++;var dd=(m.data&&m.data.iso_datum)?String(m.data.iso_datum):"";if(dd>dt)dt=dd;}}
+  return {n:n,datum:dt};
+}
+function elvLine(a){
+  var e=a.elv;if(!e)return "";
+  var p=[],ob=parseFloat(e.o2b);
+  if(isFinite(ob))p.push("O₂-Bez. "+fmt(ob,1)+" %");
+  var cs=e.comps||[];
+  for(var i=0;i<cs.length;i++){var c=cs[i];if(!c)continue;
+    var t=esc(c.name||("K"+(i+1))),ev=parseFloat(c.elv);
+    if(isFinite(ev))t+=" "+fmt(ev,1);
+    if(c.agr)t+=" (AGR)";
+    p.push(t);}
+  return p.join(" · ");
+}
+function expLine(g){
+  function f(v,dd){var x=parseFloat(v);return isFinite(x)?fmt(x,dd):null;}
+  var p=[],o2=f(g.iso_o2,2),t=f(g.iso_tkanal,1),fw=f(g.iso_fw,2),dp=f(g.iso_dpstau,1);
+  if(o2)p.push("O₂ "+o2+" %");if(t)p.push("ϑ "+t+" °C");
+  if(fw)p.push("Feuchte "+fw+(g.iso_modus==="Vol.-%"?" Vol.-%":""));if(dp)p.push("Δp "+dp+" Pa");
+  return p.join(" · ");
+}
+function elvToNorm(a){
+  var e=a.elv||{},ob=parseFloat(e.o2b);
+  if(isFinite(ob))gid("nb_o2b").value=ob;
+  var cs=e.comps||[];
+  for(var i=1;i<=3;i++){var c=cs[i-1];
+    var nn=gid("nb_name_"+i),ee=gid("nb_elv_"+i),aa=gid("nb_swAGR_"+i),oo=gid("nb_swO2_"+i);
+    if(c){if(c.name)nn.value=c.name;ee.value=(c.elv!==undefined&&c.elv!==null&&c.elv!=="")?c.elv:"";aa.checked=!!c.agr;oo.checked=true;}
+    else ee.value="";}
+  recompute();show("norm");
+}
 function katEntry(a){
   var g=a.data||{},geo=(g.iso_form==="rund")?("rund · ⌀ "+(g.iso_drund||"–")+" mm"):("eckig · "+(g.iso_aeckig||"–")+" × "+(g.iso_beckig||"–")+" mm");
+  var lm=lastMess(a.id);
+  var meta=lm.n?("zuletzt "+fmtDate(lm.datum)+" · "+lm.n+" Messung"+(lm.n>1?"en":"")):"noch keine Messung";
+  var exp=expLine(g),elv=elvLine(a);
   var d=document.createElement("div");d.className="mi";
   d.innerHTML='<div class="top"><span class="nm">'+esc(a.anlage)+'</span><span class="sm">'+geo+'</span></div>'+
-    '<div class="acts"><button class="ap">Anwenden</button><button class="del">Löschen</button></div>';
-  d.querySelector(".ap").addEventListener("click",function(){katApply(a);});
-  d.querySelector(".del").addEventListener("click",function(){
+    '<div class="sm">'+meta+'</div>'+
+    (exp?'<div class="sm" style="color:var(--tm)">'+exp+'</div>':'')+
+    (elv?'<div class="sm">ELV: '+elv+'</div>':'')+
+    (a.notiz?'<div class="sm" style="font-style:italic">'+esc(a.notiz)+'</div>':'')+
+    '<div class="acts"><button class="ap">Anwenden</button><button class="upd">Aktualisieren</button><button class="del">Löschen</button></div>'+
+    '<div class="acts"><button class="elvb">Grenzwerte</button><button class="ntb">Notiz</button></div>'+
+    '<div class="kedit elvEd" style="display:none">'+
+      '<div class="el">Anlagenspezifische Grenzwerte (bezogen, mg/m³) — leere Zeilen werden ignoriert.</div>'+
+      '<div class="erow"><label style="flex:1">O₂-Bezug (Vol-%)</label><input class="e_o2b" type="number" step="any" inputmode="decimal" style="width:76px;text-align:right"></div>'+
+      '<div class="erow"><input class="e_n" data-i="0" type="text" autocomplete="off" placeholder="NOx"><input class="e_e" data-i="0" type="number" step="any" inputmode="decimal" placeholder="ELV"><label><input class="e_a" data-i="0" type="checkbox">AGR</label></div>'+
+      '<div class="erow"><input class="e_n" data-i="1" type="text" autocomplete="off" placeholder="CO"><input class="e_e" data-i="1" type="number" step="any" inputmode="decimal" placeholder="ELV"><label><input class="e_a" data-i="1" type="checkbox">AGR</label></div>'+
+      '<div class="erow"><input class="e_n" data-i="2" type="text" autocomplete="off" placeholder="Ges.-C"><input class="e_e" data-i="2" type="number" step="any" inputmode="decimal" placeholder="ELV"><label><input class="e_a" data-i="2" type="checkbox">AGR</label></div>'+
+      '<div class="acts"><button class="e_save">Grenzwerte speichern</button><button class="e_take">→ in Normierung</button></div>'+
+    '</div>'+
+    '<div class="kedit ntEd" style="display:none">'+
+      '<textarea class="e_nt" placeholder="Zugang, Ansprechpartner, PSA, Eigenheiten …"></textarea>'+
+      '<div class="acts"><button class="nt_save">Notiz speichern</button></div>'+
+    '</div>';
+  function q(s){return d.querySelector(s);}
+  function qa(s){return d.querySelectorAll(s);}
+  q(".ap").addEventListener("click",function(){katApply(a);});
+  q(".upd").addEventListener("click",function(){
+    if(!confirm('Gespeicherte Konfiguration der Anlage "'+katLabel(a)+'" mit der aktuellen Konfiguration überschreiben?'))return;
+    a.data=snapshot();a.ts=Date.now();saveKat();renderKat();alert("Anlage aktualisiert.");
+  });
+  q(".del").addEventListener("click",function(){
     if(!confirm('Anlage "'+katLabel(a)+'" löschen?'))return;
     for(var k=0;k<ANL.length;k++)if(ANL[k].id===a.id){ANL.splice(k,1);break;}
     saveKat();renderKat();
+  });
+  q(".elvb").addEventListener("click",function(){
+    var ed=q(".elvEd"),on=ed.style.display==="none";
+    ed.style.display=on?"":"none";q(".ntEd").style.display="none";
+    if(on){var e=a.elv||{},cs=e.comps||[];
+      q(".e_o2b").value=(e.o2b!==undefined&&e.o2b!==null&&e.o2b!=="")?e.o2b:"";
+      var ns=qa(".e_n"),es=qa(".e_e"),as=qa(".e_a");
+      for(var i=0;i<3;i++){var c=cs[i]||null;
+        ns[i].value=c&&c.name?c.name:"";es[i].value=(c&&c.elv!==undefined&&c.elv!==null&&c.elv!=="")?c.elv:"";as[i].checked=!!(c&&c.agr);}}
+  });
+  q(".ntb").addEventListener("click",function(){
+    var ed=q(".ntEd"),on=ed.style.display==="none";
+    ed.style.display=on?"":"none";q(".elvEd").style.display="none";
+    if(on)q(".e_nt").value=a.notiz||"";
+  });
+  q(".e_save").addEventListener("click",function(){
+    var ns=qa(".e_n"),es=qa(".e_e"),as=qa(".e_a"),comps=[];
+    for(var i=0;i<3;i++){var nm=(ns[i].value||"").trim(),ev=es[i].value;
+      if(!nm&&ev==="")continue;
+      comps.push({name:nm,elv:ev===""?"":parseFloat(ev),agr:as[i].checked});}
+    var ob=q(".e_o2b").value;
+    a.elv=(comps.length||ob!=="")?{o2b:ob===""?"":parseFloat(ob),comps:comps}:null;
+    saveKat();renderKat();
+  });
+  q(".e_take").addEventListener("click",function(){elvToNorm(a);});
+  q(".nt_save").addEventListener("click",function(){
+    var t=(q(".e_nt").value||"").trim();
+    a.notiz=t||null;saveKat();renderKat();
   });
   return d;
 }
@@ -960,10 +1087,12 @@ function renderKat(){
 }
 function katApply(a){
   setActive(null);
+  curPM=[];DB.set(CURPM,curPM);
   setCurAnl({id:a.id,kunde:a.kunde,standort:a.standort,anlage:a.anlage,fresh:true});
   applySnap(a.data);
   var dEl=gid("iso_datum");if(dEl){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}
   recompute();renderList();updateHeads();show("iso");
+  if(a.notiz)alert("Notiz zur Anlage "+katLabel(a)+":\n\n"+a.notiz);
 }
 function katCreate(){
   var ku=(val("kat_kunde")||"").trim(),st=(val("kat_standort")||"").trim(),an=(val("kat_anlage")||"").trim();
@@ -974,12 +1103,139 @@ function katCreate(){
   gid("kat_anlage").value="";
   alert("Anlage gespeichert: "+ku+" – "+st+" – "+an);
 }
-function buildBackup(){var data={};data[KEY]=MESS;data[ACT]=activeId;data[CUR]=snapshot();data[KATK]=ANL;data[ANLCUR]=curAnl;return {app:"wkz",type:"backup",version:1,exportedAt:new Date().toISOString(),data:data};}
+var PMK="wkz_pmstamm_v1",CURPM="wkz_curpm_v1",PMS={list:[],importedAt:null},curPM=[];
+function normNr(s){var d=String(s||"").replace(/\D/g,"");return d.length===9?(d.slice(0,3)+"-"+d.slice(3,6)+"-"+d.slice(6)):null;}
+function parseDT(x){var t=String(x||"").trim(),m=t.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+  m=t.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return new Date(+m[1],+m[2]-1,+m[3]);
+  return null;}
+function fmtDT(dt){return ("0"+dt.getDate()).slice(-2)+"."+("0"+(dt.getMonth()+1)).slice(-2)+"."+dt.getFullYear();}
+function pmGueltigBis(p){var d=parseDT(p.geprueft);if(!d)return null;
+  var m=parseInt(p.monate,10);if(!isFinite(m)||m<=0)m=12;
+  return new Date(d.getFullYear(),d.getMonth()+m,d.getDate());}
+function pmStatus(p){var g=pmGueltigBis(p);if(!g)return {st:"na",txt:"keine Prüfdaten"};
+  var now=new Date();now.setHours(0,0,0,0);
+  var diff=(g-now)/86400000;
+  if(diff<0)return {st:"bad",txt:"Prüfung überfällig seit "+fmtDT(g)};
+  if(diff<=30)return {st:"warn",txt:"gültig bis "+fmtDT(g)+" — läuft ab"};
+  return {st:"ok",txt:"gültig bis "+fmtDT(g)};}
+function pmBadgeHTML(stx){var bg=stx.st==="ok"?"var(--bok)":(stx.st==="bad"?"var(--bno)":(stx.st==="warn"?"var(--bwn)":"var(--s1)"));
+  var fg=stx.st==="ok"?"var(--tok)":(stx.st==="bad"?"var(--tno)":(stx.st==="warn"?"var(--twn)":"var(--tm)"));
+  return '<span class="badge" style="background:'+bg+';color:'+fg+'">'+esc(stx.txt)+'</span>';}
+function csvSplitLine(line,delim){var out=[],cur="",q=false;
+  for(var i=0;i<line.length;i++){var ch=line[i];
+    if(q){if(ch==='"'){if(line[i+1]==='"'){cur+='"';i++;}else q=false;}else cur+=ch;}
+    else if(ch==='"')q=true;
+    else if(ch===delim){out.push(cur);cur="";}
+    else cur+=ch;}
+  out.push(cur);return out;}
+function csvParsePM(text){
+  var lines=String(text||"").split(/\r?\n/).filter(function(l){return l.trim()!=="";});
+  if(lines.length<2)return null;
+  var head=lines[0],delim=";",best=-1,cands=[";","\t",","];
+  for(var c=0;c<cands.length;c++){var n=head.split(cands[c]).length-1;if(n>best){best=n;delim=cands[c];}}
+  var cols=csvSplitLine(head,delim).map(function(x){return x.trim().toLowerCase();});
+  function col(keys){for(var i=0;i<cols.length;i++)for(var k=0;k<keys.length;k++)if(cols[i].indexOf(keys[k])>=0)return i;return -1;}
+  var iNr=col(["qs","nummer","nr"]),iGer=col(["gerät","geraet","beschreibung","bezeichnung"]),
+      iHer=col(["hersteller"]),iTyp=col(["typ"]),iFak=col(["faktor"]),
+      iPr=col(["prüf","pruef","geprüft","gepruef","letzte"]),iMo=col(["gültig","gueltig","monat"]),
+      iKo=col(["kommentar","bemerkung","einschränk","einschraenk","hinweis"]);
+  if(iNr<0)return null;
+  function pick(cells,i){return i>=0&&i<cells.length?String(cells[i]).trim():"";}
+  var list=[],skipped=0;
+  for(var r=1;r<lines.length;r++){var cells=csvSplitLine(lines[r],delim);
+    var nr=normNr(pick(cells,iNr));
+    if(!nr){skipped++;continue;}
+    list.push({nr:nr,geraet:pick(cells,iGer),hersteller:pick(cells,iHer),typ:pick(cells,iTyp),
+      faktor:pick(cells,iFak),geprueft:pick(cells,iPr),monate:pick(cells,iMo),kommentar:pick(cells,iKo)});}
+  return {list:list,skipped:skipped};
+}
+function pmImportText(text){
+  var r=csvParsePM(text);
+  if(!r||!r.list.length){alert("Keine gültigen PM-Zeilen gefunden (Kopfzeile + 9-stellige QS-Nr. erforderlich).");return;}
+  if(PMS.list.length&&!confirm("Vorhandene Stammdaten ("+PMS.list.length+" PM) durch "+r.list.length+" PM ersetzen?"))return;
+  PMS={list:r.list,importedAt:new Date().toISOString()};
+  DB.set(PMK,PMS);pmRender();
+  alert("Import abgeschlossen: "+r.list.length+" PM übernommen"+(r.skipped?(", "+r.skipped+" Zeile(n) ohne gültige QS-Nr. übersprungen"):"")+".");
+}
+function pmInCur(nr){for(var i=0;i<curPM.length;i++)if(curPM[i].nr===nr)return i;return -1;}
+function pmAdd(p){if(pmInCur(p.nr)>=0)return;curPM.push(JSON.parse(JSON.stringify(p)));DB.set(CURPM,curPM);pmRender();}
+function pmRemove(nr){var i=pmInCur(nr);if(i>=0){curPM.splice(i,1);DB.set(CURPM,curPM);pmRender();}}
+function pmFind(q){
+  var res=[],nq=normNr(q),ql=String(q||"").trim().toLowerCase(),qd=String(q||"").replace(/\D/g,"");
+  if(!ql)return res;
+  if(nq){for(var i=0;i<PMS.list.length;i++)if(PMS.list[i].nr===nq)return [PMS.list[i]];}
+  for(var j=0;j<PMS.list.length;j++){var p=PMS.list[j];
+    var hay=(p.nr.replace(/\D/g,"")+" "+[p.geraet,p.hersteller,p.typ,p.kommentar].join(" ")).toLowerCase();
+    var hit=(qd.length>=3&&p.nr.replace(/\D/g,"").indexOf(qd)>=0)||hay.indexOf(ql)>=0;
+    if(hit)res.push(p);
+    if(res.length>=10)break;}
+  return res;
+}
+function pmHitCard(p,unknown){
+  var d=document.createElement("div");d.className="mi";
+  var used=pmInCur(p.nr)>=0,stx=pmStatus(p);
+  d.innerHTML='<div class="top"><span class="nm">'+esc(p.geraet||"—")+(p.typ?" · "+esc(p.typ):"")+'</span><span class="sm">'+esc(p.nr)+'</span></div>'+
+    '<div class="sm">'+esc(p.hersteller||"")+(p.faktor?" · Faktor "+esc(p.faktor):"")+(p.geprueft?" · geprüft "+esc(p.geprueft):"")+'</div>'+
+    (p.kommentar?'<div class="sm" style="font-style:italic">'+esc(p.kommentar)+'</div>':'')+
+    '<div style="margin-top:7px">'+(unknown?'<span class="badge" style="background:var(--bno);color:var(--tno)">nicht in den Stammdaten</span>':pmBadgeHTML(stx))+'</div>'+
+    '<div class="acts"><button class="use">'+(used?"− aus Liste entfernen":(unknown?"trotzdem übernehmen (unbekannt)":"✓ verwenden"))+'</button></div>';
+  d.querySelector(".use").addEventListener("click",function(){used?pmRemove(p.nr):pmAdd(p);});
+  return d;
+}
+function pmRender(){
+  var hits=gid("pm_hits");if(!hits)return;
+  var cnt=gid("pm_count");
+  if(cnt){var st=PMS.importedAt?new Date(PMS.importedAt):null;
+    cnt.textContent=PMS.list.length?(PMS.list.length+" PM im Bestand · Stand "+(st?fmtDT(st):"–")):"Noch keine Stammdaten importiert.";}
+  var q=val("pm_such");
+  hits.innerHTML="";
+  if(String(q||"").trim()===""){hits.innerHTML='<div class="empty">QS-Nr. oder Suchbegriff eingeben — Treffer erscheinen hier.</div>';}
+  else if(!PMS.list.length&&!normNr(q)){hits.innerHTML='<div class="empty">Keine Stammdaten importiert.</div>';}
+  else{
+    var res=pmFind(q);
+    for(var i=0;i<res.length;i++)hits.appendChild(pmHitCard(res[i],false));
+    var nq=normNr(q);
+    if(!res.length){
+      if(nq)hits.appendChild(pmHitCard({nr:nq,geraet:"unbekannt",hersteller:"",typ:"",faktor:"",geprueft:"",monate:"",kommentar:""},true));
+      else hits.innerHTML='<div class="empty">Kein Treffer für „'+esc(q)+'".</div>';
+    }
+  }
+  var list=gid("pm_list");if(!list)return;
+  list.innerHTML="";
+  if(!curPM.length){list.innerHTML='<div class="empty">Noch kein PM übernommen.<br>Oben suchen und „✓ verwenden".</div>';return;}
+  for(var k=0;k<curPM.length;k++)(function(p){
+    var stx=pmStatus(p),d=document.createElement("div");d.className="mi";
+    d.innerHTML='<div class="top"><span class="nm">'+esc(p.geraet||"—")+(p.typ?" · "+esc(p.typ):"")+'</span><span class="sm">'+esc(p.nr)+'</span></div>'+
+      '<div class="sm">'+esc(p.hersteller||"")+(p.faktor?" · Faktor "+esc(p.faktor):"")+'</div>'+
+      '<div style="margin-top:7px">'+pmBadgeHTML(stx)+'</div>'+
+      '<div class="acts"><button class="rm">Entfernen</button></div>';
+    d.querySelector(".rm").addEventListener("click",function(){pmRemove(p.nr);});
+    list.appendChild(d);
+  })(curPM[k]);
+}
+function csvEsc(v){v=String(v==null?"":v);return /[;"\n]/.test(v)?('"'+v.replace(/"/g,'""')+'"'):v;}
+function pmCSV(){
+  var H=["Gerät","Hersteller","Typ","QS-Nr.","Faktor","letzte Prüfung","gültig bis","Status","Kommentar"];
+  var L=["Verwendete Prüfmittel;"+csvEsc(activeLabel()),"",H.join(";")];
+  for(var i=0;i<curPM.length;i++){var p=curPM[i],g=pmGueltigBis(p),stx=pmStatus(p);
+    var st=stx.st==="ok"?"gültig":(stx.st==="warn"?"läuft ab":(stx.st==="bad"?"überfällig":"unbekannt/keine Prüfdaten"));
+    L.push([p.geraet,p.hersteller,p.typ,p.nr,p.faktor,p.geprueft,(g?fmtDT(g):""),st,p.kommentar].map(csvEsc).join(";"));}
+  return L.join("\r\n");
+}
+function pmExportFile(){
+  if(!curPM.length){alert("Die Verwendungsliste ist leer.");return;}
+  var t=pmCSV(),n="pm_verwendet_"+(val("iso_datum")||"heute")+".csv";
+  if(!saveFile(n,t,"text/csv")){var ta=gid("pm_exptext");if(ta)ta.value=t;var det=gid("pm_expdet");if(det)det.open=true;
+    alert("Datei-Export nicht möglich — Liste wurde als Text bereitgestellt.");}
+}
+function buildBackup(){var data={};data[KEY]=MESS;data[ACT]=activeId;data[CUR]=snapshot();data[KATK]=ANL;data[ANLCUR]=curAnl;data[PMK]=PMS;data[CURPM]=curPM;return {app:"wkz",type:"backup",version:1,exportedAt:new Date().toISOString(),data:data};}
 function backupName(){var t=new Date();return "emissionsmessung_backup_"+t.getFullYear()+"-"+("0"+(t.getMonth()+1)).slice(-2)+"-"+("0"+t.getDate()).slice(-2)+".json";}
 function showExportText(txt){var ta=gid("imp_text");if(ta)ta.value=txt;var det=gid("bk_details");if(det)det.open=true;}
-function saveFile(name,text){
-  var blob=null;try{blob=new Blob([text],{type:"application/json"});}catch(e){}
-  try{if(blob&&navigator.canShare&&typeof File!=="undefined"){var f=new File([blob],name,{type:"application/json"});if(navigator.canShare({files:[f]})){navigator.share({files:[f],title:name}).catch(function(){});return true;}}}catch(e){}
+function saveFile(name,text,mime){
+  var mt=mime||"application/json";
+  var blob=null;try{blob=new Blob([text],{type:mt});}catch(e){}
+  try{if(blob&&navigator.canShare&&typeof File!=="undefined"){var f=new File([blob],name,{type:mt});if(navigator.canShare({files:[f]})){navigator.share({files:[f],title:name}).catch(function(){});return true;}}}catch(e){}
   try{if(blob&&URL&&URL.createObjectURL){var url=URL.createObjectURL(blob);var a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){try{document.body.removeChild(a);URL.revokeObjectURL(url);}catch(_){}},1500);return true;}}catch(e){}
   return false;
 }
@@ -998,10 +1254,12 @@ function applyImport(obj){
   for(i=0;i<ANL.length;i++)if(!ANL[i].id)ANL[i].id=newId("a_");
   activeId=(typeof data[ACT]==="string")?data[ACT]:null;if(activeId&&activeIndex()<0)activeId=null;
   curAnl=(data[ANLCUR]&&typeof data[ANLCUR]==="object")?data[ANLCUR]:null;
+  PMS=(data[PMK]&&Array.isArray(data[PMK].list))?data[PMK]:{list:[],importedAt:null};
+  curPM=Array.isArray(data[CURPM])?data[CURPM]:[];
   for(var k in data)if(data.hasOwnProperty(k))DB.set(k,data[k]);
   if(data[CUR]){try{applySnap(data[CUR]);}catch(e){}}
   saveStore();saveKat();DB.set(ACT,activeId);
-  renderList();renderKat();updateHeads();recompute();
+  renderList();renderKat();pmRender();updateHeads();recompute();
   alert("Import abgeschlossen: "+MESS.length+" Messung(en), "+ANL.length+" Anlage(n).");
 }
 function importFromText(){var ta=gid("imp_text");if(!ta)return;var s=(ta.value||"").trim();if(!s){alert("Bitte Sicherungstext einfügen.");return;}var o;try{o=JSON.parse(s);}catch(e){alert("Text ist keine gültige Sicherung (JSON-Fehler).");return;}applyImport(o);}
@@ -1023,6 +1281,18 @@ bindBtn("[data-savenew]",saveNew);bindBtn("[data-saveupd]",saveUpdate);bindBtn("
   var kst=gid("kat_standort");if(kst)kst.addEventListener("input",renderKatChips);
   function chipPick(container,field){var el=gid(container);if(!el)return;el.addEventListener("click",function(ev){var b=ev.target;if(b&&b.classList&&b.classList.contains("chip")){gid(field).value=b.textContent;renderKatChips();}});}
   chipPick("kat_kchips","kat_kunde");chipPick("kat_schips","kat_standort");
+  var ps=gid("pm_such");if(ps)ps.addEventListener("input",pmRender);
+  var pif=gid("btn_pmimportfile");if(pif)pif.addEventListener("click",function(){var f=gid("pm_impfile");if(f)f.click();});
+  var pff=gid("pm_impfile");if(pff)pff.addEventListener("change",function(){
+    if(pff.files&&pff.files[0]){var fr=new FileReader();fr.onload=function(){pmImportText(fr.result);};fr.onerror=function(){alert("Datei konnte nicht gelesen werden.");};fr.readAsText(pff.files[0]);}
+    pff.value="";});
+  var pit=gid("btn_pmimporttext");if(pit)pit.addEventListener("click",function(){var ta=gid("pm_imptext");pmImportText(ta?ta.value:"");});
+  var pex=gid("btn_pmexport");if(pex)pex.addEventListener("click",pmExportFile);
+  var pxt=gid("btn_pmexporttext");if(pxt)pxt.addEventListener("click",function(){if(!curPM.length){alert("Die Verwendungsliste ist leer.");return;}var ta=gid("pm_exptext");if(ta)ta.value=pmCSV();});
+  var pcl=gid("btn_pmclear");if(pcl)pcl.addEventListener("click",function(){
+    if(!PMS.list.length){alert("Keine Stammdaten vorhanden.");return;}
+    if(!confirm("Alle "+PMS.list.length+" PM-Stammdaten löschen? (Verwendungslisten an Messungen bleiben erhalten.)"))return;
+    PMS={list:[],importedAt:null};DB.set(PMK,PMS);pmRender();});
 })();
 var pms=document.querySelectorAll("[data-pm]");
 for(var p=0;p<pms.length;p++)(function(b){b.addEventListener("click",function(){var e=gid(b.getAttribute("data-pm"));var v=String(e.value).trim();if(v==="")return;e.value=v.charAt(0)==="-"?v.slice(1):"-"+v;e.dispatchEvent(new Event("input",{bubbles:true}));});})(pms[p]);
@@ -1064,8 +1334,10 @@ function normQuick(from){
 show("home");
 (function boot(){
   try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();renderKat();showLastExp();recompute();}
-  Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR),DB.get(KATK),DB.get(ANLCUR)]).then(function(r){
+  function fin(){var dEl=gid("iso_datum");if(dEl&&!dEl.value){var td=new Date();dEl.value=td.getFullYear()+"-"+("0"+(td.getMonth()+1)).slice(-2)+"-"+("0"+td.getDate()).slice(-2);}renderList();renderKat();pmRender();showLastExp();recompute();}
+  Promise.all([DB.get(KEY),DB.get(ACT),DB.get(CUR),DB.get(KATK),DB.get(ANLCUR),DB.get(PMK),DB.get(CURPM)]).then(function(r){
+    PMS=(r[5]&&Array.isArray(r[5].list))?r[5]:{list:[],importedAt:null};
+    curPM=Array.isArray(r[6])?r[6]:[];
     MESS=Array.isArray(r[0])?r[0]:[];
     ANL=Array.isArray(r[3])?r[3]:[];
     curAnl=(r[4]&&typeof r[4]==="object")?r[4]:null;
