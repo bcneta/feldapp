@@ -158,6 +158,7 @@ svg{display:block}
       <div class="m"><div class="l">Soll-Saugstrom (Iso 100 %)</div><div class="v"><span id="o_qlmin">–</span> <span class="u">l/min · <span id="o_qm3h">–</span> m³/h</span></div></div>
     </div>
     <div class="m" style="margin-bottom:10px"><div class="l">Volumenfenster (95–115 %)</div><div class="v sm"><span id="o_vmin">–</span> – <span id="o_vmax">–</span> <span class="u">m³ · Soll <span id="o_vsoll">–</span></span></div></div>
+    <div class="m" style="margin-bottom:10px"><div class="l">Ziel-Endstand Gasuhr (Anfang + Soll-Saugstrom × Nettomesszeit ⁄ Gasuhrfaktor)</div><div class="v"><span id="o_sollend">–</span> <span class="u">m³ · ab Anfang <span id="o_zstart2">–</span></span></div></div>
     <div class="m" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
       <div><div class="l">Isokinetie</div><div class="v"><span id="o_iso">–</span> %</div></div>
       <span class="badge" id="o_amp">–</span>
@@ -176,9 +177,10 @@ svg{display:block}
   <div class="grp">Messung &amp; Zeitraum</div>
   <div class="card tight">
     <div class="row"><label>Datum</label><input id="iso_datum" type="date" style="width:120px;text-align:left"></div>
-    <div class="row"><label>Startzeit (Zeitraum)</label><input id="iso_start" type="time" value="08:00" style="width:120px;text-align:left"></div>
-    <div class="row"><label>Endzeit (Zeitraum)</label><input id="iso_ende" type="time" value="08:45" style="width:120px;text-align:left"></div>
+    <div class="row"><label>Beginn (Beurteilungszeitraum)</label><input id="iso_start" type="time" value="08:00" style="width:120px;text-align:left"></div>
+    <div class="row"><label>Ende (Beurteilungszeitraum)</label><input id="iso_ende" type="time" value="08:45" style="width:120px;text-align:left"></div>
   </div>
+  <div class="note" style="margin:2px 2px 12px">Beurteilungszeitraum = Absaugzeit + Unterbrechungen (Achswechsel, Betriebsstörungen, Lastwechsel …). Die Nettomesszeit für die Isokinetik wird separat unten eingetragen. Ein vorab ermittelter Volumenstrom hat eigene Zeiten — davon unabhängig.</div>
   <div class="grp">Feuchte</div>
   <div class="card tight">
     <div class="row"><label>Modus</label><select id="iso_modus"><option>Vol.-%</option><option>g/m³ (feucht)</option><option>g/m³ (trocken)</option><option>rel. % (ϑ)</option></select></div>
@@ -202,11 +204,13 @@ svg{display:block}
   </div>
   <div class="grp">Probenahme (Gasuhr)</div>
   <div class="card tight">
-    <div class="row"><label>Messdauer (min)</label><input id="iso_tmess" type="number" step="any" inputmode="decimal" value="30"></div>
+    <div class="row"><label>Nettomesszeit (Absaugzeit, min)</label><input id="iso_tmess" type="number" step="any" inputmode="decimal" value="30"></div>
     <div class="row"><label>Gasuhrfaktor</label><input id="iso_fgas" type="number" step="any" inputmode="decimal" value="0.963"></div>
     <div class="row"><label>Gasuhrtemp. (°C)</label><input id="iso_tgas" type="number" step="any" inputmode="decimal" value="16"></div>
     <div class="row"><label>Unterdruck (mbar)</label><input id="iso_dpgas" type="number" step="any" inputmode="decimal" value="120"></div>
-    <div class="row"><label>Zählerstand (m³)</label><input id="iso_zaehler" type="number" step="any" inputmode="decimal" value="1.265"></div>
+    <div class="row"><label>Anfangs-Zählerstand (m³)</label><input id="iso_zaehler_start" type="number" step="any" inputmode="decimal" value="0"></div>
+    <div class="row"><label>End-Zählerstand (m³)</label><input id="iso_zaehler" type="number" step="any" inputmode="decimal" value="1.265"></div>
+    <div class="tgr" style="margin:6px 2px 0"><span>gesammeltes Zählervolumen (Ende − Anfang)</span><span class="v2"><span id="o_collected">–</span></span><span class="u2">m³</span><span>Ziel-Endstand</span><span class="v2"><span id="o_sollend2">–</span></span><span class="u2">m³</span></div>
   </div>
 </section>
 
@@ -482,7 +486,7 @@ function ndPositions(nd){nd=Math.max(2,2*Math.round(nd/2));
   var T={2:[14.6,85.4],4:[6.7,25,75,93.3],6:[4.4,14.6,29.6,70.4,85.4,95.6],8:[3.3,10.5,19.4,32.3,67.7,80.6,89.5,96.7]};
   if(T[nd])return T[nd].slice();
   var a=[];for(var m=1;m<=nd/2;m++){var r=Math.sqrt((2*m-1)/nd);a.push(50*(1-r));a.push(50*(1+r));}a.sort(function(x,y){return x-y;});return a;}
-var ISO=["iso_datum","iso_start","iso_ende","iso_modus","iso_fw","iso_pbaro","iso_dpstat","iso_tkanal","iso_dpstau","iso_spitot","iso_form","iso_drund","iso_aeckig","iso_beckig","iso_basis","iso_o2","iso_co2","iso_tmess","iso_fgas","iso_tgas","iso_dpgas","iso_zaehler","iso_duese","iso_ziel"];
+var ISO=["iso_datum","iso_start","iso_ende","iso_modus","iso_fw","iso_pbaro","iso_dpstat","iso_tkanal","iso_dpstau","iso_spitot","iso_form","iso_drund","iso_aeckig","iso_beckig","iso_basis","iso_o2","iso_co2","iso_tmess","iso_fgas","iso_tgas","iso_dpgas","iso_zaehler","iso_zaehler_start","iso_duese","iso_ziel"];
 var SD=["sd_use"];for(var sk=1;sk<=20;sk++)SD.push("sd_"+sk);
 var MP=["mp_naxis","mp_nd","mp_nx","mp_ny","mp_ein","mp_aus","mp_muend","mp_flow","mp_winkel"];
 var HUB=["hub_pbaro","hub_dpstat","hub_tkanal","hub_typ","hub_spitot","hub_modus","hub_fw","hub_basis","hub_o2","hub_co2"];
@@ -500,26 +504,28 @@ function isoCalc(o){
   var v=S*Math.sqrt(2*dpstau/rhob);
   var A=form==="rund"?Math.PI/4*Math.pow(d/1000,2):(a/1000)*(b/1000);
   var Vdot=v*A*3600;
-  var tmess=parseFloat(o.iso_tmess),fgas=parseFloat(o.iso_fgas),tgas=parseFloat(o.iso_tgas),dpgas=parseFloat(o.iso_dpgas),zaehler=parseFloat(o.iso_zaehler);
+  var tmess=parseFloat(o.iso_tmess),fgas=parseFloat(o.iso_fgas),tgas=parseFloat(o.iso_tgas),dpgas=parseFloat(o.iso_dpgas),zaehler=parseFloat(o.iso_zaehler),zstart=parseFloat(o.iso_zaehler_start);
+  if(!isFinite(zstart))zstart=0;
   var duese=parseFloat(o.iso_duese),ziel=parseFloat(o.iso_ziel),pgu=pbaro-dpgas;
   var veff=v*(1-phi/100)*(pk/pgu)*((tgas+273.15)/(tk+273.15));
   var dideal=Math.sqrt(4*(ziel/3600/veff)/Math.PI)*1000,vor=NOZ[0];
   for(var i=0;i<NOZ.length;i++)if(Math.abs(NOZ[i]-dideal)<Math.abs(vor-dideal))vor=NOZ[i];
   var Ad=Math.PI/4*Math.pow(duese/10,2),Qm3h=veff*(Ad/10000)*3600,Qlmin=veff*(Ad/10000)*60000;
   var vsoll=Qm3h*(tmess/60)/fgas,vmin=vsoll*0.95,vmax=vsoll*1.15;
-  var Vreal=zaehler*fgas,VmessQ=Vreal*((tk+273.15)/(tgas+273.15))*(pgu/pk)/(1-phi/100);
+  var collected=zaehler-zstart,Vreal=collected*fgas,VmessQ=Vreal*((tk+273.15)/(tgas+273.15))*(pgu/pk)/(1-phi/100);
   var vist=VmessQ/((Ad/10000)*(tmess*60));
   var tvf=VmessQ*(273.15/(tk+273.15))*(pk/pn),tvt=tvf*(1-phi/100),iso=vist/v*100;
   var o2t=basis==="feucht"?o2*100/(100-phi):o2, co2t=basis==="feucht"?co2*100/(100-phi):co2;
-  return {vor:vor,Qlmin:Qlmin,Qm3h:Qm3h,vsoll:vsoll,vmin:vmin,vmax:vmax,v:v,vist:vist,veff:veff,ziel:ziel,Vdot:Vdot,tvt:tvt,o2t:o2t,co2t:co2t,iso:iso,zaehler:zaehler};
+  return {vor:vor,Qlmin:Qlmin,Qm3h:Qm3h,vsoll:vsoll,vmin:vmin,vmax:vmax,v:v,vist:vist,veff:veff,ziel:ziel,Vdot:Vdot,tvt:tvt,o2t:o2t,co2t:co2t,iso:iso,zaehler:zaehler,zstart:zstart,collected:collected,sollEnd:zstart+vsoll};
 }
 function snapshot(){var o={},a=ISO.concat(SD).concat(MP).concat(HUB);for(var i=0;i<a.length;i++){var e=gid(a[i]);if(!e)continue;o[a[i]]=e.type==="checkbox"?e.checked:e.value;}return o;}
-function applySnap(o){var a=ISO.concat(SD).concat(MP).concat(HUB);for(var i=0;i<a.length;i++){if(o[a[i]]!==undefined){var e=gid(a[i]);if(!e)continue;if(e.type==="checkbox")e.checked=o[a[i]];else e.value=o[a[i]];}}recompute();}
+function applySnap(o){var a=ISO.concat(SD).concat(MP).concat(HUB);for(var i=0;i<a.length;i++){if(o[a[i]]!==undefined){var e=gid(a[i]);if(!e)continue;if(e.type==="checkbox")e.checked=o[a[i]];else e.value=o[a[i]];}}if(o.iso_zaehler_start===undefined){var zs=gid("iso_zaehler_start");if(zs)zs.value="0";}recompute();}
 
 function computeIso(){
   var R=isoCalc(snapshot());
   setT("o_duese",fmt(R.vor,0));setT("o_qlmin",fmt(R.Qlmin,1));setT("o_qm3h",fmt(R.Qm3h,2));setT("o_vsoll",fmt(R.vsoll,3));
   setT("o_vmin",fmt(R.vmin,3));setT("o_vmax",fmt(R.vmax,3));setT("o_v",fmt(R.v,2));setT("o_vsonde",fmt(R.vist,2));setT("o_vdot",fmt(R.Vdot,0));
+  setT("o_sollend",fmt(R.sollEnd,3));setT("o_sollend2",fmt(R.sollEnd,3));setT("o_zstart2",fmt(R.zstart,3));setT("o_collected",fmt(R.collected,3));
   setT("o_tvt",fmt(R.tvt,4));setT("o_o2t",fmt(R.o2t,2));setT("o_co2t",fmt(R.co2t,2));setT("o_iso",fmt(R.iso,1));
   var okIso=isFinite(R.iso)&&R.iso>=95&&R.iso<=115;
   badge("o_amp",okIso,"OK isokinetisch",isFinite(R.iso)?"außerhalb 95–115 %":"–");
@@ -543,8 +549,8 @@ function computeIso(){
       nc.innerHTML=h;
     }
   }
-  var okF=isFinite(R.zaehler)&&isFinite(R.vmin)&&R.zaehler>=R.vmin&&R.zaehler<=R.vmax;
-  badge("o_fen",okF,"Volumen im Sollbereich",isFinite(R.zaehler)?"Volumen außerhalb":"–");
+  var okF=isFinite(R.collected)&&isFinite(R.vmin)&&R.collected>=R.vmin&&R.collected<=R.vmax;
+  badge("o_fen",okF,"Volumen im Sollbereich",isFinite(R.collected)?"Volumen außerhalb":"–");
 }
 var COMPS={
  "frei":{unit:"Geräteeinheit",f:1.0,tgt:"umgerechnet"},
@@ -927,7 +933,7 @@ function renderList(){
     var d=document.createElement("div");d.className="mi"+(isAct?" active":"");
     d.innerHTML='<div class="top"><span class="nm">'+label+(isAct?'<span class="tag">aktiv</span>':'')+'</span><span class="sm">'+(isFinite(R.iso)?fmt(R.iso,1)+" %":"–")+'</span></div>'+
       (e.anl?'<div class="sm">'+esc(e.anl.kunde)+' – '+esc(e.anl.standort)+' – '+esc(e.anl.anlage)+'</div>':'')+
-      '<div class="tgr" style="margin-top:3px"><span>Zähler</span><span class="v2">'+fmt(R.zaehler,3)+'</span><span class="u2">m³</span><span>V̇</span><span class="v2">'+fmt(R.Vdot,0)+'</span><span class="u2">m³/h</span><span>Düse</span><span class="v2">'+fmt(R.vor,0)+'</span><span class="u2">mm</span></div>'+
+      '<div class="tgr" style="margin-top:3px"><span>V(Gas)</span><span class="v2">'+fmt(R.collected,3)+'</span><span class="u2">m³</span><span>V̇</span><span class="v2">'+fmt(R.Vdot,0)+'</span><span class="u2">m³/h</span><span>Düse</span><span class="v2">'+fmt(R.vor,0)+'</span><span class="u2">mm</span></div>'+
       '<div class="acts"><button class="ld">Laden</button><button class="del">Löschen</button></div>';
     d.querySelector(".ld").addEventListener("click",function(){setActive(e.id);setCurAnl(e.anl?{id:e.anl.id,kunde:e.anl.kunde,standort:e.anl.standort,anlage:e.anl.anlage,fresh:false}:null);curPM=e.pm?JSON.parse(JSON.stringify(e.pm)):[];DB.set(CURPM,curPM);pmRender();applySnap(e.data);renderList();show("iso");});
     d.querySelector(".del").addEventListener("click",function(){var wasAct=(e.id===activeId);MESS.splice(idx,1);if(wasAct)setActive(null);saveStore();renderList();renderKat();updateHeads();});
